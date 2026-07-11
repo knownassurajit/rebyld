@@ -1,2573 +1,3285 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DAS/PROTOCOL — Surajit's Training &amp; Nutrition System</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
-
-:root {
-  --ink: #0b0c10;
-  --ink-2: #12151c;
-  --ink-3: #1a1e28;
-  --paper: #f5f6f9;
-  --paper-dim: #94a3b8;
-  --lime: #c4f135;
-  --lime-dim: #a3cc1f;
-  --blue: #5b7fdb;
-  --blue-dim: #4263b8;
-  --coral: #ff6b57;
-  --line: #222936;
-  --radius: 16px;
-  --radius-lg: 24px;
-  --disp: 'Oswald', sans-serif;
-  --body: 'Inter', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-
-  /* Premium Transitions and Shadows */
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.35);
-  --shadow-glow: 0 0 20px rgba(196, 241, 53, 0.08);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  scrollbar-color: var(--line) var(--ink);
-}
-
-body {
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--body);
-  line-height: 1.6;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-::selection {
-  background: var(--lime);
-  color: var(--ink);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* Scroll Progress Bar */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--lime), var(--blue));
-  z-index: 250;
-  width: 0%;
-  transition: width 0.1s ease-out;
-}
-
-.eyebrow {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--lime);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.eyebrow::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  background: var(--lime);
-  border-radius: 1.5px;
-  display: inline-block;
-  box-shadow: 0 0 6px var(--lime);
-}
-
-h1, h2, h3, .disp {
-  font-family: var(--disp);
-  text-transform: uppercase;
-  letter-spacing: .02em;
-}
-
-/* ---------- SCOREBOARD NAV ---------- */
-.scorebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 200;
-  background: rgba(11, 12, 16, 0.75);
-  backdrop-filter: blur(20px) saturate(160%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 clamp(16px, 4vw, 40px);
-  height: 64px;
-  transform: translateY(0);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scorebar.hide {
-  transform: translateY(-100%);
-}
-
-.brand {
-  font-family: var(--disp);
-  font-size: 19px;
-  letter-spacing: .06em;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand .dot {
-  width: 8px;
-  height: 8px;
-  background: var(--lime);
-  border-radius: 50%;
-  box-shadow: 0 0 12px var(--lime);
-}
-
-.tabs {
-  display: flex;
-  gap: 4px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.tabs a {
-  padding: 8px 16px;
-  color: var(--paper-dim);
-  border-radius: 8px;
-  transition: var(--transition-smooth);
-}
-
-.tabs a:hover {
-  color: var(--paper);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.tabs a.active {
-  color: var(--ink);
-  background: var(--lime);
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(196, 241, 53, 0.2);
-}
-
-/* Custom Hamburger Toggle Button */
-.navtoggle {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--line);
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  position: relative;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  z-index: 250;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-.navtoggle:hover {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--paper-dim);
-}
-
-.navtoggle .bar {
-  display: block;
-  width: 18px;
-  height: 2px;
-  background: var(--paper);
-  border-radius: 2px;
-  transition: var(--transition-smooth);
-}
-
-.navtoggle.active .bar-1 {
-  transform: translateY(7px) rotate(45deg);
-}
-
-.navtoggle.active .bar-2 {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.navtoggle.active .bar-3 {
-  transform: translateY(-7px) rotate(-45deg);
-}
-
-/* Navigation Drawer & Overlay */
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  z-index: 201;
-  opacity: 0;
-  pointer-events: none;
-  transition: var(--transition-smooth);
-}
-
-.drawer-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: min(300px, 80vw);
-  background: rgba(18, 21, 28, 0.96);
-  backdrop-filter: blur(30px);
-  z-index: 202;
-  border-left: 1px solid var(--line);
-  padding: 100px 24px 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
-}
-
-.drawer.active {
-  transform: translateX(0);
-}
-
-.drawer-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.drawer-nav a {
-  font-family: var(--disp);
-  font-size: 22px;
-  text-transform: uppercase;
-  color: var(--paper-dim);
-  padding: 14px 20px;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  transition: var(--transition-smooth);
-}
-
-.drawer-nav a:hover:not(.active) {
-  color: var(--paper);
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--line);
-}
-
-.drawer-nav a.active {
-  color: var(--ink);
-  background: var(--lime);
-  font-weight: 600;
-  box-shadow: 0 8px 24px rgba(196, 241, 53, 0.25);
-}
-
-@media (max-width: 860px) {
-  .tabs {
-    display: none;
-  }
-  .navtoggle {
-    display: flex;
-  }
-}
-
-/* ---------- HERO ---------- */
-.hero {
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  padding: 120px clamp(16px, 5vw, 64px) 60px;
-  border-bottom: 1px solid var(--line);
-  overflow: hidden;
-  background: radial-gradient(circle at 80% 20%, rgba(196, 241, 53, 0.03), transparent 50%);
-}
-
-.hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 64px 64px;
-  opacity: .2;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
-}
-
-.hero-pulse {
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(196, 241, 53, 0.12), transparent 70%);
-  top: -160px;
-  right: -120px;
-  animation: pulse 6s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: .7;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 1100px;
-}
-
-.hero-name {
-  font-size: clamp(48px, 8.5vw, 104px);
-  line-height: .92;
-  font-weight: 700;
-  margin: 20px 0 24px;
-}
-
-.hero-name span {
-  color: var(--lime);
-  text-shadow: 0 0 40px rgba(196, 241, 53, 0.1);
-}
-
-.hero-sub {
-  font-family: var(--body);
-  font-size: clamp(16px, 1.8vw, 20px);
-  color: var(--paper-dim);
-  max-width: 650px;
-  margin-bottom: 40px;
-  font-weight: 400;
-}
-
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 16px;
-  max-width: 820px;
-  border-top: 1px solid var(--line);
-  padding-top: 24px;
-}
-
-.stat {
-  padding: 12px 16px;
-  background: rgba(26, 30, 40, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius);
-  transition: var(--transition-smooth);
-}
-
-.stat:hover {
-  background: rgba(26, 30, 40, 0.6);
-  border-color: rgba(196, 241, 53, 0.2);
-}
-
-.stat b {
-  font-family: var(--mono);
-  font-size: clamp(24px, 3.2vw, 34px);
-  display: block;
-  color: var(--lime);
-  font-weight: 700;
-}
-
-.stat span {
-  font-size: 11px;
-  color: var(--paper-dim);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  font-family: var(--mono);
-  margin-top: 4px;
-  display: block;
-}
-
-.scroll-cue {
-  position: absolute;
-  bottom: 28px;
-  left: clamp(16px, 5vw, 64px);
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--paper-dim);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.scroll-cue .bar {
-  width: 1px;
-  height: 28px;
-  background: var(--line);
-  position: relative;
-  overflow: hidden;
-}
-
-.scroll-cue .bar::after {
-  content: '';
-  position: absolute;
-  top: -100%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--lime);
-  animation: scrolldrip 1.8s ease-in-out infinite;
-}
-
-@keyframes scrolldrip {
-  0% {
-    top: -100%;
-  }
-  100% {
-    top: 100%;
-  }
-}
-
-/* ---------- SECTION SCAFFOLD ---------- */
-section.block {
-  padding: clamp(60px, 8vw, 100px) clamp(16px, 5vw, 64px);
-  border-bottom: 1px solid var(--line);
-  position: relative;
-}
-
-.block-head {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-bottom: 56px;
-  max-width: 760px;
-}
-
-.block-head h2 {
-  font-size: clamp(34px, 5vw, 54px);
-  font-weight: 600;
-}
-
-.block-head p {
-  color: var(--paper-dim);
-  font-size: clamp(14.5px, 1.6vw, 16px);
-  max-width: 640px;
-  line-height: 1.65;
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.reveal.in {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ---------- DIET SECTION ---------- */
-.diet-toggle {
-  display: inline-flex;
-  position: relative;
-  background: var(--ink-2);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 4px;
-  margin-bottom: 40px;
-}
-
-.diet-toggle .slider {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  bottom: 4px;
-  width: calc(50% - 4px);
-  background: var(--lime);
-  border-radius: 999px;
-  z-index: 0;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.diet-toggle.weekend-active .slider {
-  transform: translateX(100%);
-}
-
-.diet-toggle button {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  color: var(--paper-dim);
-  padding: 12px 26px;
-  border-radius: 999px;
-  cursor: pointer;
-  position: relative;
-  z-index: 1;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.diet-toggle button.active {
-  color: var(--ink);
-  font-weight: 700;
-}
-
-.macro-strip {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 48px;
-  box-shadow: var(--shadow-md);
-}
-
-.macro-cell {
-  background: rgba(18, 21, 28, 0.85);
-  backdrop-filter: blur(10px);
-  padding: 24px 20px;
-  text-align: left;
-  transition: var(--transition-smooth);
-}
-
-.macro-cell:hover {
-  background: rgba(26, 30, 40, 0.95);
-}
-
-.macro-cell .num {
-  font-family: var(--mono);
-  font-size: clamp(26px, 3.2vw, 36px);
-  font-weight: 700;
-  color: var(--paper);
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.macro-cell .num small {
-  font-size: 13px;
-  color: var(--paper-dim);
-  font-weight: 500;
-}
-
-.macro-cell .lbl {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--lime);
-  font-family: var(--mono);
-  margin-top: 8px;
-}
-
-.macro-cell.hydration .num {
-  color: var(--blue);
-}
-
-.macro-cell.hydration .lbl {
-  color: var(--blue);
-}
-
-.day-panel {
-  display: none;
-}
-
-.day-panel.active {
-  display: block;
-  animation: fadein 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadein {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.timeline {
-  position: relative;
-  padding-left: 36px;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 9px;
-  top: 6px;
-  bottom: 6px;
-  width: 2px;
-  background: linear-gradient(180deg, var(--lime), var(--blue));
-  opacity: .35;
-}
-
-.tl-item {
-  position: relative;
-  padding-bottom: 34px;
-}
-
-.tl-item:last-child {
-  padding-bottom: 0;
-}
-
-.tl-item::before {
-  content: '';
-  position: absolute;
-  left: -36px;
-  top: 4px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--ink);
-  border: 2px solid var(--lime);
-  transition: var(--transition-smooth);
-}
-
-.tl-item:hover::before {
-  background: var(--lime);
-  box-shadow: 0 0 0 6px rgba(196, 241, 53, 0.2);
-}
-
-.tl-time {
-  font-family: var(--mono);
-  color: var(--lime);
-  font-size: 13.5px;
-  letter-spacing: .05em;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.tl-time .kcal {
-  margin-left: auto;
-  background: var(--ink-3);
-  color: var(--paper-dim);
-  padding: 3px 12px;
-  border-radius: 999px;
-  font-size: 11px;
-  border: 1px solid var(--line);
-}
-
-.tl-card {
-  background: rgba(26, 30, 40, 0.55);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  transition: var(--transition-smooth);
-}
-
-.tl-item:hover .tl-card {
-  border-color: var(--lime-dim);
-  transform: translateX(6px);
-  background: rgba(26, 30, 40, 0.85);
-  box-shadow: var(--shadow-sm);
-}
-
-.tl-phase {
-  font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 6px;
-  color: var(--paper);
-}
-
-.tl-menu {
-  color: var(--paper-dim);
-  font-size: 14px;
-  margin-bottom: 12px;
-  line-height: 1.6;
-}
-
-.tl-menu ul {
-  padding-left: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.tl-macros {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--paper-dim);
-}
-
-.tl-macros span b {
-  color: var(--paper);
-}
-
-.weekend-note {
-  margin-top: 36px;
-  background: linear-gradient(135deg, rgba(91, 127, 219, 0.06), transparent);
-  border: 1px dashed var(--line);
-  border-radius: var(--radius);
-  padding: 22px 24px;
-  font-size: 14px;
-  color: var(--paper-dim);
-}
-
-.weekend-note b {
-  color: var(--paper);
-}
-
-/* Coach note / suggestions callout */
-.callout {
-  background: rgba(26, 30, 40, 0.5);
-  backdrop-filter: blur(10px);
-  border-left: 4px solid var(--lime);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 28px 30px;
-  margin-top: 48px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  border-right: 1px solid var(--line);
-}
-
-.callout h3 {
-  font-family: var(--body);
-  font-size: 13.5px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--lime);
-  margin-bottom: 16px;
-  font-weight: 700;
-}
-
-.callout ul {
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.callout li {
-  font-size: 14px;
-  color: var(--paper-dim);
-  line-height: 1.6;
-}
-
-.callout li b {
-  color: var(--paper);
-}
-
-/* ---------- WORKOUT SECTION ---------- */
-.day-tabs-wrap {
-  position: relative;
-  margin-bottom: 36px;
-}
-
-/* Scroll indicator glow on mobile */
-.day-tabs-wrap::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 40px;
-  background: linear-gradient(90deg, transparent, var(--ink));
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-@media (max-width: 860px) {
-  .day-tabs-wrap::after {
-    opacity: 1;
-  }
-}
-
-.day-tabs {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scrollbar-width: none;
-}
-
-.day-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.day-tab {
-  flex: 0 0 auto;
-  background: rgba(26, 30, 40, 0.45);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  color: var(--paper-dim);
-  padding: 16px 22px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-family: var(--body);
-  text-align: left;
-  min-width: 170px;
-  transition: var(--transition-smooth);
-}
-
-.day-tab .d-num {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--lime);
-  letter-spacing: .08em;
-}
-
-.day-tab .d-name {
-  font-weight: 700;
-  font-size: 15px;
-  margin-top: 4px;
-  color: var(--paper);
-}
-
-.day-tab .d-focus {
-  font-size: 12px;
-  color: var(--paper-dim);
-  margin-top: 2px;
-}
-
-.day-tab:hover {
-  border-color: var(--lime-dim);
-  background: rgba(26, 30, 40, 0.7);
-}
-
-.day-tab.active {
-  background: var(--lime);
-  border-color: var(--lime);
-  box-shadow: 0 8px 24px rgba(196, 241, 53, 0.2);
-}
-
-.day-tab.active .d-num,
-.day-tab.active .d-name,
-.day-tab.active .d-focus {
-  color: var(--ink);
-}
-
-.workout-panel {
-  display: none;
-}
-
-.workout-panel.active {
-  display: block;
-  animation: fadein 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.wtag-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 30px;
-}
-
-.wtag {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  color: var(--paper-dim);
-}
-
-.wtag.intensity-mod {
-  border-color: var(--blue);
-  color: var(--blue);
-  background: rgba(91, 127, 219, 0.05);
-}
-
-.wtag.intensity-high {
-  border-color: var(--coral);
-  color: var(--coral);
-  background: rgba(255, 107, 87, 0.05);
-}
-
-.subhead {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--paper-dim);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 36px 0 20px;
-}
-
-.subhead::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--line);
-}
-
-.warmup-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.wu-item {
-  display: flex;
-  gap: 16px;
-  align-items: baseline;
-  background: rgba(26, 30, 40, 0.45);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  transition: var(--transition-smooth);
-}
-
-.wu-item:hover {
-  border-color: var(--line-active);
-  background: rgba(26, 30, 40, 0.7);
-}
-
-.wu-item .wu-n {
-  font-family: var(--mono);
-  color: var(--lime);
-  font-size: 13.5px;
-  flex: 0 0 auto;
-}
-
-.wu-item .wu-t {
-  font-weight: 600;
-  font-size: 14.5px;
-}
-
-.wu-item .wu-r {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--paper-dim);
-  margin-left: auto;
-  flex: 0 0 auto;
-  padding-left: 16px;
-  text-align: right;
-}
-
-.wu-item .wu-d {
-  font-size: 13px;
-  color: var(--paper-dim);
-  flex-basis: 100%;
-  margin-top: 4px;
-}
-
-.ex-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 8px;
-}
-
-.ex-table thead th {
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--paper-dim);
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--line);
-}
-
-.ex-row td {
-  padding: 20px 16px;
-  border-bottom: 1px solid var(--line);
-  vertical-align: middle;
-  font-size: 14.5px;
-}
-
-.ex-row {
-  transition: var(--transition-smooth);
-  cursor: pointer;
-  position: relative;
-}
-
-.ex-row:hover {
-  background: rgba(26, 30, 40, 0.4);
-}
-
-.ex-seq {
-  font-family: var(--mono);
-  color: var(--lime);
-  font-weight: 700;
-  width: 44px;
-}
-
-.ex-name {
-  font-weight: 700;
-  min-width: 180px;
-}
-
-.ex-sets {
-  font-family: var(--mono);
-  color: var(--paper);
-  white-space: nowrap;
-}
-
-.ex-weight {
-  font-family: var(--mono);
-  color: var(--blue);
-  white-space: nowrap;
-}
-
-.ex-instr {
-  color: var(--paper-dim);
-  max-width: 380px;
-  font-size: 13.5px;
-  line-height: 1.6;
-}
-
-@media (max-width: 760px) {
-  .ex-table thead {
-    display: none;
-  }
-  .ex-table, .ex-table tbody, .ex-row, .ex-row td {
-    display: block;
-    width: 100%;
-  }
-  .ex-row {
-    background: rgba(26, 30, 40, 0.45);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 12px;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      "seq name"
-      "sets weight"
-      "instr instr";
-    gap: 8px 12px;
-  }
-  .ex-row::after {
-    content: '▼';
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 10px;
-    color: var(--lime);
-    transition: var(--transition-smooth);
-  }
-  .ex-row.open::after {
-    transform: rotate(180deg);
-  }
-  .ex-row td {
-    padding: 0;
-    border: none;
-  }
-  .ex-seq {
-    grid-area: seq;
-    width: auto;
-  }
-  .ex-name {
-    grid-area: name;
-    font-size: 15.5px;
-    padding-right: 24px;
-  }
-  .ex-sets {
-    grid-area: sets;
-    font-size: 13px;
-    color: var(--paper-dim);
-  }
-  .ex-weight {
-    grid-area: weight;
-    font-size: 13px;
-  }
-  .ex-instr {
-    grid-area: instr;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
-    padding-top: 0;
-    border-top: 1px solid transparent;
-  }
-  .ex-row.open {
-    border-color: var(--lime);
-    background: rgba(26, 30, 40, 0.85);
-  }
-  .ex-row.open .ex-instr {
-    max-height: 200px;
-    opacity: 1;
-    padding-top: 12px;
-    margin-top: 8px;
-    border-top: 1px solid var(--line);
-  }
-}
-
-.cooldown-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.cd-item {
-  display: flex;
-  gap: 14px;
-  background: rgba(26, 30, 40, 0.45);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  align-items: flex-start;
-  transition: var(--transition-smooth);
-}
-
-.cd-item:hover {
-  border-color: var(--line-active);
-  background: rgba(26, 30, 40, 0.7);
-}
-
-.cd-time {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--blue);
-  background: rgba(91, 127, 219, 0.12);
-  padding: 5px 12px;
-  border-radius: 999px;
-  flex: 0 0 auto;
-}
-
-.cd-text b {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 4px;
-  color: var(--paper);
-}
-
-.cd-text span {
-  font-size: 13px;
-  color: var(--paper-dim);
-  line-height: 1.5;
-}
-
-.rest-strip {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  margin: 28px 0 0;
-  font-family: var(--mono);
-  font-size: 12.5px;
-  color: var(--paper-dim);
-}
-
-.rest-strip b {
-  color: var(--lime);
-}
-
-/* Recovery Sunday card */
-.recovery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-.rec-card {
-  background: rgba(26, 30, 40, 0.45);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 24px;
-  transition: var(--transition-smooth);
-}
-
-.rec-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--lime);
-  background: rgba(26, 30, 40, 0.75);
-  box-shadow: var(--shadow-glow);
-}
-
-.rec-card .rc-eyebrow {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  color: var(--lime);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.rec-card h4 {
-  font-family: var(--body);
-  font-weight: 700;
-  font-size: 15.5px;
-  margin-bottom: 8px;
-}
-
-.rec-card p {
-  font-size: 13.5px;
-  color: var(--paper-dim);
-  line-height: 1.6;
-}
-
-/* ---------- HYDRATION & SLEEP ---------- */
-.hs-grid {
-  display: grid;
-  grid-template-columns: 1.1fr .9fr;
-  gap: clamp(30px, 5vw, 60px);
-}
-
-@media (max-width: 900px) {
-  .hs-grid {
-    grid-template-columns: 1fr;
-    gap: 48px;
-  }
-}
-
-.water-vessel {
-  position: relative;
-  border: 2px solid var(--line);
-  border-radius: 20px;
-  background: var(--ink-2);
-  padding: 8px;
-  height: 420px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-
-.water-fill {
-  position: relative;
-  background: linear-gradient(180deg, rgba(91, 127, 219, 0.9), rgba(91, 127, 219, 0.6));
-  border-radius: 12px;
-  transition: height 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-  height: 0%;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(91, 127, 219, 0.3);
-}
-
-.water-fill::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  left: 0;
-  width: 200%;
-  height: 14px;
-  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.25) 0 30px, transparent 30px 60px);
-  animation: wave 3s linear infinite;
-}
-
-@keyframes wave {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-60px);
-  }
-}
-
-.water-marks {
-  position: absolute;
-  inset: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  pointer-events: none;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  color: var(--paper-dim);
-  opacity: 0.8;
-}
-
-.water-marks div {
-  border-top: 1px dashed rgba(255, 255, 255, 0.06);
-  padding-top: 4px;
-  padding-left: 8px;
-}
-
-.water-total {
-  position: absolute;
-  bottom: 24px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-family: var(--mono);
-  font-size: 13px;
-  color: #fff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-  z-index: 2;
-  transition: var(--transition-smooth);
-}
-
-.water-total b {
-  font-size: 28px;
-  display: block;
-  font-weight: 700;
-}
-
-.water-slots {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Interactive Water Slots */
-.ws-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(26, 30, 40, 0.45);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  position: relative;
-  user-select: none;
-}
-
-.ws-item:hover {
-  border-color: var(--blue);
-  background: rgba(26, 30, 40, 0.7);
-}
-
-.ws-checkbox {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-smooth);
-  flex-shrink: 0;
-}
-
-.ws-checkbox::after {
-  content: '✓';
-  font-size: 11px;
-  color: var(--ink);
-  font-weight: bold;
-  opacity: 0;
-  transform: scale(0.5);
-  transition: var(--transition-smooth);
-}
-
-.ws-item.checked {
-  border-color: var(--blue);
-  background: rgba(91, 127, 219, 0.08);
-}
-
-.ws-item.checked .ws-checkbox {
-  background: var(--blue);
-  border-color: var(--blue);
-  box-shadow: 0 0 10px rgba(91, 127, 219, 0.3);
-}
-
-.ws-item.checked .ws-checkbox::after {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.ws-item.checked .ws-desc {
-  color: var(--paper-dim);
-  text-decoration: line-through;
-  opacity: 0.65;
-}
-
-.ws-item.checked .ws-amt {
-  opacity: 0.65;
-}
-
-.ws-item .ws-time {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  color: var(--blue);
-  min-width: 90px;
-}
-
-.ws-item .ws-amt {
-  font-family: var(--mono);
-  font-weight: 700;
-  margin-left: auto;
-  color: var(--paper);
-}
-
-.ws-item .ws-desc {
-  font-size: 13.5px;
-  color: var(--paper-dim);
-  flex: 1;
-}
-
-/* Water Quick Log Panel */
-.water-quick-log {
-  margin-top: 16px;
-  display: flex;
-  gap: 12px;
-}
-
-.btn-water {
-  flex: 1;
-  background: rgba(26, 30, 40, 0.65);
-  border: 1px solid var(--line);
-  color: var(--paper);
-  padding: 14px;
-  border-radius: var(--radius);
-  font-family: var(--mono);
-  font-size: 12px;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-water:hover {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: var(--ink);
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(91, 127, 219, 0.2);
-}
-
-.btn-water-reset {
-  background: transparent;
-  border: 1px dashed var(--coral);
-  color: var(--coral);
-}
-
-.btn-water-reset:hover {
-  background: var(--coral);
-  border-color: var(--coral);
-  color: var(--ink);
-  box-shadow: 0 4px 12px rgba(255, 107, 87, 0.2);
-}
-
-.sleep-card {
-  background: rgba(26, 30, 40, 0.45);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 36px 30px;
-  position: relative;
-  overflow: hidden;
-}
-
-.sleep-card::before {
-  content: '';
-  position: absolute;
-  top: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(91, 127, 219, 0.1), transparent 70%);
-  pointer-events: none;
-}
-
-.sleep-arc-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.sleep-rules {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.sr-item {
-  display: flex;
-  gap: 16px;
-}
-
-.sr-item .sr-ico {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--ink-3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  font-family: var(--mono);
-  color: var(--lime);
-  font-size: 16px;
-  border: 1px solid var(--line);
-}
-
-.sr-item h4 {
-  font-size: 14.5px;
-  margin-bottom: 4px;
-  color: var(--paper);
-}
-
-.sr-item p {
-  font-size: 13px;
-  color: var(--paper-dim);
-  line-height: 1.5;
-}
-
-/* ---------- SCIENCE / BREAKDOWN ---------- */
-.accordion {
-  border-top: 1px solid var(--line);
-}
-
-.acc-item {
-  border-bottom: 1px solid var(--line);
-}
-
-.acc-head {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 26px 8px;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-}
-
-.acc-head:hover {
-  padding-left: 16px;
-  background: rgba(255, 255, 255, 0.01);
-}
-
-.acc-num {
-  font-family: var(--mono);
-  color: var(--lime);
-  font-size: 14.5px;
-  min-width: 28px;
-}
-
-.acc-title {
-  font-family: var(--disp);
-  font-size: clamp(17px, 2.2vw, 24px);
-  font-weight: 600;
-  flex: 1;
-}
-
-.acc-plus {
-  font-family: var(--mono);
-  font-size: 22px;
-  color: var(--paper-dim);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  width: 24px;
-  text-align: center;
-}
-
-.acc-item.open .acc-plus {
-  transform: rotate(45deg);
-  color: var(--lime);
-}
-
-.acc-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-.acc-item.open .acc-body {
-  grid-template-rows: 1fr;
-}
-
-.acc-inner {
-  min-height: 0;
-  padding: 0 8px 0px 48px;
-  color: var(--paper-dim);
-  font-size: 14.5px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  transition: opacity 0.4s ease, padding 0.4s ease;
-  opacity: 0;
-}
-
-.acc-item.open .acc-inner {
-  opacity: 1;
-  padding: 0 8px 34px 48px;
-}
-
-.acc-inner b {
-  color: var(--paper);
-}
-
-.acc-inner .mini-callout {
-  background: rgba(26, 30, 40, 0.55);
-  backdrop-filter: blur(10px);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  font-size: 14px;
-  border-left: 3px solid var(--blue);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  border-right: 1px solid var(--line);
-  line-height: 1.55;
-}
-
-/* ---------- FOOTER ---------- */
-footer {
-  padding: 60px clamp(16px, 5vw, 64px) 48px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  color: var(--paper-dim);
-  letter-spacing: .04em;
-  border-top: 1px solid var(--line);
-}
-
-/* scroll to top */
-.totop {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 150;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--lime);
-  color: var(--ink);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--mono);
-  font-size: 18px;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(10px);
-  transition: var(--transition-smooth);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-.totop.show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.totop:hover {
-  background: var(--paper);
-  transform: scale(1.05);
-}
-
-.container {
-  max-width: 1180px;
-  margin: 0 auto;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAS/PROTOCOL — Performance System</title>
+
+  <!-- PWA / Android Home Screen Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DAS/PROTOCOL">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#090A0F">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    :root {
+      --ink: #090A0F;
+      --ink-2: #121620;
+      --ink-3: #1A202C;
+      --paper: #F5F6F9;
+      --paper-dim: #8E9AA8;
+      --lime: #D4FF26;
+      --lime-dim: #BADA1F;
+      --blue: #4D7CFF;
+      --blue-dim: #355ECB;
+      --coral: #FF4D4D;
+      --line: #222938;
+      --radius: 12px;
+      --radius-lg: 20px;
+      --disp: 'Space Grotesk', sans-serif;
+      --body: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+
+      --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.6);
+      --shadow-glow: 0 0 24px rgba(212, 255, 38, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-color: var(--line) var(--ink);
+      background-color: var(--ink);
+    }
+
+    body {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--lime);
+      color: var(--ink);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Scroll Progress Bar */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--lime), var(--blue));
+      z-index: 250;
+      width: 0%;
+      transition: width 0.1s ease-out;
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--lime);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--lime);
+      border-radius: 1px;
+      display: inline-block;
+      box-shadow: 0 0 8px var(--lime);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    .disp {
+      font-family: var(--disp);
+      letter-spacing: -.01em;
+    }
+
+    /* ---------- SCOREBOARD NAV ---------- */
+    .scorebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      background: rgba(9, 10, 15, 0.8);
+      backdrop-filter: blur(20px) saturate(160%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 40px);
+      height: 64px;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .scorebar.hide {
+      transform: translateY(-100%);
+    }
+
+    .brand-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand {
+      font-family: var(--disp);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--lime);
+    }
+
+    .btn-settings-trigger {
+      background: none;
+      border: none;
+      color: var(--paper-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 8px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-settings-trigger:hover {
+      color: var(--lime);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .tabs a {
+      padding: 8px 14px;
+      color: var(--paper-dim);
+      border-radius: 6px;
+      transition: var(--transition-smooth);
+    }
+
+    .tabs a:hover {
+      color: var(--paper);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tabs a.active {
+      color: var(--ink);
+      background: var(--lime);
+      font-weight: 600;
+    }
+
+    .tabs a.nav-hidden {
+      display: none !important;
+    }
+
+    .navtoggle {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--line);
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 250;
+    }
+
+    .navtoggle .bar {
+      display: block;
+      width: 16px;
+      height: 2px;
+      background: var(--paper);
+      border-radius: 2px;
+      transition: var(--transition-smooth);
+    }
+
+    .navtoggle.active .bar-1 {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .navtoggle.active .bar-2 {
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    .navtoggle.active .bar-3 {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Navigation Drawer & Overlay */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      z-index: 201;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition-smooth);
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(280px, 80vw);
+      background: rgba(18, 22, 32, 0.98);
+      backdrop-filter: blur(30px);
+      z-index: 202;
+      border-left: 1px solid var(--line);
+      padding: 88px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .drawer.active {
+      transform: translateX(0);
+    }
+
+    .drawer-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .drawer-nav a {
+      font-family: var(--disp);
+      font-size: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--paper-dim);
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      transition: var(--transition-smooth);
+    }
+
+    .drawer-nav a.active {
+      color: var(--ink);
+      background: var(--lime);
+    }
+
+    .drawer-nav a.nav-hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 860px) {
+      .tabs {
+        display: none;
+      }
+
+      .navtoggle {
+        display: flex;
+      }
+    }
+
+    /* ---------- SETTINGS PANEL (MODAL COMPONENT) ---------- */
+    .settings-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition-smooth);
+    }
+
+    .settings-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .settings-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 6, 9, 0.85);
+      backdrop-filter: blur(8px);
+    }
+
+    .settings-modal-content {
+      position: relative;
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      width: 100%;
+      max-width: 440px;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      z-index: 301;
+      box-shadow: var(--shadow-md);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .settings-modal.active .settings-modal-content {
+      transform: scale(1);
+    }
+
+    .settings-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .settings-modal-header h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--paper);
+    }
+
+    .settings-modal-meta {
+      font-size: 12px;
+      color: var(--paper-dim);
+      margin-bottom: 20px;
+    }
+
+    .btn-settings-close {
+      background: none;
+      border: none;
+      color: var(--paper-dim);
+      cursor: pointer;
+      font-size: 24px;
+      padding: 4px;
+      line-height: 1;
+    }
+
+    .settings-toggle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    .settings-toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--ink-3);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .settings-toggle-item.dragging {
+      cursor: grabbing;
+      opacity: 0.6;
+      transform: scale(1.02);
+      border-color: var(--lime);
+      box-shadow: var(--shadow-md);
+      z-index: 10;
+    }
+
+    .drag-handle {
+      color: var(--paper-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+    }
+
+    .settings-toggle-label {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--paper);
+      flex: 1;
+    }
+
+    /* Custom CSS Switch Toggle */
+    .switch-control {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch-control input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--line);
+      border-radius: 24px;
+      transition: .3s;
+    }
+
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: var(--paper-dim);
+      border-radius: 50%;
+      transition: .3s;
+    }
+
+    input:checked+.switch-slider {
+      background-color: var(--lime);
+    }
+
+    input:checked+.switch-slider:before {
+      transform: translateX(20px);
+      background-color: var(--ink);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      padding: 120px clamp(16px, 5vw, 64px) 60px;
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+      background: radial-gradient(circle at 80% 20%, rgba(212, 255, 38, 0.02), transparent 50%);
+    }
+
+    .hero.section-hidden {
+      display: none !important;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      opacity: .15;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+    }
+
+    .hero-name {
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: .95;
+      font-weight: 700;
+      margin: 16px 0 20px;
+      letter-spacing: -.03em;
+    }
+
+    .hero-name span {
+      color: var(--lime);
+    }
+
+    .hero-sub {
+      font-family: var(--body);
+      font-size: clamp(15px, 1.6vw, 19px);
+      color: var(--paper-dim);
+      max-width: 620px;
+      margin-bottom: 40px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      max-width: 820px;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+    }
+
+    .stat {
+      padding: 14px 16px;
+      background: var(--ink-2);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius);
+    }
+
+    .stat b {
+      font-family: var(--mono);
+      font-size: clamp(24px, 3vw, 32px);
+      display: block;
+      color: var(--lime);
+      font-weight: 700;
+    }
+
+    .stat span {
+      font-size: 11px;
+      color: var(--paper-dim);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-family: var(--mono);
+      margin-top: 4px;
+      display: block;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 28px;
+      left: clamp(16px, 5vw, 64px);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper-dim);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scroll-cue .bar {
+      width: 1px;
+      height: 24px;
+      background: var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-cue .bar::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--lime);
+      animation: scrolldrip 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scrolldrip {
+      0% {
+        top: -100%;
+      }
+
+      100% {
+        top: 100%;
+      }
+    }
+
+    /* ---------- SECTION SCAFFOLD ---------- */
+    section.block {
+      padding: clamp(60px, 8vw, 100px) clamp(16px, 5vw, 64px);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    section.block.section-hidden {
+      display: none !important;
+    }
+
+    .block-head {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 48px;
+      max-width: 760px;
+    }
+
+    .block-head h2 {
+      font-size: clamp(32px, 4.5vw, 48px);
+      font-weight: 700;
+    }
+
+    .block-head p {
+      color: var(--paper-dim);
+      font-size: clamp(14px, 1.5vw, 16px);
+      max-width: 620px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- DIET SECTION ---------- */
+    .diet-toggle {
+      display: inline-flex;
+      position: relative;
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+      margin-bottom: 32px;
+    }
+
+    .diet-toggle .slider {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      bottom: 4px;
+      width: calc(50% - 4px);
+      background: var(--lime);
+      border-radius: 999px;
+      z-index: 0;
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .diet-toggle.weekend-active .slider {
+      transform: translateX(100%);
+    }
+
+    .diet-toggle button {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: var(--paper-dim);
+      padding: 10px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .diet-toggle button.active {
+      color: var(--ink);
+    }
+
+    .macro-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    .macro-cell {
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .macro-cell .num {
+      font-family: var(--mono);
+      font-size: clamp(24px, 2.8vw, 32px);
+      font-weight: 700;
+      color: var(--paper);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .macro-cell .num small {
+      font-size: 12px;
+      color: var(--paper-dim);
+    }
+
+    .macro-cell .lbl {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--paper-dim);
+      font-family: var(--mono);
+      margin-top: 6px;
+    }
+
+    .macro-cell.hydration .num {
+      color: var(--blue);
+    }
+
+    .day-panel {
+      display: none;
+    }
+
+    .day-panel.active {
+      display: block;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--line);
+      transform: translateX(-50%);
+    }
+
+    @media (max-width: 760px) {
+      .timeline::before {
+        left: 18px;
+        transform: none;
+      }
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 32px;
+      width: 50%;
+    }
+
+    .tl-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Alternating Alignment Engine */
+    .tl-item:nth-child(odd) {
+      padding-right: 32px;
+      left: 0;
+      text-align: right;
+    }
+
+    .tl-item:nth-child(even) {
+      padding-left: 32px;
+      left: 50%;
+      text-align: left;
+    }
+
+    .tl-node {
+      position: absolute;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--ink);
+      border: 2px solid var(--line);
+      z-index: 2;
+      transition: var(--transition-smooth);
+    }
+
+    .tl-item:nth-child(odd) .tl-node {
+      right: -6px;
+    }
+
+    .tl-item:nth-child(even) .tl-node {
+      left: -6px;
+    }
+
+    .tl-item:hover .tl-node {
+      border-color: var(--lime);
+      background: var(--lime);
+      box-shadow: 0 0 12px var(--lime);
+    }
+
+    .tl-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .tl-item:nth-child(odd) .tl-header {
+      justify-content: flex-end;
+    }
+
+    .tl-item:nth-child(even) .tl-header {
+      justify-content: flex-start;
+    }
+
+    .tl-time {
+      font-family: var(--mono);
+      color: var(--lime);
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tl-item:nth-child(odd) .tl-time {
+      flex-direction: row-reverse;
+    }
+
+    .tl-time .kcal {
+      background: var(--ink-2);
+      color: var(--paper-dim);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid var(--line);
+      font-family: var(--mono);
+    }
+
+    .tl-card {
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .tl-phase {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: var(--paper);
+      font-family: var(--disp);
+    }
+
+    .tl-menu {
+      color: var(--paper-dim);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .tl-menu ul {
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tl-macros {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper-dim);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 6px 12px;
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    .tl-macros span b {
+      color: var(--paper);
+    }
+
+    @media (max-width: 760px) {
+      .tl-item {
+        width: 100% !important;
+        left: 0 !important;
+        padding-left: 36px !important;
+        padding-right: 0 !important;
+        text-align: left !important;
+      }
+
+      .tl-node {
+        left: 13px !important;
+        right: auto !important;
+      }
+
+      .tl-header {
+        justify-content: flex-start !important;
+      }
+
+      .tl-time {
+        flex-direction: row !important;
+      }
+    }
+
+    .weekend-note {
+      margin-top: 24px;
+      background: var(--ink-2);
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-size: 13.5px;
+      color: var(--paper-dim);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .callout {
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-top: 48px;
+    }
+
+    .callout h3 {
+      font-family: var(--disp);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--lime);
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .callout ul {
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .callout li {
+      font-size: 14px;
+      color: var(--paper-dim);
+    }
+
+    .callout li b {
+      color: var(--paper);
+    }
+
+    .mini-callout {
+      background: var(--ink-3);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--paper-dim);
+    }
+
+    /* ---------- WORKOUT SECTION ---------- */
+    .day-tabs-wrap {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .day-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+
+    .day-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .day-tab {
+      flex: 0 0 auto;
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      color: var(--paper-dim);
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      min-width: 150px;
+      transition: var(--transition-smooth);
+    }
+
+    .day-tab .d-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--paper-dim);
+    }
+
+    .day-tab .d-name {
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 2px;
+      color: var(--paper);
+      font-family: var(--disp);
+    }
+
+    .day-tab .d-focus {
+      font-size: 11px;
+      color: var(--paper-dim);
+    }
+
+    .day-tab:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .day-tab.active {
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    .day-tab.active .d-num,
+    .day-tab.active .d-name,
+    .day-tab.active .d-focus {
+      color: var(--ink);
+    }
+
+    .workout-panel {
+      display: none;
+    }
+
+    .workout-panel.active {
+      display: block;
+    }
+
+    .wtag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .wtag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--paper-dim);
+      background: var(--ink-2);
+    }
+
+    .wtag.intensity-mod {
+      border-color: rgba(77, 124, 255, 0.3);
+      color: var(--blue);
+    }
+
+    .wtag.intensity-high {
+      border-color: rgba(255, 77, 77, 0.3);
+      color: var(--coral);
+    }
+
+    .subhead {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--paper-dim);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 32px 0 16px;
+    }
+
+    .subhead::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .warmup-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .wu-item {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      align-items: center;
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .wu-item .wu-n {
+      font-family: var(--mono);
+      color: var(--lime);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .wu-item .wu-t {
+      font-weight: 600;
+      font-size: 14px;
+      font-family: var(--disp);
+    }
+
+    .wu-item .wu-r {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper-dim);
+      margin-left: auto;
+    }
+
+    .wu-item .wu-d {
+      font-size: 13px;
+      color: var(--paper-dim);
+      flex-basis: 100%;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      padding-top: 4px;
+    }
+
+    .ex-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .ex-table thead th {
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--paper-dim);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ex-row td {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    .ex-row {
+      background: var(--ink-2);
+    }
+
+    .ex-row:hover {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .ex-seq {
+      font-family: var(--mono);
+      color: var(--lime);
+      font-weight: 700;
+    }
+
+    .ex-name {
+      font-weight: 700;
+      font-family: var(--disp);
+      font-size: 15px;
+    }
+
+    .ex-sets {
+      font-family: var(--mono);
+    }
+
+    .ex-weight {
+      font-family: var(--mono);
+      color: var(--blue);
+    }
+
+    .ex-instr {
+      color: var(--paper-dim);
+      font-size: 13px;
+      max-width: 400px;
+    }
+
+    @media (max-width: 760px) {
+      .ex-table thead {
+        display: none;
+      }
+
+      .ex-table,
+      .ex-table tbody,
+      .ex-row,
+      .ex-row td {
+        display: block;
+        width: 100%;
+      }
+
+      .ex-row {
+        background: var(--ink-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 14px;
+        margin-bottom: 10px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+          "seq name"
+          "sets weight"
+          "instr instr";
+        gap: 6px 12px;
+        position: relative;
+      }
+
+      .ex-row td {
+        padding: 0;
+        border: none;
+      }
+
+      .ex-seq {
+        grid-area: seq;
+      }
+
+      .ex-name {
+        grid-area: name;
+        padding-right: 20px;
+      }
+
+      .ex-sets {
+        grid-area: sets;
+        color: var(--paper-dim);
+        font-size: 12px;
+      }
+
+      .ex-weight {
+        grid-area: weight;
+        font-size: 12px;
+      }
+
+      .ex-instr {
+        grid-area: instr;
+        padding-top: 8px;
+        margin-top: 4px;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+      }
+    }
+
+    .cooldown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cd-item {
+      display: flex;
+      gap: 12px;
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .cd-time {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--blue);
+      background: rgba(77, 124, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 4px;
+      flex: 0 0 auto;
+    }
+
+    .cd-text b {
+      display: block;
+      font-size: 14px;
+      color: var(--paper);
+      font-family: var(--disp);
+    }
+
+    .cd-text span {
+      font-size: 13px;
+      color: var(--paper-dim);
+    }
+
+    .rest-strip {
+      display: flex;
+      gap: 16px 24px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper-dim);
+    }
+
+    .rest-strip b {
+      color: var(--lime);
+    }
+
+    .recovery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .rec-card {
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .rec-card .rc-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--lime);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .rec-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-family: var(--disp);
+    }
+
+    .rec-card p {
+      font-size: 13px;
+      color: var(--paper-dim);
+    }
+
+    /* ---------- HYDRATION & SLEEP ---------- */
+    .hs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(24px, 4vw, 48px);
+    }
+
+    @media (max-width: 900px) {
+      .hs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .water-vessel {
+      position: relative;
+      border: 2px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--ink-2);
+      padding: 6px;
+      height: 380px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+    }
+
+    .water-fill {
+      position: relative;
+      background: linear-gradient(180deg, rgba(77, 124, 255, 0.8), rgba(77, 124, 255, 0.5));
+      border-radius: calc(var(--radius-lg) - 6px);
+      transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      height: 0%;
+    }
+
+    .water-marks {
+      position: absolute;
+      inset: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--paper-dim);
+      opacity: 0.5;
+    }
+
+    .water-marks div {
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      width: 100%;
+      text-align: right;
+    }
+
+    .water-total {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #fff;
+      z-index: 2;
+    }
+
+    .water-total b {
+      font-size: 32px;
+      display: block;
+      font-weight: 700;
+      font-family: var(--disp);
+      letter-spacing: -.02em;
+    }
+
+    .water-slots {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ws-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .ws-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ws-checkbox::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--blue);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: var(--transition-smooth);
+    }
+
+    .ws-item.checked {
+      border-color: rgba(77, 124, 255, 0.3);
+    }
+
+    .ws-item.checked .ws-checkbox {
+      border-color: var(--blue);
+    }
+
+    .ws-item.checked .ws-checkbox::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .ws-item.checked .ws-desc {
+      color: var(--paper-dim);
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .ws-time {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--blue);
+      min-width: 80px;
+    }
+
+    .ws-desc {
+      font-size: 13.5px;
+      color: var(--paper-dim);
+      flex: 1;
+    }
+
+    .ws-amt {
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--paper);
+      font-size: 13px;
+    }
+
+    .water-quick-log {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+    }
+
+    .water-manual-row {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .input-water-custom {
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .input-water-custom:focus {
+      border-color: var(--blue);
+    }
+
+    .btn-water {
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      color: var(--paper);
+      padding: 12px;
+      border-radius: var(--radius);
+      font-family: var(--mono);
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .btn-water:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: var(--paper-dim);
+    }
+
+    .btn-water-action {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      font-weight: 600;
+    }
+
+    .btn-water-action:hover {
+      background: var(--blue-dim);
+      border-color: var(--blue-dim);
+    }
+
+    .btn-water-reset {
+      color: var(--coral);
+      border-color: rgba(255, 77, 77, 0.2);
+    }
+
+    .btn-water-reset:hover {
+      background: rgba(255, 77, 77, 0.05);
+      border-color: var(--coral);
+    }
+
+    .sleep-card {
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+    }
+
+    .sleep-arc-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .sleep-rules {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sr-item {
+      display: flex;
+      gap: 14px;
+    }
+
+    .sr-item .sr-ico {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--ink-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      color: var(--lime);
+      font-size: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .sr-item h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
+      font-family: var(--disp);
+    }
+
+    .sr-item p {
+      font-size: 13px;
+      color: var(--paper-dim);
+    }
+
+    /* ---------- SCIENCE / BREAKDOWN ---------- */
+    .accordion {
+      border-top: 1px solid var(--line);
+    }
+
+    .acc-item {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .acc-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 24px 4px;
+      cursor: pointer;
+    }
+
+    .acc-num {
+      font-family: var(--mono);
+      color: var(--lime);
+      font-size: 13px;
+      min-width: 24px;
+    }
+
+    .acc-title {
+      font-family: var(--disp);
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .acc-plus {
+      font-family: var(--mono);
+      font-size: 18px;
+      color: var(--paper-dim);
+      transition: transform 0.3s;
+    }
+
+    .acc-item.open .acc-plus {
+      transform: rotate(45deg);
+      color: var(--lime);
+    }
+
+    .acc-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s ease-out;
+      overflow: hidden;
+    }
+
+    .acc-item.open .acc-body {
+      grid-template-rows: 1fr;
+    }
+
+    .acc-inner {
+      min-height: 0;
+      padding: 0 4px 24px 40px;
+      color: var(--paper-dim);
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .acc-inner b {
+      color: var(--paper);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      padding: 48px clamp(16px, 5vw, 64px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper-dim);
+      border-top: 1px solid var(--line);
+      margin-top: 40px;
+    }
+
+    .totop {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 150;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--lime);
+      color: var(--ink);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: var(--transition-smooth);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .totop.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="scroll-progress" id="scrollProgress"></div>
+  <div class="scroll-progress" id="scrollProgress"></div>
 
-<div class="scorebar" id="scorebar">
-  <div class="brand"><span class="dot"></span>DAS<span style="color:var(--lime)">/</span>PROTOCOL</div>
-  <nav class="tabs">
-    <a href="#diet" class="active">Nutrition</a>
-    <a href="#workout">Training</a>
-    <a href="#hydration">Recovery</a>
-    <a href="#science">Breakdown</a>
-  </nav>
-  <button class="navtoggle" id="navToggle" aria-label="Menu" aria-expanded="false">
-    <span class="bar bar-1"></span>
-    <span class="bar bar-2"></span>
-    <span class="bar bar-3"></span>
-  </button>
-</div>
-
-<!-- Drawer Overlay & Drawer -->
-<div class="drawer-overlay" id="drawerOverlay"></div>
-<div class="drawer" id="drawer">
-  <nav class="drawer-nav">
-    <a href="#diet" class="drawer-link">Nutrition</a>
-    <a href="#workout" class="drawer-link">Training</a>
-    <a href="#hydration" class="drawer-link">Recovery</a>
-    <a href="#science" class="drawer-link">Breakdown</a>
-  </nav>
-</div>
-
-<header class="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-pulse"></div>
-  <div class="hero-content container">
-    <div class="eyebrow">12-week recomposition cycle · spine-safe protocol</div>
-    <h1 class="hero-name">SURAJIT<br><span>DAS</span></h1>
-    <p class="hero-sub">A personal system for shedding fat, building lean muscle, and arriving race-ready for a 5K and competitive badminton — without a single rep that loads the spine.</p>
-    <div class="hero-stats">
-      <div class="stat"><b>27</b><span>Years Old</span></div>
-      <div class="stat"><b>163</b><span>cm / 5'3"</span></div>
-      <div class="stat"><b>~65.8</b><span>kg Current</span></div>
-      <div class="stat"><b>~1500</b><span>kcal BMR</span></div>
-      <div class="stat"><b>5</b><span>Training Days</span></div>
+  <div class="scorebar" id="scorebar">
+    <div class="brand-wrapper">
+      <div class="brand"><span class="dot"></span>DAS/PROTOCOL</div>
+      <button class="btn-settings-trigger" id="settingsTrigger" aria-label="Configure Architecture Layout Menu"
+        type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+          </path>
+        </svg>
+      </button>
     </div>
+    <nav class="tabs" id="navTabs">
+      <a href="#diet" class="active" data-nav="diet">Nutrition</a>
+      <a href="#workout" data-nav="workout">Training</a>
+      <a href="#hydration" data-nav="hydration">Recovery</a>
+      <a href="#science" data-nav="science">Breakdown</a>
+    </nav>
+    <button class="navtoggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+      <span class="bar bar-1"></span>
+      <span class="bar bar-2"></span>
+      <span class="bar bar-3"></span>
+    </button>
   </div>
-  <div class="scroll-cue"><div class="bar"></div>SCROLL</div>
-</header>
 
-<!-- ============ DIET SECTION ============ -->
-<section class="block" id="diet">
-  <div class="container">
-    <div class="block-head reveal">
-      <div class="eyebrow">Section 01</div>
-      <h2>Timed Nutrition</h2>
-      <p>Every meal is placed on the clock — protein at the edges of your training window, slow-release casein through the office day, and a hard caffeine cutoff so the diet never fights your sleep.</p>
-    </div>
-
-    <div class="diet-toggle reveal" id="dietToggle">
-      <div class="slider"></div>
-      <button class="dt-btn active" data-day="weekday">Weekday</button>
-      <button class="dt-btn" data-day="weekend">Weekend</button>
-    </div>
-
-    <!-- WEEKDAY -->
-    <div class="day-panel active" id="panel-weekday">
-      <div class="macro-strip reveal">
-        <div class="macro-cell"><div class="num" data-count="1480">0<small>kcal</small></div><div class="lbl">Daily Target</div></div>
-        <div class="macro-cell"><div class="num" data-count="129">0<small>g</small></div><div class="lbl">Protein</div></div>
-        <div class="macro-cell"><div class="num" data-count="92">0<small>g</small></div><div class="lbl">Carbs</div></div>
-        <div class="macro-cell"><div class="num" data-count="58">0<small>g</small></div><div class="lbl">Fats</div></div>
-        <div class="macro-cell hydration"><div class="num">3.5–4<small>L</small></div><div class="lbl">Hydration</div></div>
+  <!-- Dynamic Settings Layout Modal Controls -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-modal-backdrop" id="settingsModalBackdrop"></div>
+    <div class="settings-modal-content">
+      <div class="settings-modal-header">
+        <h3>Layout Architecture Matrix</h3>
+        <button class="btn-settings-close" id="settingsClose" type="button">×</button>
       </div>
-
-      <div class="timeline reveal">
-        <div class="tl-item">
-          <div class="tl-time">06:00 · Wake<span class="kcal">0 kcal</span></div>
-          <div class="tl-card">
-            <div class="tl-phase">Hydration Baseline</div>
-            <div class="tl-menu">500ml plain warm water immediately on waking — kickstarts organ function before anything else touches your system.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">06:15 · Pre-Workout<span class="kcal">~140 kcal</span></div>
-          <div class="tl-card">
-            <div class="tl-phase">Anabolic Trigger Shake</div>
-            <div class="tl-menu">1 scoop whey isolate + 1 tsp instant coffee, blended in 250ml water.</div>
-            <div class="tl-macros"><span><b>25g</b> protein</span><span><b>3g</b> carbs</span><span><b>1.5g</b> fat</span></div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">06:30 · Training Window</div>
-          <div class="tl-card">
-            <div class="tl-phase">Spine-Safe Session</div>
-            <div class="tl-menu">Execute the day's scheduled resistance or conditioning block. See the Training section for the full breakdown.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">07:45 · Post-Workout<span class="kcal">~550 kcal</span></div>
-          <div class="tl-card">
-            <div class="tl-phase">Protein-Heavy Breakfast</div>
-            <div class="tl-menu">
-              <ul>
-                <li>4–5 whole eggs, scrambled or boiled</li>
-                <li>40–50g soy chunks pan-fried with spinach &amp; tomatoes, minimal oil</li>
-                <li>Seasonal vegetables or a piece of fruit</li>
-                <li>Vitamin B-Complex, Cod Liver Oil / Omega-3</li>
-              </ul>
-            </div>
-            <div class="tl-macros"><span><b>50g</b> protein</span><span><b>25g</b> carbs</span><span><b>22g</b> fat</span></div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">08:30 · Leave for Work</div>
-          <div class="tl-card">
-            <div class="tl-phase">Shower &amp; Commute</div>
-            <div class="tl-menu">Out the door by 8:30, desk by 9:00.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">11:00 · Break<span class="kcal">~5 kcal</span></div>
-          <div class="tl-card">
-            <div class="tl-phase">Metabolic Spark</div>
-            <div class="tl-menu">1 cup plain black coffee, no sugar or milk, with 250ml water alongside.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">12:30–13:00 · Lunch<span class="kcal">~390 kcal</span></div>
-          <div class="tl-card">
-            <div class="tl-phase">Lean Office Lunch</div>
-            <div class="tl-menu">
-              <ul>
-                <li>1 plain whole-wheat roti, zero ghee/butter</li>
-                <li>Large bowl of fiber-dense dry sabzi (okra, cauliflower, beans)</li>
-                <li>2–3 bowls regular-fat curd</li>
-              </ul>
-            </div>
-            <div class="tl-macros"><span><b>18g</b> protein</span><span><b>45g</b> carbs</span><span><b>16g</b> fat</span></div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">16:00 · Break</div>
-          <div class="tl-card">
-            <div class="tl-phase">Second Coffee, Nervous-System Aware</div>
-            <div class="tl-menu">Black coffee is fine here — this is your last caffeine slot. Anything later gets swapped for herbal or decaf.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">17:00 · Evening Snack<span class="kcal">~310 kcal</span></div>
-          <div class="tl-card">
-            <div class="tl-phase">Second Protein Feed</div>
-            <div class="tl-menu">1 scoop whey protein blended with 250ml regular milk, just before leaving the office.</div>
-            <div class="tl-macros"><span><b>33g</b> protein</span><span><b>15g</b> carbs</span><span><b>11g</b> fat</span></div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">17:30–18:00 · Leave Office</div>
-          <div class="tl-card">
-            <div class="tl-phase">Commute Home</div>
-            <div class="tl-menu">Home by roughly 18:30.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">19:30 · Evening<span class="kcal">~100 kcal</span></div>
-          <div class="tl-card">
-            <div class="tl-phase">Micro-Nutrient Drop</div>
-            <div class="tl-menu">1 cup hot green tea + 12–15 raw almonds + 2 whole walnuts.</div>
-            <div class="tl-macros"><span><b>3g</b> protein</span><span><b>4g</b> carbs</span><span><b>9g</b> fat</span></div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">20:30 · Wind-Down</div>
-          <div class="tl-card">
-            <div class="tl-phase">Nervous System Reset</div>
-            <div class="tl-menu">1 magnesium tablet with 300ml water — small sips only from here on.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">21:30–22:00 · Lights Out</div>
-          <div class="tl-card">
-            <div class="tl-phase">8-Hour Sleep Window Begins</div>
-            <div class="tl-menu">Continuous, uninterrupted sleep cycle through to 06:00.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WEEKEND -->
-    <div class="day-panel" id="panel-weekend">
-      <div class="macro-strip reveal">
-        <div class="macro-cell"><div class="num" data-count="1570">0<small>kcal</small></div><div class="lbl">Sat/Sun Target*</div></div>
-        <div class="macro-cell"><div class="num">Rice<small>+dal</small></div><div class="lbl">Carb Refeed</div></div>
-        <div class="macro-cell"><div class="num">200<small>g</small></div><div class="lbl">Paneer, Sat PM</div></div>
-        <div class="macro-cell hydration"><div class="num">3.5–4<small>L</small></div><div class="lbl">Hydration</div></div>
-      </div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-time">08:00 · Wake</div>
-          <div class="tl-card"><div class="tl-phase">First Flush</div><div class="tl-menu">500ml plain water immediately on waking.</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">08:30 · Morning</div>
-          <div class="tl-card"><div class="tl-phase">Baseline</div><div class="tl-menu">1 cup black coffee with 3–4 plain high-fiber digestive biscuits.</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">12:00 · Lunch</div>
-          <div class="tl-card">
-            <div class="tl-phase">First Major Meal</div>
-            <div class="tl-menu">
-              <ul>
-                <li>1 cup cooked rice (brown or white) + 1 bowl home-cooked dal</li>
-                <li>40–50g cooked soy chunks + large mixed green salad</li>
-              </ul>
-              Followed by a relaxing bath, some reading, and a nap to support neural recovery.
-            </div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">17:00–18:00 · Mobility</div>
-          <div class="tl-card"><div class="tl-phase">Active Recovery Walk</div><div class="tl-menu">45–60 minutes relaxed outdoor walk — active without spinal loading.</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">21:00 · Dinner</div>
-          <div class="tl-card">
-            <div class="tl-phase">Second Major Meal</div>
-            <div class="tl-menu"><b>Saturday:</b> same as lunch, plus 200g fresh paneer for an overnight casein trickle.<br><b>Sunday:</b> one chosen clean cheat meal — reward the disciplined week, stop before discomfort.</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-time">23:30 · Bedtime</div>
-          <div class="tl-card"><div class="tl-phase">Lights Out</div><div class="tl-menu">Deep recovery through the night.</div></div>
-        </div>
-      </div>
-      <div class="weekend-note">*Excludes the Sunday cheat dinner, which is intentionally left unmeasured — enjoy it without tracking, then return to the weekday structure on Monday.</div>
-    </div>
-
-    <div class="callout reveal">
-      <h3>Coach's Read: Is This Enough?</h3>
-      <ul>
-        <li><b>Protein is solid, not excessive.</b> ~129g/day at ~65.8kg is roughly 2.0g/kg — a strong number for lean recomposition. It's well spread across 5 feedings, which matters more than the total.</li>
-        <li><b>Fibre is good but lopsided.</b> The lunch sabzi and weekend salad carry most of it. Consider adding a small serving of vegetables to breakfast too (spinach already helps) so fibre isn't concentrated in one meal.</li>
-        <li><b>Carbs are on the low side for your training load.</b> ~92g on a day with a 6:30am session plus an office day is lean. This is fine for fat loss, but on your two hardest training days (HIIT + Legs), an extra small portion of fruit or a banana post-workout would protect performance without derailing the deficit.</li>
-        <li><b>Micronutrients are well covered</b> — B-complex, omega-3, and magnesium are the right stack for someone sitting at a desk most of the day and training early morning.</li>
-        <li><b>One gap: electrolytes.</b> At 3.5–4L water/day plus sweat from training, plain water alone can dilute sodium. A pinch of salt in your pre-workout water, or an electrolyte sachet on training days, is worth adding.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============ WORKOUT SECTION ============ -->
-<section class="block" id="workout">
-  <div class="container">
-    <div class="block-head reveal">
-      <div class="eyebrow">Section 02</div>
-      <h2>Spine-Safe Training</h2>
-      <p>Five days, five muscle groups, zero axial loading. Every pull is seated or chest-supported, every press stays flat on a bench, every squat pattern is a goblet — mechanical tension without spinal shear.</p>
-    </div>
-
-    <div class="day-tabs-wrap reveal">
-      <div class="day-tabs" id="dayTabs">
-        <div class="day-tab active" data-target="d1"><div class="d-num">DAY 01</div><div class="d-name">Back &amp; Biceps</div><div class="d-focus">Pull + shoulder mobility</div></div>
-        <div class="day-tab" data-target="d2"><div class="d-num">DAY 02</div><div class="d-name">Chest &amp; Triceps</div><div class="d-focus">Push + anterior chain</div></div>
-        <div class="day-tab" data-target="d3"><div class="d-num">DAY 03</div><div class="d-name">Endurance</div><div class="d-focus">5K marathon engine</div></div>
-        <div class="day-tab" data-target="d4"><div class="d-num">DAY 04</div><div class="d-name">Shoulders &amp; Abs</div><div class="d-focus">Stability + agility</div></div>
-        <div class="day-tab" data-target="d5"><div class="d-num">DAY 05</div><div class="d-name">Legs &amp; Core</div><div class="d-focus">Power + footwork</div></div>
-      </div>
-    </div>
-
-    <div class="rest-strip reveal">
-      <span><b>Rest:</b> 60–90 sec between strength sets · 0 sec between mobility stretches</span>
-      <span><b>Tempo:</b> 2s eccentric · 0s pause · 1s concentric</span>
-    </div>
-
-    <!-- DAY 1 -->
-    <div class="workout-panel active" id="d1">
-      <div class="wtag-row">
-        <span class="wtag">Pull Focus</span>
-        <span class="wtag">Shoulder–Spine Mobility</span>
-        <span class="wtag intensity-mod">Moderate Intensity</span>
-      </div>
-
-      <div class="subhead">Dynamic Warm-Up</div>
-      <div class="warmup-list">
-        <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Arm Circles, Forward/Backward</span><span class="wu-r">15 each way</span><span class="wu-d">Warms up the rotator cuffs for court swings.</span></div>
-        <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Cat-Cow Flow</span><span class="wu-r">10 cycles</span><span class="wu-d">Mobilizes the lumbar spine without compressive loading.</span></div>
-        <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Bird-Dog Hold</span><span class="wu-r">6/side · 3s hold</span><span class="wu-d">Activates deep core stabilizers and the multifidus.</span></div>
-      </div>
-
-      <div class="subhead">Resistance Protocol</div>
-      <table class="ex-table">
-        <thead><tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Weight</th><th>Technique</th></tr></thead>
-        <tbody>
-          <tr class="ex-row"><td class="ex-seq">01</td><td class="ex-name">Seated Cable Rows</td><td class="ex-sets">3 × 10–12</td><td class="ex-weight">10–15 kg</td><td class="ex-instr">Sit tall, feet braced. Pull the V-bar to your lower stomach. Keep spine vertical — no swinging.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">02</td><td class="ex-name">Chest-Supported DB Rows</td><td class="ex-sets">3 × 10–12</td><td class="ex-weight">7.5–12.5 kg</td><td class="ex-instr">Lie face-down on a 45° incline bench. Row dumbbells to your hips — the bench absorbs all lumbar load.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">03</td><td class="ex-name">Lat Pulldowns, Wide Grip</td><td class="ex-sets">3 × 10–12</td><td class="ex-weight">Moderate</td><td class="ex-instr">Thigh pads snug. Pull the bar to your upper chest. Keep chest high, don't lean back to force it down.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">04</td><td class="ex-name">Seated Incline DB Curls</td><td class="ex-sets">3 × 12</td><td class="ex-weight">5–10 kg</td><td class="ex-instr">Sit back on a 60° incline bench, arms hanging straight. Lock elbows in place and curl — prevents spine swing.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">05</td><td class="ex-name">Seated Hammer Curls</td><td class="ex-sets">3 × 12</td><td class="ex-weight">5–10 kg</td><td class="ex-instr">Sit fully upright, back supported. Builds forearm and wrist strength for racket grip endurance.</td></tr>
-        </tbody>
-      </table>
-
-      <div class="subhead">Static Cool-Down</div>
-      <div class="cooldown-list">
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Child's Pose</b><span>Arms forward, hips back to heels — breathe into the lower back to decompress the spine.</span></div></div>
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Doorway Chest Opener</b><span>Forearm against a doorway, torso rotated away — releases chest and front delts.</span></div></div>
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Cross-Body Arm Stretch</b><span>Pull arm across the chest horizontally to release upper back and rear delts.</span></div></div>
-      </div>
-    </div>
-
-    <!-- DAY 2 -->
-    <div class="workout-panel" id="d2">
-      <div class="wtag-row">
-        <span class="wtag">Push Focus</span>
-        <span class="wtag">Anterior Chain Flexibility</span>
-        <span class="wtag intensity-mod">Moderate Intensity</span>
-      </div>
-
-      <div class="subhead">Dynamic Warm-Up</div>
-      <div class="warmup-list">
-        <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Shoulder Dislocations (towel/band)</span><span class="wu-r">12 reps</span><span class="wu-d">Improves overhead shoulder range of motion.</span></div>
-        <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Scapular Push-ups</span><span class="wu-r">12 reps</span><span class="wu-d">Activates serratus anterior, stabilizes shoulder blades.</span></div>
-        <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Standing Torso Twists</span><span class="wu-r">15/side</span><span class="wu-d">Gently warms the core dynamically.</span></div>
-      </div>
-
-      <div class="subhead">Resistance Protocol</div>
-      <table class="ex-table">
-        <thead><tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Weight</th><th>Technique</th></tr></thead>
-        <tbody>
-          <tr class="ex-row"><td class="ex-seq">01</td><td class="ex-name">Incline / Standard Push-ups</td><td class="ex-sets">3 × 12–15</td><td class="ex-weight">Bodyweight</td><td class="ex-instr">Rigid plank head-to-heel. If floor push-ups sag the back, elevate hands onto a bench.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">02</td><td class="ex-name">DB Flat Bench Press</td><td class="ex-sets">3 × 10–12</td><td class="ex-weight">10–15 kg</td><td class="ex-instr">Feet flat, hips stable. Press upper back into the pad. Avoid excessive lumbar arch.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">03</td><td class="ex-name">Incline DB Flyes</td><td class="ex-sets">3 × 12</td><td class="ex-weight">5–7.5 kg</td><td class="ex-instr">Low 30° incline, soft elbow bend. Stretch horizontally, don't drop past shoulder line.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">04</td><td class="ex-name">Bench Dips</td><td class="ex-sets">3 × 12</td><td class="ex-weight">Bodyweight</td><td class="ex-instr">Palms on bench edge. Keep glutes tight against the bench as you lower.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">05</td><td class="ex-name">Seated DB Tricep Extensions</td><td class="ex-sets">3 × 12</td><td class="ex-weight">7.5–12.5 kg</td><td class="ex-instr">Back supported. Diamond grip overhead with both hands, lower slowly behind the head.</td></tr>
-        </tbody>
-      </table>
-
-      <div class="subhead">Static Cool-Down</div>
-      <div class="cooldown-list">
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Cobra / Sphinx Stretch</b><span>Face down on forearms, gently extend the chest upward — safe ab stretch.</span></div></div>
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Overhead Tricep Stretch</b><span>Elbow behind the head, stretching triceps and lats.</span></div></div>
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Clasp-Behind Back Stretch</b><span>Hands clasped behind lower back, lift slightly to clear tight chest tissue.</span></div></div>
-      </div>
-    </div>
-
-    <!-- DAY 3 -->
-    <div class="workout-panel" id="d3">
-      <div class="wtag-row">
-        <span class="wtag">5K Marathon Prep</span>
-        <span class="wtag intensity-high">High Intensity</span>
-      </div>
-
-      <div class="subhead">Dynamic Mobility Prep</div>
-      <div class="warmup-list">
-        <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Leg Swings, Forward/Backward</span><span class="wu-r">15/leg</span><span class="wu-d">Preps hip flexors and hamstrings for stride length.</span></div>
-        <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Lateral Leg Swings</span><span class="wu-r">12/leg</span><span class="wu-d">Preps groin and outer hips for lateral court movement.</span></div>
-        <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Ankle Rotations</span><span class="wu-r">15s each way/foot</span><span class="wu-d">Lubricates ankle joints to absorb impact.</span></div>
-      </div>
-
-      <div class="subhead">High-Intensity Interval Phase</div>
-      <div class="warmup-list">
-        <div class="wu-item"><span class="wu-n">—</span><span class="wu-t">Easy Warm-Up Jog</span><span class="wu-r">5 min</span><span class="wu-d">Conversational pace.</span></div>
-        <div class="wu-item"><span class="wu-n">×8</span><span class="wu-t">Sprint Interval</span><span class="wu-r">1 min hard / 1 min walk</span><span class="wu-d">80–85% max effort running, followed by active recovery.</span></div>
-        <div class="wu-item"><span class="wu-n">—</span><span class="wu-t">Sustained Finisher</span><span class="wu-r">1.5–2 km</span><span class="wu-d">Continuous run at your target 5K goal pace.</span></div>
-      </div>
-
-      <div class="subhead">Deep Lower-Body Static Stretch</div>
-      <div class="cooldown-list">
-        <div class="cd-item"><span class="cd-time">45s</span><div class="cd-text"><b>Standing Calf Stretch</b><span>Lean on a wall, one leg back, heel pressed down to release calf tension.</span></div></div>
-        <div class="cd-item"><span class="cd-time">45s</span><div class="cd-text"><b>Kneeling Hip Flexor Stretch</b><span>One knee down, pelvis tucked forward — releases hips tight from desk sitting.</span></div></div>
-        <div class="cd-item"><span class="cd-time">45s</span><div class="cd-text"><b>Standing Quad Stretch</b><span>Hold ankle behind the back, knees aligned — stretches the front thigh.</span></div></div>
-      </div>
-    </div>
-
-    <!-- DAY 4 -->
-    <div class="workout-panel" id="d4">
-      <div class="wtag-row">
-        <span class="wtag">Stability &amp; Agility</span>
-        <span class="wtag">Core Balance</span>
-        <span class="wtag intensity-mod">Moderate Intensity</span>
-      </div>
-
-      <div class="subhead">Dynamic Warm-Up</div>
-      <div class="warmup-list">
-        <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Y-T-W Raises</span><span class="wu-r">10 per letter</span><span class="wu-d">Activates mid-traps, rear delts, rhomboids.</span></div>
-        <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Standing Arm Pulses</span><span class="wu-r">20 reps</span><span class="wu-d">Increases blood flow across the shoulder girdle.</span></div>
-        <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">High Knees, Slow Tempo</span><span class="wu-r">12/leg</span><span class="wu-d">Warms lower core and hip flexors together.</span></div>
-      </div>
-
-      <div class="subhead">Resistance Protocol</div>
-      <table class="ex-table">
-        <thead><tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Weight</th><th>Technique</th></tr></thead>
-        <tbody>
-          <tr class="ex-row"><td class="ex-seq">01</td><td class="ex-name">Seated DB Shoulder Press</td><td class="ex-sets">3 × 10–12</td><td class="ex-weight">7.5–12.5 kg</td><td class="ex-instr">Back flush against a vertical pad. Controlled arc up — don't arch the lower back.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">02</td><td class="ex-name">Seated DB Lateral Raises</td><td class="ex-sets">3 × 12–15</td><td class="ex-weight">2.5–5 kg</td><td class="ex-instr">Seated at the bench edge. Sitting eliminates torso swing and protects the lower back.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">03</td><td class="ex-name">Chest-Supported Rear Delt Flyes</td><td class="ex-sets">3 × 12–15</td><td class="ex-weight">2.5–5 kg</td><td class="ex-instr">Face-down on a 30° incline. Raise weights horizontally for stable, court-ready shoulders.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">04</td><td class="ex-name">Mountain Climbers</td><td class="ex-sets">3 × 30–45s</td><td class="ex-weight">Bodyweight</td><td class="ex-instr">Rigid plank, drive knees to chest fast. Keep hips low to shield the lumbar line.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">05</td><td class="ex-name">Hanging Leg / Knee Raises</td><td class="ex-sets">3 × 10–12</td><td class="ex-weight">Bodyweight</td><td class="ex-instr">Hang straight from a bar. Bring knees up smoothly — no momentum or swinging.</td></tr>
-        </tbody>
-      </table>
-
-      <div class="subhead">Static Cool-Down</div>
-      <div class="cooldown-list">
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Cross-Body Deltoid Stretch</b><span>Arm drawn across the collarbone to stretch the lateral shoulder cap.</span></div></div>
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Thread the Needle</b><span>Hands and knees, one arm sliding under the chest — stretches the upper back.</span></div></div>
-        <div class="cd-item"><span class="cd-time">30s</span><div class="cd-text"><b>Seated Oblique Stretch</b><span>Cross-legged, one arm overhead, lean to the side — stretches obliques and QL.</span></div></div>
-      </div>
-    </div>
-
-    <!-- DAY 5 -->
-    <div class="workout-panel" id="d5">
-      <div class="wtag-row">
-        <span class="wtag">Power &amp; Footwork</span>
-        <span class="wtag">Lumbar Protection</span>
-        <span class="wtag intensity-mod">Moderate–High Intensity</span>
-      </div>
-
-      <div class="subhead">Dynamic Warm-Up</div>
-      <div class="warmup-list">
-        <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Bodyweight Air Squats</span><span class="wu-r">12 reps</span><span class="wu-d">Warms knees, hips, ankles.</span></div>
-        <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Glute Bridges</span><span class="wu-r">15 reps</span><span class="wu-d">Wakes the glutes so the lower back doesn't compensate.</span></div>
-        <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Lateral Side Lunges</span><span class="wu-r">8/side</span><span class="wu-d">Preps lateral badminton lunging mechanics.</span></div>
-      </div>
-
-      <div class="subhead">Resistance Protocol</div>
-      <table class="ex-table">
-        <thead><tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Weight</th><th>Technique</th></tr></thead>
-        <tbody>
-          <tr class="ex-row"><td class="ex-seq">01</td><td class="ex-name">DB Goblet Box Squats</td><td class="ex-sets">3 × 12</td><td class="ex-weight">10–15 kg</td><td class="ex-instr">One dumbbell at chest, sit back to a bench, drive up. Bypasses vertical spine compression.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">02</td><td class="ex-name">Dumbbell Romanian Deadlifts</td><td class="ex-sets">3 × 10–12</td><td class="ex-weight">7.5–12.5 kg</td><td class="ex-instr">Soft knees, hips pushed back. Weights skim the legs to mid-shin. Never round the back.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">03</td><td class="ex-name">Bulgarian Split Squats</td><td class="ex-sets">3 × 10/leg</td><td class="ex-weight">BW–5 kg</td><td class="ex-instr">Rear foot on a bench, lower smoothly. Builds single-leg power for deep court recoveries.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">04</td><td class="ex-name">Weighted Glute Bridges</td><td class="ex-sets">3 × 15</td><td class="ex-weight">10–15 kg</td><td class="ex-instr">Flat on back, dumbbell across hips. Drive through heels — zero lower back compression.</td></tr>
-          <tr class="ex-row"><td class="ex-seq">05</td><td class="ex-name">Forearm Plank</td><td class="ex-sets">3 × 45–60s</td><td class="ex-weight">Bodyweight</td><td class="ex-instr">Straight line head-to-heel. Squeeze abs, quads, glutes hard to stabilize.</td></tr>
-        </tbody>
-      </table>
-
-      <div class="subhead">Static Cool-Down</div>
-      <div class="cooldown-list">
-        <div class="cd-item"><span class="cd-time">45s</span><div class="cd-text"><b>Pigeon Pose</b><span>One knee forward and rotated out, other leg extended back — releases deep glute tightness.</span></div></div>
-        <div class="cd-item"><span class="cd-time">45s</span><div class="cd-text"><b>Seated Hamstring Fold</b><span>Legs extended, reach for ankles, chest open — don't round the upper spine.</span></div></div>
-        <div class="cd-item"><span class="cd-time">45s</span><div class="cd-text"><b>Butterfly Stretch</b><span>Soles together, knees pressed gently down to open tight adductors.</span></div></div>
-      </div>
-    </div>
-
-    <div class="subhead reveal">Sunday Active Recovery</div>
-    <div class="recovery-grid reveal">
-      <div class="rec-card">
-        <div class="rc-eyebrow">3 × 20–30s</div>
-        <h4>Decompression Hanging</h4>
-        <p>Hang completely limp from a pull-up bar. Gravity opens the lumbar discs.</p>
-      </div>
-      <div class="rec-card">
-        <div class="rc-eyebrow">5 reps/side</div>
-        <h4>World's Greatest Stretch</h4>
-        <p>Deep lunge, hand inside the foot, rotate the opposite arm skyward.</p>
-      </div>
-      <div class="rec-card">
-        <div class="rc-eyebrow">60s/side</div>
-        <h4>Supine Spinal Twist</h4>
-        <p>Flat on the back, bent knee drops across the body, arms wide.</p>
-      </div>
-    </div>
-
-    <div class="callout reveal">
-      <h3>Coach's Read: Program Corrections</h3>
-      <ul>
-        <li><b>Structure is sound — 5 days, no overlap.</b> Back/biceps, chest/triceps, endurance, shoulders/abs, legs/core covers every major group with a clean pull-push-cardio-stability-power split.</li>
-        <li><b>One real gap: standalone rest.</b> Five straight training days into Sunday recovery is workable short-term, but for 12 weeks, consider making one of Day 2 or Day 4 lighter every other week to avoid accumulating fatigue — your joints will thank you closer to week 8–10.</li>
-        <li><b>Badminton-specific footwork is under-trained.</b> The program builds the muscles and the engine, but there's no direct lateral shuffle / split-step drilling. Adding 5 minutes of shadow footwork before Day 3's run would transfer more directly to court movement.</li>
-        <li><b>Progression isn't specified.</b> Reps/sets are fixed at 3×10–12 throughout — for genuine recomposition over 12 weeks, plan to add small weight increments (2.5kg jumps) every 2–3 weeks once the top of the rep range feels easy, rather than staying static.</li>
-        <li><b>Running progression needs a target curve.</b> "Increase running range in 2–3 months" needs a number — a simple plan is +0.5km on the sustained finisher every 2 weeks, so 1.5km in week 1 becomes a full 5km continuous by week 10–12.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============ HYDRATION & SLEEP ============ -->
-<section class="block" id="hydration">
-  <div class="container">
-    <div class="block-head reveal">
-      <div class="eyebrow">Section 03</div>
-      <h2>Hydration &amp; Sleep</h2>
-      <p>Water intake is front-loaded to the working day and cut off by 8:30pm. Sleep is protected by a hard caffeine boundary and a consistent 8-hour window.</p>
-    </div>
-
-    <div class="hs-grid">
-      <div class="reveal">
-        <div class="water-vessel">
-          <div class="water-marks">
-            <div>4.0L</div><div>3.0L</div><div>2.0L</div><div>1.0L</div><div>0L</div>
-          </div>
-          <div class="water-fill" id="waterFill">
-            <div class="water-total" id="waterTotalText"><b id="waterLoggedVal">0.0L</b>logged today</div>
-          </div>
-        </div>
-        <div class="water-quick-log">
-          <button class="btn-water" id="btnWaterAdd250">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + 250ml
-          </button>
-          <button class="btn-water" id="btnWaterAdd500">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + 500ml
-          </button>
-          <button class="btn-water btn-water-reset" id="btnWaterReset">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            Reset
-          </button>
-        </div>
-        <div class="water-slots">
-          <div class="ws-item" data-amount="500">
-            <div class="ws-checkbox"></div>
-            <span class="ws-time">06:00</span>
-            <span class="ws-desc">Warm water on waking</span>
-            <span class="ws-amt">500ml</span>
-          </div>
-          <div class="ws-item" data-amount="500">
-            <div class="ws-checkbox"></div>
-            <span class="ws-time">06:30–07:30</span>
-            <span class="ws-desc">Sipped through the workout</span>
-            <span class="ws-amt">500ml</span>
-          </div>
-          <div class="ws-item" data-amount="1500">
-            <div class="ws-checkbox"></div>
-            <span class="ws-time">09:00–13:00</span>
-            <span class="ws-desc">Office morning shift</span>
-            <span class="ws-amt">1.5L</span>
-          </div>
-          <div class="ws-item" data-amount="1000">
-            <div class="ws-checkbox"></div>
-            <span class="ws-time">13:30–17:30</span>
-            <span class="ws-desc">Office afternoon shift</span>
-            <span class="ws-amt">1.0L</span>
-          </div>
-          <div class="ws-item" data-amount="500">
-            <div class="ws-checkbox"></div>
-            <span class="ws-time">18:30–20:30</span>
-            <span class="ws-desc">Evening recovery, max</span>
-            <span class="ws-amt">500ml</span>
-          </div>
-          <div class="ws-item" data-amount="0">
-            <div class="ws-checkbox" style="opacity: 0; pointer-events: none;"></div>
-            <span class="ws-time">20:30 onward</span>
-            <span class="ws-desc">Sips only — protects sleep</span>
-            <span class="ws-amt">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="reveal">
-        <div class="sleep-card">
-          <div class="sleep-arc-wrap">
-            <svg width="220" height="130" viewBox="0 0 220 130">
-              <defs>
-                <linearGradient id="sleepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="var(--lime)" />
-                  <stop offset="100%" stop-color="var(--blue)" />
-                </linearGradient>
-                <filter id="sleepGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="4" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <path d="M 10 120 A 100 100 0 0 1 210 120" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>
-              <path id="sleepArc" d="M 10 120 A 100 100 0 0 1 210 120" fill="none" stroke="url(#sleepGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" filter="url(#sleepGlow)"/>
-              <text x="110" y="95" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="26" fill="#f5f6f9" font-weight="700">8h</text>
-              <text x="110" y="115" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#94a3b8">21:30 → 06:00</text>
+      <div class="settings-modal-meta">Click and hold an item to reorder sections. Toggle switches adjust dashboard
+        visibility.</div>
+      <div class="settings-toggle-list" id="settingsSortableList">
+        <div class="settings-toggle-item" data-target="hero">
+          <div class="drag-handle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" />
             </svg>
           </div>
-          <div class="sleep-rules">
-            <div class="sr-item"><span class="sr-ico">☾</span><div><h4>Digital Sunset</h4><p>Blue-light screens off by 9:00pm — phones and laptops included.</p></div></div>
-            <div class="sr-item"><span class="sr-ico">❄</span><div><h4>Cool, Dark, Silent</h4><p>Room pitch-black and cool to support natural core-temperature drop.</p></div></div>
-            <div class="sr-item"><span class="sr-ico">☕</span><div><h4>4pm Caffeine Boundary</h4><p>No regular coffee after 4pm — herbal or decaf only, so adenosine can do its job.</p></div></div>
+          <span class="settings-toggle-label">Hero Banner Profile</span>
+          <label class="switch-control">
+            <input type="checkbox" checked data-toggle-target="hero">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="settings-toggle-item" data-target="diet">
+          <div class="drag-handle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" />
+            </svg>
           </div>
+          <span class="settings-toggle-label">Timed Nutrition Logs</span>
+          <label class="switch-control">
+            <input type="checkbox" checked data-toggle-target="diet">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="settings-toggle-item" data-target="workout">
+          <div class="drag-handle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" />
+            </svg>
+          </div>
+          <span class="settings-toggle-label">Spine-Safe Resistance Protocol</span>
+          <label class="switch-control">
+            <input type="checkbox" checked data-toggle-target="workout">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="settings-toggle-item" data-target="hydration">
+          <div class="drag-handle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" />
+            </svg>
+          </div>
+          <span class="settings-toggle-label">Ingestion &amp; Recovery Hub</span>
+          <label class="switch-control">
+            <input type="checkbox" checked data-toggle-target="hydration">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="settings-toggle-item" data-target="science">
+          <div class="drag-handle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" />
+            </svg>
+          </div>
+          <span class="settings-toggle-label">Biomechanical Diagnostics</span>
+          <label class="switch-control">
+            <input type="checkbox" checked data-toggle-target="science">
+            <span class="switch-slider"></span>
+          </label>
         </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ============ SCIENCE / BREAKDOWN ============ -->
-<section class="block" id="science" style="border-bottom:none;">
-  <div class="container">
-    <div class="block-head reveal">
-      <div class="eyebrow">Section 04</div>
-      <h2>The Breakdown</h2>
-      <p>Why the timing, the seated angles, and the fasting windows are doing what they're doing — in plain terms.</p>
-    </div>
-
-    <div class="accordion reveal" id="accordion">
-      <div class="acc-item open">
-        <div class="acc-head"><span class="acc-num">01</span><span class="acc-title">The Weekday Fasting Window</span><span class="acc-plus">+</span></div>
-        <div class="acc-body"><div class="acc-inner">
-          <p>Consolidating meals between 6:15am and 5:00pm creates an overnight fast of over 13 hours — a mild version of <b>early time-restricted feeding</b>.</p>
-          <div class="mini-callout">By around 10pm, circulating insulin drops to baseline. With insulin low, <b>AMPK</b> activates and unlocks stored fat for use as fuel.</div>
-          <p>Training at 6:30am, before the first meal, means glycogen is available but blood glucose is low — pushing the body toward <b>fat oxidation</b> to power the session.</p>
-        </div></div>
-      </div>
-
-      <div class="acc-item">
-        <div class="acc-head"><span class="acc-num">02</span><span class="acc-title">Muscle Protein Synthesis vs. Breakdown</span><span class="acc-plus">+</span></div>
-        <div class="acc-body"><div class="acc-inner">
-          <p>Staying lean without losing muscle means keeping <b>MPS</b> ahead of <b>MPB</b> — and the timing here is deliberate.</p>
-          <div class="mini-callout"><b>The Leucine Trigger:</b> eggs + soy at breakfast deliver 3g+ of leucine, the amino acid that switches on the mTORC1 muscle-repair pathway.</div>
-          <div class="mini-callout"><b>The Casein Trickle:</b> curd at lunch releases amino acids slowly over 4–5 hours, protecting muscle through the office stretch. Weekend paneer extends this overnight.</div>
-          <p><b>On soy:</b> 40–50g of soy chunks daily does not measurably shift testosterone or estrogen — its isoflavones bind ERβ receptors, which don't produce the effects people worry about. It's simply an efficient, affordable protein source.</p>
-        </div></div>
-      </div>
-
-      <div class="acc-item">
-        <div class="acc-head"><span class="acc-num">03</span><span class="acc-title">Why Every Lift Is Seated or Supported</span><span class="acc-plus">+</span></div>
-        <div class="acc-body"><div class="acc-inner">
-          <p>The whole program chases <b>mechanical tension</b> in the target muscle while removing <b>axial load</b> and <b>lumbar shear</b> from the spine.</p>
-          <div class="mini-callout"><b>Seated rows vs. bent-over rows:</b> standing rows force the lower back to brace against gravity — sitting and bracing the feet routes the load into the hips instead.</div>
-          <div class="mini-callout"><b>Bench press vs. standing overhead press:</b> a bench absorbs the load directly; a standing press drives it straight through the lower back.</div>
-          <div class="mini-callout"><b>Goblet box squats vs. barbell squats:</b> the front-loaded dumbbell keeps the torso upright, and the box gives a controlled depth marker so the lower back never rounds out.</div>
-        </div></div>
-      </div>
-
-      <div class="acc-item">
-        <div class="acc-head"><span class="acc-num">04</span><span class="acc-title">Building Two Different Engines</span><span class="acc-plus">+</span></div>
-        <div class="acc-body"><div class="acc-inner">
-          <p>A 5K and competitive badminton draw on two separate energy systems, and Day 3 is built to train both.</p>
-          <div class="mini-callout"><b>Badminton (ATP-PC / anaerobic):</b> explosive bursts and direction changes. The 1-minute hard sprint intervals condition rapid, oxygen-independent energy output.</div>
-          <div class="mini-callout"><b>Marathon (aerobic / VO2 max):</b> sustained oxygen efficiency and lactate clearance. The 1.5–2km continuous finisher builds the stamina base for both the run and long badminton rallies.</div>
-        </div></div>
-      </div>
-    </div>
+  <!-- Drawer Overlay & Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <nav class="drawer-nav" id="drawerNav">
+      <a href="#diet" class="drawer-link" data-nav="diet">Nutrition</a>
+      <a href="#workout" class="drawer-link" data-nav="workout">Training</a>
+      <a href="#hydration" class="drawer-link" data-nav="hydration">Recovery</a>
+      <a href="#science" class="drawer-link" data-nav="science">Breakdown</a>
+    </nav>
   </div>
-</section>
 
-<footer>
-  <div>DAS/PROTOCOL — built for one athlete, one 12-week cycle.</div>
-  <div>Spine-safe · Evidence-informed · Not a substitute for medical advice</div>
-</footer>
+  <!-- Main Layout Sorting Wrapper Container -->
+  <div id="mainLayoutWrapper">
+    <header class="hero" id="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-content container">
+        <div class="eyebrow">12-week recomposition cycle · spine-safe protocol</div>
+        <h1 class="hero-name">SURAJIT<br><span>DAS</span></h1>
+        <p class="hero-sub">A personal system for shedding fat, building lean muscle, and arriving race-ready for a 5K
+          and competitive badminton — without a single rep that loads the spine.</p>
+        <div class="hero-stats">
+          <div class="stat"><b>27</b><span>Years Old</span></div>
+          <div class="stat"><b>163</b><span>cm / 5'3"</span></div>
+          <div class="stat"><b>~65.8</b><span>kg Current</span></div>
+          <div class="stat"><b>~1500</b><span>kcal BMR</span></div>
+          <div class="stat"><b>5</b><span>Training Days</span></div>
+        </div>
+      </div>
+      <div class="scroll-cue">
+        <div class="bar"></div>SCROLL
+      </div>
+    </header>
 
-<button class="totop" id="totop">↑</button>
+    <!-- ============ DIET SECTION ============ -->
+    <section class="block" id="diet">
+      <div class="container">
+        <div class="block-head reveal">
+          <div class="eyebrow">Section 01</div>
+          <h2>Timed Nutrition</h2>
+          <p>Every meal is placed on the clock — protein at the edges of your training window, slow-release casein
+            through the office day, and a hard caffeine cutoff so the diet never fights your sleep.</p>
+        </div>
 
-<script>
-// ---------- Scroll Progress Bar ----------
-window.addEventListener('scroll', () => {
-  const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-  document.getElementById('scrollProgress').style.width = scrolled + '%';
-}, {passive: true});
+        <div class="diet-toggle reveal" id="dietToggle">
+          <div class="slider"></div>
+          <button class="dt-btn active" data-day="weekday" type="button">Weekday</button>
+          <button class="dt-btn" data-day="weekend" type="button">Weekend</button>
+        </div>
 
-// ---------- Scoreboard Nav: Show/Hide and Top Button ----------
-const scorebar = document.getElementById('scorebar');
-let lastY = window.scrollY;
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  if(y > lastY && y > 140){ scorebar.classList.add('hide'); } else { scorebar.classList.remove('hide'); }
-  lastY = y;
+        <!-- WEEKDAY -->
+        <div class="day-panel active" id="panel-weekday">
+          <div class="macro-strip reveal">
+            <div class="macro-cell">
+              <div class="num" data-count="1480">0<small>kcal</small></div>
+              <div class="lbl">Daily Target</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="129">0<small>g</small></div>
+              <div class="lbl">Protein</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="92">0<small>g</small></div>
+              <div class="lbl">Carbs</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="58">0<small>g</small></div>
+              <div class="lbl">Fats</div>
+            </div>
+            <div class="macro-cell hydration">
+              <div class="num">3.5–4<small>L</small></div>
+              <div class="lbl">Hydration</div>
+            </div>
+          </div>
 
-  document.getElementById('totop').classList.toggle('show', y > 700);
-}, {passive:true});
+          <div class="timeline reveal">
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:00 · Wake <span class="kcal">0 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Hydration Baseline</div>
+                <div class="tl-menu">500ml plain warm water immediately on waking — kickstarts organ function before
+                  anything else touches your system.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:15 · Pre-Workout <span class="kcal">~140 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Anabolic Trigger Shake</div>
+                <div class="tl-menu">1 scoop whey isolate + 1 tsp instant coffee, blended in 250ml water.</div>
+                <div class="tl-macros"><span><b>25g</b> protein</span><span><b>3g</b> carbs</span><span><b>1.5g</b>
+                    fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:30 · Training Window</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Spine-Safe Session</div>
+                <div class="tl-menu">Execute the day's scheduled resistance or conditioning block. See the Training
+                  section for the full breakdown.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">07:45 · Post-Workout <span class="kcal">~550 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Protein-Heavy Breakfast</div>
+                <div class="tl-menu">
+                  <ul>
+                    <li>4–5 whole eggs, scrambled or boiled</li>
+                    <li>40–50g soy chunks pan-fried with spinach &amp; tomatoes, minimal oil</li>
+                    <li>Seasonal vegetables or a piece of fruit</li>
+                    <li>Vitamin B-Complex, Cod Liver Oil / Omega-3</li>
+                  </ul>
+                </div>
+                <div class="tl-macros"><span><b>50g</b> protein</span><span><b>25g</b> carbs</span><span><b>22g</b>
+                    fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">08:30 · Leave for Work</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Shower &amp; Commute</div>
+                <div class="tl-menu">Out the door by 8:30, desk by 9:00.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">11:00 · Break <span class="kcal">~5 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Metabolic Spark</div>
+                <div class="tl-menu">1 cup plain black coffee, no sugar or milk, with 250ml water alongside.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">12:30–13:00 · Lunch <span class="kcal">~390 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Lean Office Lunch</div>
+                <div class="tl-menu">
+                  <ul>
+                    <li>1 plain whole-wheat roti, zero ghee/butter</li>
+                    <li>Large bowl of fiber-dense dry sabzi (okra, cauliflower, beans)</li>
+                    <li>2–3 bowls regular-fat curd</li>
+                  </ul>
+                </div>
+                <div class="tl-macros"><span><b>18g</b> protein</span><span><b>45g</b> carbs</span><span><b>16g</b>
+                    fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">16:00 · Break</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Second Coffee, Nervous-System Aware</div>
+                <div class="tl-menu">Black coffee is fine here — this is your last caffeine slot. Anything later gets
+                  swapped for herbal or decaf.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">17:00 · Evening Snack <span class="kcal">~310 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Second Protein Feed</div>
+                <div class="tl-menu">1 scoop whey protein blended with 250ml regular milk, just before leaving the
+                  office.</div>
+                <div class="tl-macros"><span><b>33g</b> protein</span><span><b>15g</b> carbs</span><span><b>11g</b>
+                    fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">17:30–18:00 · Leave Office</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Commute Home</div>
+                <div class="tl-menu">Home by roughly 18:30.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">19:30 · Evening <span class="kcal">~100 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Micro-Nutrient Drop</div>
+                <div class="tl-menu">1 cup hot green tea + 12–15 raw almonds + 2 whole walnuts.</div>
+                <div class="tl-macros"><span><b>3g</b> protein</span><span><b>4g</b> carbs</span><span><b>9g</b>
+                    fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">20:30 · Wind-Down</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Nervous System Reset</div>
+                <div class="tl-menu">1 magnesium tablet with 300ml water — small sips only from here on.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">21:30–22:00 · Lights Out</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">8-Hour Sleep Window Begins</div>
+                <div class="tl-menu">Continuous, uninterrupted sleep cycle through to 06:00.</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-document.getElementById('totop').addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+        <!-- WEEKEND -->
+        <div class="day-panel" id="panel-weekend">
+          <div class="macro-strip reveal">
+            <div class="macro-cell">
+              <div class="num" data-count="1570">0<small>kcal</small></div>
+              <div class="lbl">Sat/Sun Target*</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num">Rice<small>+dal</small></div>
+              <div class="lbl">Carb Refeed</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num">200<small>g</small></div>
+              <div class="lbl">Paneer, Sat PM</div>
+            </div>
+            <div class="macro-cell hydration">
+              <div class="num">3.5–4<small>L</small></div>
+              <div class="lbl">Hydration</div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">08:00 · Wake</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">First Flush</div>
+                <div class="tl-menu">500ml plain water immediately on waking.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">08:30 · Morning</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Baseline</div>
+                <div class="tl-menu">1 cup black coffee with 3–4 plain high-fiber digestive biscuits.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">12:00 · Lunch</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">First Major Meal</div>
+                <div class="tl-menu">
+                  <ul>
+                    <li>1 cup cooked rice (brown or white) + 1 bowl home-cooked dal</li>
+                    <li>40–50g cooked soy chunks + large mixed green salad</li>
+                  </ul>
+                  Followed by a relaxing bath, some reading, and a nap to support neural recovery.
+                </div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">17:00–18:00 · Mobility</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Active Recovery Walk</div>
+                <div class="tl-menu">45–60 minutes relaxed outdoor walk — active without spinal loading.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">21:00 · Dinner</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Second Major Meal</div>
+                <div class="tl-menu"><b>Saturday:</b> same as lunch, plus 200g fresh paneer for an overnight casein
+                  trickle.<br><b>Sunday:</b> one chosen clean cheat meal — reward the disciplined week, stop before
+                  discomfort.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">23:30 · Bedtime</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Lights Out</div>
+                <div class="tl-menu">Deep recovery through the night.</div>
+              </div>
+            </div>
+          </div>
+          <div class="weekend-note">*Excludes the Sunday cheat dinner, which is intentionally left unmeasured — enjoy it
+            without tracking, then return to the weekday structure on Monday.</div>
+        </div>
 
-// ---------- Active Section Tracking (Tabs and Drawer) ----------
-const sections = ['diet','workout','hydration','science'].map(id => document.getElementById(id));
-const desktopLinks = document.querySelectorAll('.tabs a');
-const mobileLinks = document.querySelectorAll('.drawer-nav a');
+        <div class="callout reveal">
+          <h3>Coach's Read: Is This Enough?</h3>
+          <ul>
+            <li><b>Protein is solid, not excessive.</b> ~129g/day at ~65.8kg is roughly 2.0g/kg — a strong number for
+              lean recomposition. It's well spread across 5 feedings, which matters more than the total.</li>
+            <li><b>Fibre is good but lopsided.</b> The lunch sabzi and weekend salad carry most of it. Consider adding a
+              small serving of vegetables to breakfast too (spinach already helps) so fibre isn't concentrated in one
+              meal.</li>
+            <li><b>Carbs are on the low side for your training load.</b> ~92g on a day with a 6:30am session plus an
+              office day is lean. This is fine for fat loss, but on your two hardest training days (HIIT + Legs), an
+              extra small portion of fruit or a banana post-workout would protect performance without derailing the
+              deficit.</li>
+            <li><b>Micronutrients are well covered</b> — B-complex, omega-3, and magnesium are the right stack for
+              someone sitting at a desk most of the day and training early morning.</li>
+            <li><b>One gap: electrolytes.</b> At 3.5–4L water/day plus sweat from training, plain water alone can dilute
+              sodium. A pinch of salt in your pre-workout water, or an electrolyte sachet on training days, is worth
+              adding.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if(entry.isIntersecting){
-      const activeId = '#' + entry.target.id;
-      desktopLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === activeId));
-      mobileLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === activeId));
+    <!-- ============ WORKOUT SECTION ============ -->
+    <section class="block" id="workout">
+      <div class="container">
+        <div class="block-head reveal">
+          <div class="eyebrow">Section 02</div>
+          <h2>Spine-Safe Training</h2>
+          <p>Five days, five muscle groups, zero axial loading. Every pull is seated or chest-supported, every press
+            stays flat on a bench, every squat pattern is a goblet — mechanical tension without spinal shear.</p>
+        </div>
+
+        <div class="day-tabs-wrap reveal">
+          <div class="day-tabs" id="dayTabs">
+            <div class="day-tab active" data-target="d1">
+              <div class="d-num">DAY 01</div>
+              <div class="d-name">Back &amp; Biceps</div>
+              <div class="d-focus">Pull + shoulder mobility</div>
+            </div>
+            <div class="day-tab" data-target="d2">
+              <div class="d-num">DAY 02</div>
+              <div class="d-name">Chest &amp; Triceps</div>
+              <div class="d-focus">Push + anterior chain</div>
+            </div>
+            <div class="day-tab" data-target="d3">
+              <div class="d-num">DAY 03</div>
+              <div class="d-name">Endurance</div>
+              <div class="d-focus">5K marathon engine</div>
+            </div>
+            <div class="day-tab" data-target="d4">
+              <div class="d-num">DAY 04</div>
+              <div class="d-name">Shoulders &amp; Abs</div>
+              <div class="d-focus">Stability + agility</div>
+            </div>
+            <div class="day-tab" data-target="d5">
+              <div class="d-num">DAY 05</div>
+              <div class="d-name">Legs &amp; Core</div>
+              <div class="d-focus">Power + footwork</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rest-strip reveal">
+          <span><b>Rest:</b> 60–90 sec between strength sets · 0 sec between mobility stretches</span>
+          <span><b>Tempo:</b> 2s eccentric · 0s pause · 1s concentric</span>
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="workout-panel active" id="d1">
+          <div class="wtag-row">
+            <span class="wtag">Pull Focus</span>
+            <span class="wtag">Shoulder–Spine Mobility</span>
+            <span class="wtag intensity-mod">Moderate Intensity</span>
+          </div>
+
+          <div class="subhead">Dynamic Warm-Up</div>
+          <div class="warmup-list">
+            <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Arm Circles,
+                Forward/Backward</span><span class="wu-r">15 each way</span>
+              <div class="wu-d">Warms up the rotator cuffs for court swings.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Cat-Cow Flow</span><span class="wu-r">10
+                cycles</span>
+              <div class="wu-d">Mobilizes the lumbar spine without compressive loading.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Bird-Dog Hold</span><span
+                class="wu-r">6/side · 3s hold</span>
+              <div class="wu-d">Activates deep core stabilizers and the multifidus.</div>
+            </div>
+          </div>
+
+          <div class="subhead">Resistance Protocol</div>
+          <table class="ex-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Exercise</th>
+                <th>Sets × Reps</th>
+                <th>Weight</th>
+                <th>Technique</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ex-row">
+                <td class="ex-seq">01</td>
+                <td class="ex-name">Seated Cable Rows</td>
+                <td class="ex-sets">3 × 10–12</td>
+                <td class="ex-weight">10–15 kg</td>
+                <td class="ex-instr">Sit tall, feet braced. Pull the V-bar to your lower stomach. Keep spine vertical —
+                  no swinging.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">02</td>
+                <td class="ex-name">Chest-Supported DB Rows</td>
+                <td class="ex-sets">3 × 10–12</td>
+                <td class="ex-weight">7.5–12.5 kg</td>
+                <td class="ex-instr">Lie face-down on a 45° incline bench. Row dumbbells to your hips — the bench
+                  absorbs all lumbar load.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">03</td>
+                <td class="ex-name">Lat Pulldowns, Wide Grip</td>
+                <td class="ex-sets">3 × 10–12</td>
+                <td class="ex-weight">Moderate</td>
+                <td class="ex-instr">Thigh pads snug. Pull the bar to your upper chest. Keep chest high, don't lean back
+                  to force it down.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">04</td>
+                <td class="ex-name">Seated Incline DB Curls</td>
+                <td class="ex-sets">3 × 12</td>
+                <td class="ex-weight">5–10 kg</td>
+                <td class="ex-instr">Sit back on a 60° incline bench, arms hanging straight. Lock elbows in place and
+                  curl — prevents spine swing.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">05</td>
+                <td class="ex-name">Seated Hammer Curls</td>
+                <td class="ex-sets">3 × 12</td>
+                <td class="ex-weight">5–10 kg</td>
+                <td class="ex-instr">Sit fully upright, back supported. Builds forearm and wrist strength for racket
+                  grip endurance.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="subhead">Static Cool-Down</div>
+          <div class="cooldown-list">
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Child's Pose</b><span>Arms forward, hips back to heels — breathe into the lower
+                  back to decompress the spine.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Doorway Chest Opener</b><span>Forearm against a doorway, torso rotated away —
+                  releases chest and front delts.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Cross-Body Arm Stretch</b><span>Pull arm across the chest horizontally to release
+                  upper back and rear delts.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="workout-panel" id="d2">
+          <div class="wtag-row">
+            <span class="wtag">Push Focus</span>
+            <span class="wtag">Anterior Chain Flexibility</span>
+            <span class="wtag intensity-mod">Moderate Intensity</span>
+          </div>
+
+          <div class="subhead">Dynamic Warm-Up</div>
+          <div class="warmup-list">
+            <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Shoulder Dislocations
+                (towel/band)</span><span class="wu-r">12 reps</span>
+              <div class="wu-d">Improves overhead shoulder range of motion.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Scapular Push-ups</span><span
+                class="wu-r">12 reps</span>
+              <div class="wu-d">Activates serratus anterior, stabilizes shoulder blades.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Standing Torso Twists</span><span
+                class="wu-r">15/side</span>
+              <div class="wu-d">Gently warms the core dynamically.</div>
+            </div>
+          </div>
+
+          <div class="subhead">Resistance Protocol</div>
+          <table class="ex-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Exercise</th>
+                <th>Sets × Reps</th>
+                <th>Weight</th>
+                <th>Technique</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ex-row">
+                <td class="ex-seq">01</td>
+                <td class="ex-name">Incline / Standard Push-ups</td>
+                <td class="ex-sets">3 × 12–15</td>
+                <td class="ex-weight">Bodyweight</td>
+                <td class="ex-instr">Rigid plank head-to-heel. If floor push-ups sag the back, elevate hands onto a
+                  bench.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">02</td>
+                <td class="ex-name">DB Flat Bench Press</td>
+                <td class="ex-sets">3 × 10–12</td>
+                <td class="ex-weight">10–15 kg</td>
+                <td class="ex-instr">Feet flat, hips stable. Press upper back into the pad. Avoid excessive lumbar arch.
+                </td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">03</td>
+                <td class="ex-name">Incline DB Flyes</td>
+                <td class="ex-sets">3 × 12</td>
+                <td class="ex-weight">5–7.5 kg</td>
+                <td class="ex-instr">Low 30° incline, soft elbow bend. Stretch horizontally, don't drop past shoulder
+                  line.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">04</td>
+                <td class="ex-name">Bench Dips</td>
+                <td class="ex-sets">3 × 12</td>
+                <td class="ex-weight">Bodyweight</td>
+                <td class="ex-instr">Paloms on bench edge. Keep glutes tight against the bench as you lower.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">05</td>
+                <td class="ex-name">Seated DB Tricep Extensions</td>
+                <td class="ex-sets">3 × 12</td>
+                <td class="ex-weight">7.5–12.5 kg</td>
+                <td class="ex-instr">Back supported. Diamond grip overhead with both hands, lower slowly behind the
+                  head.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="subhead">Static Cool-Down</div>
+          <div class="cooldown-list">
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Cobra / Sphinx Stretch</b><span>Face down on forearms, gently extend the chest
+                  upward — safe ab stretch.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Overhead Tricep Stretch</b><span>Elbow behind the head, stretching triceps and
+                  lats.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Clasp-Behind Back Stretch</b><span>Hands clasped behind lower back, lift slightly
+                  to clear tight chest tissue.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="workout-panel" id="d3">
+          <div class="wtag-row">
+            <span class="wtag">5K Marathon Prep</span>
+            <span class="wtag intensity-high">High Intensity</span>
+          </div>
+
+          <div class="subhead">Dynamic Mobility Prep</div>
+          <div class="warmup-list">
+            <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Leg Swings, Forward/Backward</span><span
+                class="wu-r">15/leg</span>
+              <div class="wu-d">Preps hip flexors and hamstrings for stride length.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Lateral Leg Swings</span><span
+                class="wu-r">12/leg</span>
+              <div class="wu-d">Preps groin and outer hips for lateral court movement.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Ankle Rotations</span><span
+                class="wu-r">15s each way/foot</span>
+              <div class="wu-d">Lubricates ankle joints to absorb impact.</div>
+            </div>
+          </div>
+
+          <div class="subhead">High-Intensity Interval Phase</div>
+          <div class="warmup-list">
+            <div class="wu-item"><span class="wu-n">—</span><span class="wu-t">Easy Warm-Up Jog</span><span
+                class="wu-r">5 min</span>
+              <div class="wu-d">Conversational pace.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">×8</span><span class="wu-t">Sprint Interval</span><span
+                class="wu-r">1 min hard / 1 min walk</span>
+              <div class="wu-d">80–85% max effort running, followed by active recovery.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">—</span><span class="wu-t">Sustained Finisher</span><span
+                class="wu-r">1.5–2 km</span>
+              <div class="wu-d">Continuous run at your target 5K goal pace.</div>
+            </div>
+          </div>
+
+          <div class="subhead">Deep Lower-Body Static Stretch</div>
+          <div class="cooldown-list">
+            <div class="cd-item"><span class="cd-time">45s</span>
+              <div class="cd-text"><b>Standing Calf Stretch</b><span>Lean on a wall, one leg back, heel pressed down to
+                  release calf tension.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">45s</span>
+              <div class="cd-text"><b>Kneeling Hip Flexor Stretch</b><span>One knee down, pelvis tucked forward —
+                  releases hips tight from desk sitting.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">45s</span>
+              <div class="cd-text"><b>Standing Quad Stretch</b><span>Hold ankle behind the back, knees aligned —
+                  stretches the front thigh.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 4 -->
+        <div class="workout-panel" id="d4">
+          <div class="wtag-row">
+            <span class="wtag">Stability &amp; Agility</span>
+            <span class="wtag">Core Balance</span>
+            <span class="wtag intensity-mod">Moderate Intensity</span>
+          </div>
+
+          <div class="subhead">Dynamic Warm-Up</div>
+          <div class="warmup-list">
+            <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Y-T-W Raises</span><span class="wu-r">10
+                per letter</span>
+              <div class="wu-d">Activates mid-traps, rear delts, rhomboids.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Standing Arm Pulses</span><span
+                class="wu-r">20 reps</span>
+              <div class="wu-d">Increases blood flow across the shoulder girdle.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">High Knees, Slow Tempo</span><span
+                class="wu-r">12/leg</span>
+              <div class="wu-d">Warms lower core and hip flexors together.</div>
+            </div>
+          </div>
+
+          <div class="subhead">Resistance Protocol</div>
+          <table class="ex-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Exercise</th>
+                <th>Sets × Reps</th>
+                <th>Weight</th>
+                <th>Technique</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ex-row">
+                <td class="ex-seq">01</td>
+                <td class="ex-name">Seated DB Shoulder Press</td>
+                <td class="ex-sets">3 × 10–12</td>
+                <td class="ex-weight">7.5–12.5 kg</td>
+                <td class="ex-instr">Back flush against a vertical pad. Controlled arc up — don't arch the lower back.
+                </td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">02</td>
+                <td class="ex-name">Seated DB Lateral Raises</td>
+                <td class="ex-sets">3 × 12–15</td>
+                <td class="ex-weight">2.5–5 kg</td>
+                <td class="ex-instr">Seated at the bench edge. Sitting eliminates torso swing and protects the lower
+                  back.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">03</td>
+                <td class="ex-name">Chest-Supported Rear Delt Flyes</td>
+                <td class="ex-sets">3 × 12–15</td>
+                <td class="ex-weight">2.5–5 kg</td>
+                <td class="ex-instr">Face-down on a 30° incline. Raise weights horizontally for stable, court-ready
+                  shoulders.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">04</td>
+                <td class="ex-name">Mountain Climbers</td>
+                <td class="ex-sets">3 × 30–45s</td>
+                <td class="ex-weight">Bodyweight</td>
+                <td class="ex-instr">Rigid plank, drive knees to chest fast. Keep hips low to shield the lumbar line.
+                </td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">05</td>
+                <td class="ex-name">Hanging Leg / Knee Raises</td>
+                <td class="ex-sets">3 × 10–12</td>
+                <td class="ex-weight">Bodyweight</td>
+                <td class="ex-instr">Hang straight from a bar. Bring knees up smoothly — no momentum or swinging.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="subhead">Static Cool-Down</div>
+          <div class="cooldown-list">
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Cross-Body Deltoid Stretch</b><span>Arm drawn across the collarbone to stretch the
+                  lateral shoulder cap.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Thread the Needle</b><span>Hands and knees, one arm sliding under the chest —
+                  stretches the upper back.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">30s</span>
+              <div class="cd-text"><b>Seated Oblique Stretch</b><span>Cross-legged, one arm overhead, lean to the side —
+                  stretches obliques and QL.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 5 -->
+        <div class="workout-panel" id="d5">
+          <div class="wtag-row">
+            <span class="wtag">Power &amp; Footwork</span>
+            <span class="wtag">Lumbar Protection</span>
+            <span class="wtag intensity-mod">Moderate–High Intensity</span>
+          </div>
+
+          <div class="subhead">Dynamic Warm-Up</div>
+          <div class="warmup-list">
+            <div class="wu-item"><span class="wu-n">01</span><span class="wu-t">Bodyweight Air Squats</span><span
+                class="wu-r">12 reps</span>
+              <div class="wu-d">Warms knees, hips, ankles.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">02</span><span class="wu-t">Glute Bridges</span><span
+                class="wu-r">15 reps</span>
+              <div class="wu-d">Wakes the glutes so the lower back doesn't compensate.</div>
+            </div>
+            <div class="wu-item"><span class="wu-n">03</span><span class="wu-t">Lateral Side Lunges</span><span
+                class="wu-r">8/side</span>
+              <div class="wu-d">Preps lateral badminton lunging mechanics.</div>
+            </div>
+          </div>
+
+          <div class="subhead">Resistance Protocol</div>
+          <table class="ex-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Exercise</th>
+                <th>Sets × Reps</th>
+                <th>Weight</th>
+                <th>Technique</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ex-row">
+                <td class="ex-seq">01</td>
+                <td class="ex-name">DB Goblet Box Squats</td>
+                <td class="ex-sets">3 × 12</td>
+                <td class="ex-weight">10–15 kg</td>
+                <td class="ex-instr">One dumbbell at chest, sit back to a bench, drive up. Bypasses vertical spine
+                  compression.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">02</td>
+                <td class="ex-name">Dumbbell Romanian Deadlifts</td>
+                <td class="ex-sets">3 × 10–12</td>
+                <td class="ex-weight">7.5–12.5 kg</td>
+                <td class="ex-instr">Soft knees, hips pushed back. Weights skim the legs to mid-shin. Never round the
+                  back.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">03</td>
+                <td class="ex-name">Bulgarian Split Squats</td>
+                <td class="ex-sets">3 × 10/leg</td>
+                <td class="ex-weight">BW–5 kg</td>
+                <td class="ex-instr">Rear foot on a bench, lower smoothly. Builds single-leg power for deep court
+                  recoveries.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">04</td>
+                <td class="ex-name">Weighted Glute Bridges</td>
+                <td class="ex-sets">3 × 15</td>
+                <td class="ex-weight">10–15 kg</td>
+                <td class="ex-instr">Flat on back, dumbbell across hips. Drive through heels — zero lower back
+                  compression.</td>
+              </tr>
+              <tr class="ex-row">
+                <td class="ex-seq">05</td>
+                <td class="ex-name">Forearm Plank</td>
+                <td class="ex-sets">3 × 45–60s</td>
+                <td class="ex-weight">Bodyweight</td>
+                <td class="ex-instr">Straight line head-to-heel. Squeeze abs, quads, glutes hard to stabilize.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="subhead">Static Cool-Down</div>
+          <div class="cooldown-list">
+            <div class="cd-item"><span class="cd-time">45s</span>
+              <div class="cd-text"><b>Pigeon Pose</b><span>One knee forward and rotated out, other leg extended back —
+                  releases deep glute tightness.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">45s</span>
+              <div class="cd-text"><b>Seated Hamstring Fold</b><span>Legs extended, reach for ankles, chest open — don't
+                  round the upper spine.</span></div>
+            </div>
+            <div class="cd-item"><span class="cd-time">45s</span>
+              <div class="cd-text"><b>Butterfly Stretch</b><span>Soles together, knees pressed gently down to open tight
+                  adductors.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subhead reveal">Sunday Active Recovery</div>
+        <div class="recovery-grid reveal">
+          <div class="rec-card">
+            <div class="rc-eyebrow">3 × 20–30s</div>
+            <h4>Decompression Hanging</h4>
+            <p>Hang completely limp from a pull-up bar. Gravity opens the lumbar discs.</p>
+          </div>
+          <div class="rec-card">
+            <div class="rc-eyebrow">5 reps/side</div>
+            <h4>World's Greatest Stretch</h4>
+            <p>Deep lunge, hand inside the foot, rotate the opposite arm skyward.</p>
+          </div>
+          <div class="rec-card">
+            <div class="rc-eyebrow">60s/side</div>
+            <h4>Supine Spinal Twist</h4>
+            <p>Flat on the back, bent knee drops across the body, arms wide.</p>
+          </div>
+        </div>
+
+        <div class="callout reveal">
+          <h3>Coach's Read: Program Corrections</h3>
+          <ul>
+            <li><b>Structure is sound — 5 days, no overlap.</b> Back/biceps, chest/triceps, endurance, shoulders/abs,
+              legs/core covers every major group with a clean pull-push-cardio-stability-power split.</li>
+            <li><b>One real gap: standalone rest.</b> Five straight training days into Sunday recovery is workable
+              short-term, but for 12 weeks, consider making one of Day 2 or Day 4 lighter every other week to avoid
+              accumulating fatigue — your joints will thank you closer to week 8–10.</li>
+            <li><b>Badminton-specific footwork is under-trained.</b> The program builds the muscles and the engine, but
+              there's no direct lateral shuffle / split-step drilling. Adding 5 minutes of shadow footwork before Day
+              3's run would transfer more directly to court movement.</li>
+            <li><b>Progression isn't specified.</b> Reps/sets are fixed at 3×10–12 throughout — for genuine
+              recomposition over 12 weeks, plan to add small weight increments (2.5kg jumps) every 2–3 weeks once the
+              top of the rep range feels easy, rather than staying static.</li>
+            <li><b>Running progression needs a target curve.</b> "Increase running range in 2–3 months" needs a number —
+              a simple plan is +0.5km on the sustained finisher every 2 weeks, so 1.5km in week 1 becomes a full 5km
+              continuous by week 10–12.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HYDRATION & SLEEP ============ -->
+    <section class="block" id="hydration">
+      <div class="container">
+        <div class="block-head reveal">
+          <div class="eyebrow">Section 03</div>
+          <h2>Hydration &amp; Sleep</h2>
+          <p>Water intake is front-loaded to the working day and cut off by 8:30pm. Sleep is protected by a hard
+            caffeine boundary and a consistent 8-hour window.</p>
+        </div>
+
+        <div class="hs-grid">
+          <div class="reveal">
+            <div class="water-vessel">
+              <div class="water-marks">
+                <div>4.0L</div>
+                <div>3.0L</div>
+                <div>2.0L</div>
+                <div>1.0L</div>
+                <div>0L</div>
+              </div>
+              <div class="water-fill" id="waterFill">
+                <div class="water-total" id="waterTotalText"><b id="waterLoggedVal">0.0L</b>logged today</div>
+              </div>
+            </div>
+
+            <div class="water-quick-log">
+              <button class="btn-water" id="btnWaterAdd250" type="button">+ 250ml</button>
+              <button class="btn-water" id="btnWaterAdd500" type="button">+ 500ml</button>
+              <button class="btn-water btn-water-reset" id="btnWaterReset" type="button">Reset</button>
+            </div>
+
+            <div class="water-manual-row">
+              <input type="number" class="input-water-custom" id="inputWaterCustom" placeholder="Custom intake (ml)"
+                min="1" max="2000">
+              <button class="btn-water btn-water-action" id="btnWaterCustomLog" type="button">Log Fluid</button>
+            </div>
+
+            <div class="water-slots">
+              <div class="ws-item" data-amount="500">
+                <div class="ws-checkbox"></div>
+                <span class="ws-time">06:00</span>
+                <span class="ws-desc">Warm water on waking</span>
+                <span class="ws-amt">500ml</span>
+              </div>
+              <div class="ws-item" data-amount="500">
+                <div class="ws-checkbox"></div>
+                <span class="ws-time">06:30–07:30</span>
+                <span class="ws-desc">Sipped through the workout</span>
+                <span class="ws-amt">500ml</span>
+              </div>
+              <div class="ws-item" data-amount="1500">
+                <div class="ws-checkbox"></div>
+                <span class="ws-time">09:00–13:00</span>
+                <span class="ws-desc">Office morning shift</span>
+                <span class="ws-amt">1.5L</span>
+              </div>
+              <div class="ws-item" data-amount="1000">
+                <div class="ws-checkbox"></div>
+                <span class="ws-time">13:30–17:30</span>
+                <span class="ws-desc">Office afternoon shift</span>
+                <span class="ws-amt">1.0L</span>
+              </div>
+              <div class="ws-item" data-amount="500">
+                <div class="ws-checkbox"></div>
+                <span class="ws-time">18:30–20:30</span>
+                <span class="ws-desc">Evening recovery, max</span>
+                <span class="ws-amt">500ml</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="reveal">
+            <div class="sleep-card">
+              <div class="sleep-arc-wrap">
+                <svg width="220" height="130" viewBox="0 0 220 130">
+                  <defs>
+                    <linearGradient id="sleepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="var(--lime)" />
+                      <stop offset="100%" stop-color="var(--blue)" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 10 120 A 100 100 0 0 1 210 120" fill="none" stroke="var(--line)" stroke-width="8"
+                    stroke-linecap="round" />
+                  <path id="sleepArc" d="M 10 120 A 100 100 0 0 1 210 120" fill="none" stroke="url(#sleepGrad)"
+                    stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" />
+                  <text x="110" y="90" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="28"
+                    fill="#F5F6F9" font-weight="700">8h</text>
+                  <text x="110" y="112" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#8E9AA8">21:30 → 06:00</text>
+                </svg>
+              </div>
+              <div class="sleep-rules">
+                <div class="sr-item"><span class="sr-ico">☾</span>
+                  <div>
+                    <h4>Digital Sunset</h4>
+                    <p>Blue-light screens off by 9:00pm — phones and laptops included.</p>
+                  </div>
+                </div>
+                <div class="sr-item"><span class="sr-ico">❄</span>
+                  <div>
+                    <h4>Cool, Dark, Silent</h4>
+                    <p>Room pitch-black and cool to support natural core-temperature drop.</p>
+                  </div>
+                </div>
+                <div class="sr-item"><span class="sr-ico">☕</span>
+                  <div>
+                    <h4>4pm Caffeine Boundary</h4>
+                    <p>No regular coffee after 4pm — herbal or decaf only, so adenosine can do its job.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCIENCE / BREAKDOWN ============ -->
+    <section class="block" id="science" style="border-bottom:none;">
+      <div class="container">
+        <div class="block-head reveal">
+          <div class="eyebrow">Section 04</div>
+          <h2>The Breakdown</h2>
+          <p>Why the timing, the seated angles, and the fasting windows are doing what they're doing — in plain terms.
+          </p>
+        </div>
+
+        <div class="accordion reveal" id="accordion">
+          <div class="acc-item open">
+            <div class="acc-head"><span class="acc-num">01</span><span class="acc-title">The Weekday Fasting
+                Window</span><span class="acc-plus">+</span></div>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p>Consolidating meals between 6:15am and 5:00pm creates an overnight fast of over 13 hours — a mild
+                  version of <b>early time-restricted feeding</b>.</p>
+                <div class="mini-callout">By around 10pm, circulating insulin drops to baseline. With insulin low,
+                  stored fat layers become physically easier to unlock and utilize as a direct fuel source.</div>
+                <p>Training at 6:30am, before the first meal, means glycogen is available but blood glucose is low —
+                  pushing the body toward <b>fat oxidation</b> to power the session.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <div class="acc-head"><span class="acc-num">02</span><span class="acc-title">Muscle Protein Synthesis vs.
+                Breakdown</span><span class="acc-plus">+</span></div>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p>Staying lean without losing muscle means keeping <b>MPS</b> ahead of <b>MPB</b> — and the timing here
+                  is deliberate.</p>
+                <div class="mini-callout"><b>The Leucine Trigger:</b> eggs + soy at breakfast deliver 3g+ of leucine,
+                  the amino acid that switches on the mTORC1 muscle-repair pathway.</div>
+                <div class="mini-callout"><b>The Casein Trickle:</b> curd at lunch releases amino acids slowly over 4–5
+                  hours, protecting muscle through the office stretch. Weekend paneer extends this overnight.</div>
+                <p><b>On soy:</b> 40–50g of soy chunks daily does not measurably shift testosterone or estrogen — its
+                  isoflavones bind ERβ receptors, which don't produce the effects people worry about. It's simply an
+                  efficient, affordable protein source.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <div class="acc-head"><span class="acc-num">03</span><span class="acc-title">Why Every Lift Is Seated or
+                Supported</span><span class="acc-plus">+</span></div>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p>The whole program chases <b>mechanical tension</b> in the target muscle while removing <b>axial
+                    load</b> and <b>lumbar shear</b> from the spine.</p>
+                <div class="mini-callout"><b>Seated rows vs. bent-over rows:</b> standing rows force the lower back to
+                  brace against gravity — sitting and bracing the feet routes the load into the hips instead.</div>
+                <div class="mini-callout"><b>Bench press vs. standing overhead press:</b> a bench absorbs the load
+                  directly; a standing press drives it straight through the lower back.</div>
+                <div class="mini-callout"><b>Goblet box squats vs. barbell squats:</b> the front-loaded dumbbell keeps
+                  the torso upright, and the box gives a controlled depth marker so the lower back never rounds out.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <div class="acc-head"><span class="acc-num">04</span><span class="acc-title">Building Two Different
+                Engines</span><span class="acc-plus">+</span></div>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p>A 5K and competitive badminton draw on two separate energy systems, and Day 3 is built to train both.
+                </p>
+                <div class="mini-callout"><b>Badminton (ATP-PC / anaerobic):</b> explosive bursts and direction changes.
+                  The 1-minute hard sprint intervals condition rapid, oxygen-independent energy output.</div>
+                <div class="mini-callout"><b>Marathon (aerobic / VO2 max):</b> sustained oxygen efficiency and lactate
+                  clearance. The 1.5–2km continuous finisher builds the stamina base for both the run and long badminton
+                  rallies.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div>DAS/PROTOCOL — built for one athlete, one 12-week cycle.</div>
+    <div>Spine-safe · Evidence-informed</div>
+  </footer>
+
+  <button class="totop" id="totop" aria-label="Scroll to top" type="button">↑</button>
+
+  <script>
+    // ---------- Scroll Progress Bar Engine ----------
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      document.getElementById('scrollProgress').style.width = scrolled + '%';
+    }, { passive: true });
+
+    // ---------- Scorebar Visibility Controls ----------
+    const scorebar = document.getElementById('scorebar');
+    let lastY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y > lastY && y > 140) { scorebar.classList.add('hide'); } else { scorebar.classList.remove('hide'); }
+      lastY = y;
+      document.getElementById('totop').classList.toggle('show', y > 700);
+    }, { passive: true });
+
+    document.getElementById('totop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ---------- Settings Architecture Controller (Modal Matrix) ----------
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsTrigger = document.getElementById('settingsTrigger');
+    const settingsClose = document.getElementById('settingsClose');
+    const settingsModalBackdrop = document.getElementById('settingsModalBackdrop');
+
+    function openSettings() { settingsModal.classList.add('active'); }
+    function closeSettings() { settingsModal.classList.remove('active'); }
+
+    settingsTrigger.addEventListener('click', openSettings);
+    settingsClose.addEventListener('click', closeSettings);
+    settingsModalBackdrop.addEventListener('click', closeSettings);
+
+    // ---------- Live Settings Sorting Engine via Pointer Events ----------
+    const sortableList = document.getElementById('settingsSortableList');
+    const mainLayoutWrapper = document.getElementById('mainLayoutWrapper');
+    let dragElement = null;
+    let pressTimer = null;
+
+    sortableList.addEventListener('pointerdown', (e) => {
+      const item = e.target.closest('.settings-toggle-item');
+      if (!item || e.target.closest('.switch-control')) return;
+
+      pressTimer = setTimeout(() => {
+        dragElement = item;
+        dragElement.classList.add('dragging');
+        if (navigator.vibrate) navigator.vibrate(40); // Native PWA haptic feel
+      }, 200);
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!dragElement) return;
+      e.preventDefault();
+
+      const siblings = [...sortableList.querySelectorAll('.settings-toggle-item:not(.dragging)')];
+      const nextSibling = siblings.find(sibling => {
+        const box = sibling.getBoundingClientRect();
+        return e.clientY <= box.top + box.height / 2;
+      });
+
+      sortableList.insertBefore(dragElement, nextSibling);
+    });
+
+    const stopDragging = () => {
+      clearTimeout(pressTimer);
+      if (dragElement) {
+        dragElement.classList.remove('dragging');
+        dragElement = null;
+        synchronizePageLayout();
+      }
+    };
+
+    window.addEventListener('pointerup', stopDragging);
+    window.addEventListener('pointercancel', stopDragging);
+
+    function synchronizePageLayout() {
+      const currentOrder = [...sortableList.querySelectorAll('.settings-toggle-item')].map(item => item.dataset.target);
+
+      currentOrder.forEach(id => {
+        const targetSection = document.getElementById(id);
+        if (targetSection) {
+          mainLayoutWrapper.appendChild(targetSection);
+        }
+      });
+
+      localStorage.setItem('das_layout_sequence', JSON.stringify(currentOrder));
     }
-  });
-}, {rootMargin:'-30% 0px -60% 0px'});
-sections.forEach(s => s && io.observe(s));
 
-// ---------- Mobile Hamburger & Navigation Drawer ----------
-const navToggle = document.getElementById('navToggle');
-const drawer = document.getElementById('drawer');
-const drawerOverlay = document.getElementById('drawerOverlay');
-const drawerLinks = document.querySelectorAll('.drawer-nav a');
+    // ---------- Visibility Switch Toggles Engine ----------
+    const toggles = document.querySelectorAll('.settings-toggle-item input[type="checkbox"]');
+    const navTabsContainer = document.getElementById('navTabs');
+    const drawerNavContainer = document.getElementById('drawerNav');
 
-function openDrawer() {
-  drawer.classList.add('active');
-  drawerOverlay.classList.add('active');
-  navToggle.classList.add('active');
-  navToggle.setAttribute('aria-expanded', 'true');
-}
+    function applyVisibilityState(targetId, isVisible) {
+      const targetElement = document.getElementById(targetId);
+      if (!targetElement) return;
 
-function closeDrawer() {
-  drawer.classList.remove('active');
-  drawerOverlay.classList.remove('active');
-  navToggle.classList.remove('active');
-  navToggle.setAttribute('aria-expanded', 'false');
-}
+      if (isVisible) {
+        targetElement.classList.remove('section-hidden');
+      } else {
+        targetElement.classList.add('section-hidden');
+      }
 
-navToggle.addEventListener('click', () => {
-  if (drawer.classList.contains('active')) {
-    closeDrawer();
-  } else {
-    openDrawer();
-  }
-});
-drawerOverlay.addEventListener('click', closeDrawer);
-drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
+      const desktopTab = navTabsContainer.querySelector(`[data-nav="${targetId}"]`);
+      const mobileTab = drawerNavContainer.querySelector(`[data-nav="${targetId}"]`);
 
-// ---------- Reveal on Scroll ----------
-const revealEls = document.querySelectorAll('.reveal');
-const rIo = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); rIo.unobserve(e.target); } });
-}, {threshold:0.1});
-revealEls.forEach(el => rIo.observe(el));
-
-// ---------- Diet Weekday/Weekend Toggle with Sliding Pill ----------
-const dietToggle = document.getElementById('dietToggle');
-document.querySelectorAll('.dt-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.dt-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + btn.dataset.day).classList.add('active');
-    
-    if (btn.dataset.day === 'weekend') {
-      dietToggle.classList.add('weekend-active');
-    } else {
-      dietToggle.classList.remove('weekend-active');
+      if (desktopTab) desktopTab.classList.toggle('nav-hidden', !isVisible);
+      if (mobileTab) mobileTab.classList.toggle('nav-hidden', !isVisible);
     }
-  });
-});
 
-// ---------- Workout Day Tabs ----------
-document.querySelectorAll('.day-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.querySelectorAll('.workout-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(tab.dataset.target).classList.add('active');
-  });
-});
+    toggles.forEach(box => {
+      const target = box.dataset.toggleTarget;
 
-// ---------- Exercise Row Expand (Accordeon on Tap) ----------
-document.querySelectorAll('.ex-row').forEach(row => {
-  row.addEventListener('click', () => row.classList.toggle('open'));
-});
+      const cachedState = localStorage.getItem(`das_hide_${target}`);
+      if (cachedState === 'true') {
+        box.checked = false;
+        applyVisibilityState(target, false);
+      }
 
-// ---------- Count-Up Macro Numbers ----------
-function countUp(el){
-  const target = parseFloat(el.dataset.count);
-  const suffixEl = el.querySelector('small');
-  const suffix = suffixEl ? suffixEl.outerHTML : '';
-  let cur = 0;
-  const step = Math.max(target/40, 1);
-  const tick = () => {
-    cur += step;
-    if(cur >= target){ el.innerHTML = target + suffix; return; }
-    el.innerHTML = Math.floor(cur) + suffix;
-    requestAnimationFrame(tick);
-  };
-  tick();
-}
-const macroObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if(e.isIntersecting){
-      const nums = e.target.querySelectorAll('.num[data-count]');
-      nums.forEach(countUp);
-      macroObserver.unobserve(e.target);
+      box.addEventListener('change', (e) => {
+        const isVisible = e.target.checked;
+        applyVisibilityState(target, isVisible);
+        localStorage.setItem(`das_hide_${target}`, !isVisible);
+      });
+    });
+
+    // ---------- Load Initial Settings Arrangement State Cache ----------
+    (function initializeLayoutFromCache() {
+      const cachedSequence = JSON.parse(localStorage.getItem('das_layout_sequence'));
+      if (cachedSequence) {
+        cachedSequence.forEach(id => {
+          const section = document.getElementById(id);
+          if (section) mainLayoutWrapper.appendChild(section);
+
+          const configItem = sortableList.querySelector(`[data-target="${id}"]`);
+          if (configItem) sortableList.appendChild(configItem);
+        });
+      }
+    })();
+
+    // ---------- Dynamic Navigation Section Highlight Anchors ----------
+    const sections = ['diet', 'workout', 'hydration', 'science'].map(id => document.getElementById(id));
+    const desktopLinks = document.querySelectorAll('.tabs a');
+    const mobileLinks = document.querySelectorAll('.drawer-nav a');
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('section-hidden')) {
+          const activeId = '#' + entry.target.id;
+          desktopLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === activeId));
+          mobileLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === activeId));
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(s => s && io.observe(s));
+
+    // ---------- Mobile Drawer Mechanisms ----------
+    const navToggle = document.getElementById('navToggle');
+    const drawer = document.getElementById('drawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const drawerLinks = document.querySelectorAll('.drawer-nav a');
+
+    function openDrawer() {
+      drawer.classList.add('active');
+      drawerOverlay.classList.add('active');
+      navToggle.classList.add('active');
     }
-  });
-}, {threshold:0.2});
-document.querySelectorAll('.macro-strip').forEach(m => macroObserver.observe(m));
 
-// ---------- Interactive Hydration Tracking & Caching ----------
-const waterFill = document.getElementById('waterFill');
-const waterLoggedVal = document.getElementById('waterLoggedVal');
-const waterItems = document.querySelectorAll('.water-slots .ws-item');
+    function closeDrawer() {
+      drawer.classList.remove('active');
+      drawerOverlay.classList.remove('active');
+      navToggle.classList.remove('active');
+    }
 
-let customWater = parseInt(localStorage.getItem('das_custom_water') || '0', 10);
-let checkedSlots = JSON.parse(localStorage.getItem('das_checked_slots') || '[]');
+    navToggle.addEventListener('click', () => {
+      if (drawer.classList.contains('active')) { closeDrawer(); } else { openDrawer(); }
+    });
+    drawerOverlay.addEventListener('click', closeDrawer);
+    drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
 
-// Restore status and bind events
-waterItems.forEach((item, index) => {
-  if (item.dataset.amount === '0') return; // Skip sips only
-  
-  if (checkedSlots.includes(index)) {
-    item.classList.add('checked');
-  }
+    // ---------- Scroll Reveal Animations Observer ----------
+    const revealEls = document.querySelectorAll('.reveal');
+    const rIo = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rIo.unobserve(e.target); } });
+    }, { threshold: 0.05 });
+    revealEls.forEach(el => rIo.observe(el));
 
-  item.addEventListener('click', () => {
-    item.classList.toggle('checked');
-    const activeChecks = [];
-    waterItems.forEach((it, idx) => {
-      if (it.classList.contains('checked')) {
-        activeChecks.push(idx);
+    // ---------- Weekday/Weekend Slide Toggles ----------
+    const dietToggle = document.getElementById('dietToggle');
+    document.querySelectorAll('.dt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.dt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-' + btn.dataset.day).classList.add('active');
+
+        if (btn.dataset.day === 'weekend') {
+          dietToggle.classList.add('weekend-active');
+        } else {
+          dietToggle.classList.remove('weekend-active');
+        }
+      });
+    });
+
+    // ---------- Workout Architecture Matrix Tabs ----------
+    document.querySelectorAll('.day-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.workout-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(tab.dataset.target).classList.add('active');
+      });
+    });
+
+    // ---------- Mobile Interactive Table Expansion Engine ----------
+    document.querySelectorAll('.ex-row').forEach(row => {
+      row.addEventListener('click', () => {
+        if (window.innerWidth <= 760) row.classList.toggle('open');
+      });
+    });
+
+    // ---------- Numerical Dash Metrics Count-Up Modulator ----------
+    function countUp(el) {
+      const target = parseFloat(el.dataset.count);
+      const suffixEl = el.querySelector('small');
+      const suffix = suffixEl ? suffixEl.outerHTML : '';
+      let cur = 0;
+      const step = Math.max(target / 30, 1);
+      const tick = () => {
+        cur += step;
+        if (cur >= target) { el.innerHTML = target + suffix; return; }
+        el.innerHTML = Math.floor(cur) + suffix;
+        requestAnimationFrame(tick);
+      };
+      tick();
+    }
+    const macroObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.num[data-count]').forEach(countUp);
+          macroObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.macro-strip').forEach(m => macroObserver.observe(m));
+
+    // ---------- Fluid Tracking System Configs ----------
+    const waterFill = document.getElementById('waterFill');
+    const waterLoggedVal = document.getElementById('waterLoggedVal');
+    const waterItems = document.querySelectorAll('.water-slots .ws-item');
+    const inputWaterCustom = document.getElementById('inputWaterCustom');
+
+    let customWater = parseInt(localStorage.getItem('das_custom_water') || '0', 10);
+    let checkedSlots = JSON.parse(localStorage.getItem('das_checked_slots') || '[]');
+
+    waterItems.forEach((item, index) => {
+      if (checkedSlots.includes(index)) item.classList.add('checked');
+
+      item.addEventListener('click', () => {
+        item.classList.toggle('checked');
+        const activeChecks = [];
+        waterItems.forEach((it, idx) => {
+          if (it.classList.contains('checked')) activeChecks.push(idx);
+        });
+        checkedSlots = activeChecks;
+        localStorage.setItem('das_checked_slots', JSON.stringify(checkedSlots));
+        updateWaterUI();
+      });
+    });
+
+    function updateWaterUI() {
+      let total = customWater;
+      waterItems.forEach(item => {
+        if (item.classList.contains('checked')) {
+          total += parseInt(item.dataset.amount || '0', 10);
+        }
+      });
+
+      const liters = (total / 1000).toFixed(2) + 'L';
+      waterLoggedVal.textContent = liters;
+
+      const pct = Math.min((total / 4000) * 100, 100);
+      waterFill.style.height = pct + '%';
+    }
+
+    document.getElementById('btnWaterAdd250').addEventListener('click', () => {
+      customWater += 250;
+      localStorage.setItem('das_custom_water', customWater);
+      updateWaterUI();
+    });
+
+    document.getElementById('btnWaterAdd500').addEventListener('click', () => {
+      customWater += 500;
+      localStorage.setItem('das_custom_water', customWater);
+      updateWaterUI();
+    });
+
+    document.getElementById('btnWaterCustomLog').addEventListener('click', () => {
+      const val = parseInt(inputWaterCustom.value, 10);
+      if (val && val > 0 && val <= 3000) {
+        customWater += val;
+        localStorage.setItem('das_custom_water', customWater);
+        inputWaterCustom.value = '';
+        updateWaterUI();
       }
     });
-    checkedSlots = activeChecks;
-    localStorage.setItem('das_checked_slots', JSON.stringify(checkedSlots));
+
+    document.getElementById('btnWaterReset').addEventListener('click', () => {
+      customWater = 0;
+      checkedSlots = [];
+      localStorage.setItem('das_custom_water', '0');
+      localStorage.setItem('das_checked_slots', '[]');
+      waterItems.forEach(item => item.classList.remove('checked'));
+      updateWaterUI();
+    });
+
     updateWaterUI();
-  });
-});
 
-function updateWaterUI() {
-  let total = customWater;
-  waterItems.forEach(item => {
-    if (item.classList.contains('checked')) {
-      total += parseInt(item.dataset.amount || '0', 10);
-    }
-  });
+    // ---------- Sleep Recovery Arc Draw Matrix ----------
+    const sleepObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          document.getElementById('sleepArc').style.transition = 'stroke-dashoffset 1.2s ease-out';
+          document.getElementById('sleepArc').style.strokeDashoffset = '0';
+          sleepObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    sleepObserver.observe(document.querySelector('.sleep-card'));
 
-  // Render values
-  const liters = (total / 1000).toFixed(1) + 'L';
-  waterLoggedVal.textContent = liters;
-
-  // Calculate percentage relative to target 4L (4000ml)
-  const pct = Math.min((total / 4000) * 100, 100);
-  waterFill.style.height = pct + '%';
-}
-
-document.getElementById('btnWaterAdd250').addEventListener('click', (e) => {
-  e.stopPropagation();
-  customWater += 250;
-  localStorage.setItem('das_custom_water', customWater);
-  updateWaterUI();
-});
-
-document.getElementById('btnWaterAdd500').addEventListener('click', (e) => {
-  e.stopPropagation();
-  customWater += 500;
-  localStorage.setItem('das_custom_water', customWater);
-  updateWaterUI();
-});
-
-document.getElementById('btnWaterReset').addEventListener('click', (e) => {
-  e.stopPropagation();
-  customWater = 0;
-  checkedSlots = [];
-  localStorage.setItem('das_custom_water', '0');
-  localStorage.setItem('das_checked_slots', '[]');
-  waterItems.forEach(item => item.classList.remove('checked'));
-  updateWaterUI();
-});
-
-// Run initial UI state setup
-updateWaterUI();
-
-// ---------- Sleep Arc Draw Observer ----------
-const sleepObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if(e.isIntersecting){
-      document.getElementById('sleepArc').style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1)';
-      document.getElementById('sleepArc').style.strokeDashoffset = '0';
-      sleepObserver.unobserve(e.target);
-    }
-  });
-}, {threshold:0.3});
-sleepObserver.observe(document.querySelector('.sleep-card'));
-
-// ---------- Science Accordion ----------
-document.querySelectorAll('.acc-head').forEach(head => {
-  head.addEventListener('click', () => {
-    const item = head.parentElement;
-    const wasOpen = item.classList.contains('open');
-    document.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
-    if(!wasOpen) item.classList.add('open');
-  });
-});
-</script>
+    // ---------- Biomechanical Diagnostics Accordions ----------
+    document.querySelectorAll('.acc-head').forEach(head => {
+      head.addEventListener('click', () => {
+        const item = head.parentElement;
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+  </script>
 </body>
+
 </html>
