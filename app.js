@@ -10,6 +10,60 @@
 'use strict';
 
 // ================================================================
+// STORAGE KEYS (rebyld_* with one-time das_* fallback)
+// ================================================================
+function migrateStorageKey(store, newKey, oldKey) {
+  const existing = store.getItem(newKey);
+  if (existing !== null) return existing;
+  const legacy = store.getItem(oldKey);
+  if (legacy !== null) {
+    store.setItem(newKey, legacy);
+    return legacy;
+  }
+  return null;
+}
+
+function lsGet(newKey, oldKey) {
+  return migrateStorageKey(localStorage, newKey, oldKey);
+}
+
+function ssGet(newKey, oldKey) {
+  return migrateStorageKey(sessionStorage, newKey, oldKey);
+}
+
+function lsSet(newKey, value) {
+  localStorage.setItem(newKey, value);
+}
+
+function ssSet(newKey, value) {
+  sessionStorage.setItem(newKey, value);
+}
+
+const STORE = {
+  layout: 'rebyld_layout_sequence_v2',
+  layoutLegacy: 'das_layout_sequence_v2',
+  hide: (id) => `rebyld_hide_v2_${id}`,
+  hideLegacy: (id) => `das_hide_v2_${id}`,
+  waterCustom: 'rebyld_custom_water_v2',
+  waterCustomLegacy: 'das_custom_water_v2',
+  waterSlots: 'rebyld_checked_slots_v2',
+  waterSlotsLegacy: 'das_checked_slots_v2',
+  equip: 'rebyld_equip_mode',
+  equipLegacy: 'das_equip_mode',
+  intensity: 'rebyld_intensity_level',
+  intensityLegacy: 'das_intensity_level',
+  completed: 'rebyld_completed_exercises',
+  completedLegacy: 'das_completed_exercises',
+  targets: 'rebyld_user_targets',
+  targetsLegacy: 'das_user_targets',
+  nutritionPlan: 'rebyld_nutrition_plan',
+  planBDay: 'rebyld_plan_b_day'
+};
+
+const YT_DEFAULT = 'https://www.youtube.com/@officialdemic/shorts';
+const PIN_DEFAULT = 'https://in.pinterest.com/demicofficial/youcan/';
+
+// ================================================================
 // SCROLL PROGRESS BAR ENGINE
 // ================================================================
 window.addEventListener('scroll', () => {
@@ -98,7 +152,7 @@ function synchronizePageLayout() {
     const targetSection = document.getElementById(id);
     if (targetSection) mainLayoutWrapper.appendChild(targetSection);
   });
-  localStorage.setItem('das_layout_sequence_v2', JSON.stringify(currentOrder));
+  lsSet(STORE.layout, JSON.stringify(currentOrder));
 }
 
 // ================================================================
@@ -127,7 +181,7 @@ function applyVisibilityState(targetId, isVisible) {
 
 toggles.forEach(box => {
   const target = box.dataset.toggleTarget;
-  const cachedState = localStorage.getItem(`das_hide_v2_${target}`);
+  const cachedState = lsGet(STORE.hide(target), STORE.hideLegacy(target));
   if (cachedState === 'true') {
     box.checked = false;
     applyVisibilityState(target, false);
@@ -136,7 +190,7 @@ toggles.forEach(box => {
   box.addEventListener('change', (e) => {
     const isVisible = e.target.checked;
     applyVisibilityState(target, isVisible);
-    localStorage.setItem(`das_hide_v2_${target}`, !isVisible);
+    lsSet(STORE.hide(target), String(!isVisible));
   });
 });
 
@@ -144,7 +198,8 @@ toggles.forEach(box => {
 // LOAD CACHED LAYOUT ARRANGEMENT (localStorage — persists)
 // ================================================================
 (function initializeLayoutFromCache() {
-  const cachedSequence = JSON.parse(localStorage.getItem('das_layout_sequence_v2'));
+  const raw = lsGet(STORE.layout, STORE.layoutLegacy);
+  const cachedSequence = raw ? JSON.parse(raw) : null;
   if (cachedSequence) {
     cachedSequence.forEach(id => {
       const section = document.getElementById(id);
@@ -210,15 +265,75 @@ const rIo = new IntersectionObserver((entries) => {
 revealEls.forEach(el => rIo.observe(el));
 
 // ================================================================
-// WEEKDAY/WEEKEND SLIDE TOGGLES
+// NUTRITION PLAN SWITCHER (Plan A Chrono / Plan B AM Run Cook)
 // ================================================================
+const planToggle = document.getElementById('planToggle');
 const dietToggle = document.getElementById('dietToggle');
-document.querySelectorAll('.dt-btn').forEach(btn => {
+const planBDayToggle = document.getElementById('planBDayToggle');
+const planAGroup = document.getElementById('planAGroup');
+const planBGroup = document.getElementById('planBGroup');
+
+function setNutritionPlan(plan) {
+  const isB = plan === 'b';
+  lsSet(STORE.nutritionPlan, plan);
+
+  if (planToggle) {
+    planToggle.querySelectorAll('.pt-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.plan === plan);
+    });
+    planToggle.classList.toggle('plan-b-active', isB);
+  }
+
+  if (planAGroup) planAGroup.classList.toggle('active', !isB);
+  if (planBGroup) planBGroup.classList.toggle('active', isB);
+  if (dietToggle) dietToggle.classList.toggle('hidden-toggle', isB);
+  if (planBDayToggle) planBDayToggle.classList.toggle('hidden-toggle', !isB);
+
+  if (isB) {
+    const day = localStorage.getItem(STORE.planBDay) || 'monfri';
+    setPlanBDay(day);
+  } else {
+    const activeA = dietToggle?.querySelector('.dt-btn.active');
+    const day = activeA?.dataset.day || 'weekday';
+    document.querySelectorAll('#planAGroup .day-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + day);
+    if (panel) panel.classList.add('active');
+  }
+}
+
+function setPlanBDay(day) {
+  lsSet(STORE.planBDay, day);
+  if (planBDayToggle) {
+    planBDayToggle.querySelectorAll('.pb-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.day === day);
+    });
+    planBDayToggle.classList.toggle('sat-active', day === 'sat');
+    planBDayToggle.classList.toggle('sun-active', day === 'sun');
+  }
+  document.querySelectorAll('#planBGroup .day-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-b-' + day);
+  if (panel) panel.classList.add('active');
+}
+
+if (planToggle) {
+  planToggle.querySelectorAll('.pt-btn').forEach(btn => {
+    btn.addEventListener('click', () => setNutritionPlan(btn.dataset.plan));
+  });
+}
+
+if (planBDayToggle) {
+  planBDayToggle.querySelectorAll('.pb-btn').forEach(btn => {
+    btn.addEventListener('click', () => setPlanBDay(btn.dataset.day));
+  });
+}
+
+document.querySelectorAll('#dietToggle .dt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.dt-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#dietToggle .dt-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + btn.dataset.day).classList.add('active');
+    document.querySelectorAll('#planAGroup .day-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + btn.dataset.day);
+    if (panel) panel.classList.add('active');
 
     if (btn.dataset.day === 'weekend') {
       dietToggle.classList.add('weekend-active');
@@ -227,6 +342,8 @@ document.querySelectorAll('.dt-btn').forEach(btn => {
     }
   });
 });
+
+setNutritionPlan(localStorage.getItem(STORE.nutritionPlan) || 'a');
 
 // ================================================================
 // WORKOUT DAY TABS
@@ -284,8 +401,8 @@ const waterLoggedVal = document.getElementById('waterLoggedVal');
 const waterItems = document.querySelectorAll('.water-slots .ws-item');
 const inputWaterCustom = document.getElementById('inputWaterCustom');
 
-let customWater = parseInt(sessionStorage.getItem('das_custom_water_v2') || '0', 10);
-let checkedSlots = JSON.parse(sessionStorage.getItem('das_checked_slots_v2') || '[]');
+let customWater = parseInt(ssGet(STORE.waterCustom, STORE.waterCustomLegacy) || '0', 10);
+let checkedSlots = JSON.parse(ssGet(STORE.waterSlots, STORE.waterSlotsLegacy) || '[]');
 
 waterItems.forEach((item, index) => {
   if (checkedSlots.includes(index)) item.classList.add('checked');
@@ -297,7 +414,7 @@ waterItems.forEach((item, index) => {
       if (it.classList.contains('checked')) activeChecks.push(idx);
     });
     checkedSlots = activeChecks;
-    sessionStorage.setItem('das_checked_slots_v2', JSON.stringify(checkedSlots));
+    ssSet(STORE.waterSlots, JSON.stringify(checkedSlots));
     updateWaterUI();
   });
 });
@@ -313,19 +430,20 @@ function updateWaterUI() {
   const liters = (total / 1000).toFixed(2) + 'L';
   waterLoggedVal.textContent = liters;
 
-  const pct = Math.min((total / 4000) * 100, 100);
+  const goal = window.__waterGoalMl || 4000;
+  const pct = Math.min((total / goal) * 100, 100);
   waterFill.style.height = pct + '%';
 }
 
 document.getElementById('btnWaterAdd250').addEventListener('click', () => {
   customWater += 250;
-  sessionStorage.setItem('das_custom_water_v2', customWater);
+  ssSet(STORE.waterCustom, String(customWater));
   updateWaterUI();
 });
 
 document.getElementById('btnWaterAdd500').addEventListener('click', () => {
   customWater += 500;
-  sessionStorage.setItem('das_custom_water_v2', customWater);
+  ssSet(STORE.waterCustom, String(customWater));
   updateWaterUI();
 });
 
@@ -333,7 +451,7 @@ document.getElementById('btnWaterCustomLog').addEventListener('click', () => {
   const val = parseInt(inputWaterCustom.value, 10);
   if (val && val > 0 && val <= 3000) {
     customWater += val;
-    sessionStorage.setItem('das_custom_water_v2', customWater);
+    ssSet(STORE.waterCustom, String(customWater));
     inputWaterCustom.value = '';
     updateWaterUI();
   }
@@ -342,8 +460,8 @@ document.getElementById('btnWaterCustomLog').addEventListener('click', () => {
 document.getElementById('btnWaterReset').addEventListener('click', () => {
   customWater = 0;
   checkedSlots = [];
-  sessionStorage.setItem('das_custom_water_v2', '0');
-  sessionStorage.setItem('das_checked_slots_v2', '[]');
+  ssSet(STORE.waterCustom, '0');
+  ssSet(STORE.waterSlots, '[]');
   waterItems.forEach(item => item.classList.remove('checked'));
   updateWaterUI();
 });
@@ -380,11 +498,11 @@ document.querySelectorAll('.acc-head').forEach(head => {
 // WORKOUT EQUIPMENT FILTER (localStorage — persists)
 // ================================================================
 const equipButtons = document.querySelectorAll('.btn-filter-equip');
-let currentEquipMode = localStorage.getItem('das_equip_mode') || 'all';
+let currentEquipMode = lsGet(STORE.equip, STORE.equipLegacy) || 'all';
 
 function setEquipmentMode(mode) {
   currentEquipMode = mode;
-  localStorage.setItem('das_equip_mode', mode);
+  lsSet(STORE.equip, mode);
   equipButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.equip === mode));
 
   document.querySelectorAll('.ex-row').forEach(row => {
@@ -405,11 +523,11 @@ setEquipmentMode(currentEquipMode);
 // WORKOUT INTENSITY SWITCH (localStorage — persists)
 // ================================================================
 const intensityButtons = document.querySelectorAll('.btn-filter-intensity');
-let currentIntensity = localStorage.getItem('das_intensity_level') || 'standard';
+let currentIntensity = lsGet(STORE.intensity, STORE.intensityLegacy) || 'standard';
 
 function setIntensityLevel(level) {
   currentIntensity = level;
-  localStorage.setItem('das_intensity_level', level);
+  lsSet(STORE.intensity, level);
   intensityButtons.forEach(btn => {
     const isTarget = btn.dataset.intensity === level;
     btn.classList.toggle('active', isTarget);
@@ -443,10 +561,10 @@ setIntensityLevel(currentIntensity);
 // ================================================================
 // EXERCISE COMPLETION TRACKING (sessionStorage — resets on reload)
 // ================================================================
-let completedExercises = new Set(JSON.parse(sessionStorage.getItem('das_completed_exercises') || '[]'));
+let completedExercises = new Set(JSON.parse(ssGet(STORE.completed, STORE.completedLegacy) || '[]'));
 
 function saveCompletionState() {
-  sessionStorage.setItem('das_completed_exercises', JSON.stringify([...completedExercises]));
+  ssSet(STORE.completed, JSON.stringify([...completedExercises]));
 }
 
 function markExerciseComplete(exId) {
@@ -530,6 +648,9 @@ const modalTempo = document.getElementById('modalTempo');
 const modalProgression = document.getElementById('modalProgression');
 const modal5kBenefit = document.getElementById('modal5kBenefit');
 const modalAbsBenefit = document.getElementById('modalAbsBenefit');
+const modalFormGuide = document.getElementById('modalFormGuide');
+const btnModalYoutube = document.getElementById('btnModalYoutube');
+const btnModalPinterest = document.getElementById('btnModalPinterest');
 
 let currentModalExId = null;
 
@@ -546,6 +667,9 @@ function openExerciseModal(elem) {
   const breathing = elem.dataset.exBreathing || 'Exhale during concentric (lifting) phase. Inhale during eccentric (lowering) phase with 2-second controlled descent.';
   const tempo = elem.dataset.exTempo || '2-1-2-0';
   const progression = elem.dataset.exProgression || 'When all prescribed sets and reps can be completed with perfect form, increase load by 1–2 kg or add 2–3 reps per set.';
+  const intervals = elem.dataset.exIntervals || '';
+  const ytUrl = elem.dataset.exYoutube || YT_DEFAULT;
+  const pinUrl = elem.dataset.exPinterest || PIN_DEFAULT;
 
   currentModalExId = exId;
 
@@ -554,17 +678,27 @@ function openExerciseModal(elem) {
   modalFormCues.textContent = cues;
   modalMistakes.textContent = mistakes;
 
-  // Populate Muscle Tags
   modalMusclesList.innerHTML = muscles.map((m, idx) => `
     <span class="muscle-tag ${idx === 0 ? 'primary' : ''}">${m.trim()}</span>
   `).join('');
 
-  // Populate Extended Sections
   if (modalPosture) modalPosture.textContent = posture;
   if (modalBreathing) modalBreathing.textContent = breathing;
   if (modalProgression) modalProgression.textContent = progression;
 
-  // Tempo Display
+  if (modalFormGuide) {
+    const guideParts = [
+      `<strong>Posture setup:</strong> ${posture}`,
+      intervals ? `<strong>Intervals:</strong> ${intervals}` : `<strong>Tempo:</strong> ${tempo} (ecc–pause–con–hold)`,
+      `<strong>Breathing:</strong> ${breathing}`,
+      `<strong>Watch for:</strong> ${mistakes}`
+    ];
+    modalFormGuide.innerHTML = guideParts.map(p => `<p>${p}</p>`).join('');
+  }
+
+  if (btnModalYoutube) btnModalYoutube.href = ytUrl;
+  if (btnModalPinterest) btnModalPinterest.href = pinUrl;
+
   if (modalTempo) {
     const parts = tempo.split('-');
     const labels = ['Eccentric', 'Pause', 'Concentric', 'Hold'];
@@ -579,11 +713,9 @@ function openExerciseModal(elem) {
     '</div>';
   }
 
-  // Separate 5K & Abs Benefits
   if (modal5kBenefit) modal5kBenefit.textContent = runBenefit;
   if (modalAbsBenefit) modalAbsBenefit.textContent = absBenefit;
 
-  // Generate Motion SVG Icon
   if (elem.dataset.exEquip === 'db') {
     modalSvgBox.innerHTML = `
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -604,7 +736,6 @@ function openExerciseModal(elem) {
     `;
   }
 
-  // Update button state based on completion
   if (exId && completedExercises.has(exId)) {
     btnMarkComplete.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Completed ✓`;
     btnMarkComplete.className = 'btn-modal-action completed-state';
@@ -689,7 +820,8 @@ const cfgTargetProtein = document.getElementById('cfgTargetProtein');
 const cfgTargetWater = document.getElementById('cfgTargetWater');
 
 function loadUserTargets() {
-  const savedTargets = JSON.parse(localStorage.getItem('das_user_targets') || '{}');
+  const raw = lsGet(STORE.targets, STORE.targetsLegacy);
+  const savedTargets = JSON.parse(raw || '{}');
   if (savedTargets.weight && cfgTargetWeight) cfgTargetWeight.value = savedTargets.weight;
   if (savedTargets.kcal && cfgTargetKcal) cfgTargetKcal.value = savedTargets.kcal;
   if (savedTargets.protein && cfgTargetProtein) cfgTargetProtein.value = savedTargets.protein;
@@ -705,7 +837,7 @@ function saveUserTargets() {
     protein: cfgTargetProtein ? cfgTargetProtein.value : '130',
     water: cfgTargetWater ? cfgTargetWater.value : '4.0'
   };
-  localStorage.setItem('das_user_targets', JSON.stringify(targets));
+  lsSet(STORE.targets, JSON.stringify(targets));
   applyUserTargetsToUI(targets);
 }
 
@@ -715,12 +847,31 @@ function applyUserTargetsToUI(t) {
     if (weightStat) weightStat.textContent = t.weight + ' kg';
   }
   if (t.kcal) {
-    const kcalEl = document.querySelector('#panel-weekday .macro-cell:nth-child(1) .num');
-    if (kcalEl) kcalEl.dataset.count = t.kcal;
+    ['#panel-weekday', '#panel-b-monfri'].forEach(sel => {
+      const kcalEl = document.querySelector(`${sel} .macro-cell:nth-child(1) .num`);
+      if (kcalEl) {
+        kcalEl.dataset.count = t.kcal;
+        const small = kcalEl.querySelector('small');
+        kcalEl.innerHTML = t.kcal + (small ? small.outerHTML : '<small>kcal</small>');
+      }
+    });
   }
   if (t.protein) {
-    const proteinEl = document.querySelector('#panel-weekday .macro-cell:nth-child(2) .num');
-    if (proteinEl) proteinEl.dataset.count = t.protein;
+    ['#panel-weekday', '#panel-b-monfri'].forEach(sel => {
+      const proteinEl = document.querySelector(`${sel} .macro-cell:nth-child(2) .num`);
+      if (proteinEl) {
+        proteinEl.dataset.count = t.protein;
+        const small = proteinEl.querySelector('small');
+        proteinEl.innerHTML = t.protein + (small ? small.outerHTML : '<small>g</small>');
+      }
+    });
+  }
+  if (t.water) {
+    const liters = parseFloat(t.water);
+    if (!isNaN(liters) && liters > 0) {
+      window.__waterGoalMl = liters * 1000;
+      updateWaterUI();
+    }
   }
 }
 
@@ -728,3 +879,12 @@ function applyUserTargetsToUI(t) {
   if (inp) inp.addEventListener('change', saveUserTargets);
 });
 loadUserTargets();
+
+// ================================================================
+// SERVICE WORKER REGISTRATION (offline-first shell)
+// ================================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}

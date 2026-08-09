@@ -591,7 +591,7 @@ input:checked+.switch-slider:before {
 
 /* ---------- SECTION SCAFFOLD ---------- */
 section.block {
-  padding: clamp(60px, 8vw, 100px) clamp(16px, 5vw, 64px);
+  padding: clamp(40px, 5vw, 72px) clamp(14px, 4vw, 48px);
   border-bottom: 1px solid var(--line);
   position: relative;
 }
@@ -603,13 +603,13 @@ section.block.section-hidden {
 .block-head {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 48px;
+  gap: 8px;
+  margin-bottom: 28px;
   max-width: 760px;
 }
 
 .block-head h2 {
-  font-size: clamp(32px, 4.5vw, 48px);
+  font-size: clamp(28px, 4vw, 44px);
   font-weight: 700;
 }
 
@@ -617,6 +617,7 @@ section.block.section-hidden {
   color: var(--paper-dim);
   font-size: clamp(14px, 1.5vw, 16px);
   max-width: 620px;
+  line-height: 1.5;
 }
 
 .reveal {
@@ -631,65 +632,90 @@ section.block.section-hidden {
 }
 
 /* ---------- DIET SECTION ---------- */
+.plan-toggle,
 .diet-toggle {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
   position: relative;
   background: var(--ink-2);
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 4px;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
+  gap: 2px;
+  box-sizing: border-box;
 }
 
+.plan-toggle {
+  margin-bottom: 10px;
+}
+
+/* Legacy slider nodes kept in markup — unused; active chip paints the button */
+.plan-toggle .slider,
 .diet-toggle .slider {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  bottom: 4px;
-  width: calc(50% - 4px);
-  background: var(--lime);
-  border-radius: 999px;
-  z-index: 0;
-  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  display: none;
 }
 
-.diet-toggle.weekend-active .slider {
-  transform: translateX(100%);
+.hidden-toggle {
+  display: none !important;
 }
 
+.plan-group {
+  display: none;
+}
+
+.plan-group.active {
+  display: block;
+}
+
+.plan-toggle button,
 .diet-toggle button {
+  flex: 0 0 auto;
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .06em;
+  font-size: clamp(10px, 2.4vw, 11px);
+  letter-spacing: .05em;
   text-transform: uppercase;
-  background: none;
+  background: transparent;
   border: none;
   color: var(--paper-dim);
-  padding: 10px 24px;
+  padding: 11px 18px;
   border-radius: 999px;
   cursor: pointer;
   position: relative;
   z-index: 1;
   font-weight: 600;
-  transition: color 0.3s ease;
+  transition: background 0.25s ease, color 0.25s ease;
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.2;
 }
 
+.plan-toggle button.active,
 .diet-toggle button.active {
   color: var(--ink);
+  background: var(--lime);
+  box-shadow: var(--shadow-glow);
+}
+
+.plan-toggle button:not(.active):hover,
+.diet-toggle button:not(.active):hover {
+  color: var(--paper);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .macro-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-bottom: 48px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
 }
 
 .macro-cell {
   background: var(--ink-2);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 14px 16px;
 }
 
 .macro-cell .num {
@@ -754,7 +780,7 @@ section.block.section-hidden {
 
 .tl-item {
   position: relative;
-  margin-bottom: 32px;
+  margin-bottom: 22px;
   width: 50%;
 }
 
@@ -880,6 +906,7 @@ section.block.section-hidden {
     padding-left: 36px !important;
     padding-right: 0 !important;
     text-align: left !important;
+    margin-bottom: 16px;
   }
   .tl-node {
     left: 13px !important;
@@ -906,8 +933,8 @@ section.block.section-hidden {
   background: var(--ink-2);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: 24px;
-  margin-top: 48px;
+  padding: 20px;
+  margin-top: 28px;
 }
 
 .callout h3 {
@@ -1111,7 +1138,11 @@ section.block.section-hidden {
 
 .ex-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  border: none;
+  background: transparent;
+  overflow: visible;
 }
 
 .ex-table thead th {
@@ -1120,19 +1151,50 @@ section.block.section-hidden {
   font-size: 11px;
   text-transform: uppercase;
   color: var(--paper-dim);
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--line);
+  padding: 4px 16px 8px;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  letter-spacing: .06em;
+}
+
+.ex-table thead th:first-child,
+.ex-table thead th:last-child,
+.ex-table tbody tr:last-child td:first-child,
+.ex-table tbody tr:last-child td:last-child {
+  border-radius: 0;
 }
 
 .ex-row td {
-  padding: 16px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  background: var(--ink-2);
   vertical-align: middle;
   font-size: 14px;
 }
 
-.ex-row { background: var(--ink-2); }
-.ex-row:hover { background: rgba(255, 255, 255, 0.01); }
+.ex-row td:first-child {
+  border-left: 1px solid var(--line);
+  border-radius: var(--radius) 0 0 var(--radius);
+  padding-left: 16px;
+}
+
+.ex-row td:last-child {
+  border-right: 1px solid var(--line);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding-right: 16px;
+}
+
+.ex-row {
+  background: transparent;
+  transition: var(--transition-smooth);
+}
+
+.ex-row:hover td {
+  background: var(--ink-3);
+  border-color: rgba(212, 255, 38, 0.18);
+}
 
 .ex-seq {
   font-family: var(--mono);
@@ -1156,9 +1218,22 @@ section.block.section-hidden {
   color: var(--paper-dim);
   font-size: 13px;
   max-width: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.45;
+}
+
+.ex-instr .btn-ex-demo {
+  margin-left: 0 !important;
+  flex-shrink: 0;
 }
 
 @media (max-width: 760px) {
+  .ex-table {
+    border-spacing: 0;
+  }
   .ex-table thead { display: none; }
   .ex-table, .ex-table tbody, .ex-row, .ex-row td {
     display: block;
@@ -1168,8 +1243,8 @@ section.block.section-hidden {
     background: var(--ink-2);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 14px;
-    margin-bottom: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-areas:
@@ -1179,9 +1254,18 @@ section.block.section-hidden {
     gap: 6px 12px;
     position: relative;
   }
+  .ex-row:hover {
+    background: var(--ink-3);
+  }
   .ex-row td {
     padding: 0;
     border: none;
+    background: transparent;
+    border-radius: 0;
+  }
+  .ex-row:hover td {
+    background: transparent;
+    border-color: transparent;
   }
   .ex-seq { grid-area: seq; }
   .ex-name {
@@ -1202,6 +1286,7 @@ section.block.section-hidden {
     padding-top: 8px;
     margin-top: 4px;
     border-top: 1px solid rgba(255, 255, 255, 0.03);
+    max-width: none;
   }
 }
 
@@ -2038,6 +2123,78 @@ dialog.ex-modal::backdrop {
   color: #fff;
 }
 
+.btn-modal-ref-pin {
+  border-color: rgba(77, 124, 255, 0.4);
+  color: var(--blue);
+  background: rgba(77, 124, 255, 0.1);
+}
+
+.btn-modal-ref-pin:hover {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+
+.modal-form-guide {
+  background: var(--ink-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-form-guide h4 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--lime);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-form-guide p {
+  font-size: 13px;
+  color: var(--paper-dim);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.modal-form-guide strong {
+  color: var(--paper);
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .plan-toggle,
+  .diet-toggle {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .plan-toggle button,
+  .diet-toggle button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 11px 12px;
+    font-size: 9px;
+    letter-spacing: .03em;
+    text-align: center;
+  }
+
+  .modal-actions-row {
+    flex-wrap: wrap;
+  }
+
+  .btn-modal-action,
+  .btn-modal-ref {
+    flex: 1 1 100%;
+  }
+}
+
 /* Target User Settings Inputs */
 .settings-input-group {
   display: flex;
@@ -2099,10 +2256,13 @@ dialog.ex-modal::backdrop {
    EXERCISE COMPLETION VISUAL STATE
    ================================================================ */
 
-.ex-row.completed {
-  position: relative;
-  border-left: 3px solid var(--green);
-  background: rgba(52, 211, 153, 0.03);
+.ex-row.completed td {
+  background: rgba(52, 211, 153, 0.04);
+  border-color: rgba(52, 211, 153, 0.25);
+}
+
+.ex-row.completed td:first-child {
+  box-shadow: inset 3px 0 0 var(--green);
 }
 
 .ex-row.completed .ex-name {

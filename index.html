@@ -12,6 +12,10 @@
   <meta name="apple-mobile-web-app-title" content="rebyld.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#090A0F">
+  <meta name="application-name" content="rebyld.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -22,7 +26,7 @@
 
   <div class="scorebar" id="scorebar">
     <div class="brand-wrapper">
-      <div class="brand"><span class="dot"></span>DAS/PROTOCOL</div>
+      <div class="brand"><span class="dot"></span>rebyld.</div>
       <button class="btn-settings-trigger" id="settingsTrigger" aria-label="Configure Architecture Layout Menu" type="button">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
@@ -48,7 +52,7 @@
     <div class="settings-modal-backdrop" id="settingsModalBackdrop"></div>
     <div class="settings-modal-content">
       <div class="settings-modal-header">
-        <h3>Layout Architecture Matrix</h3>
+        <h3>Layout &amp; Metrics</h3>
         <button class="btn-settings-close" id="settingsClose" type="button">×</button>
       </div>
       <div class="settings-modal-meta">Click and hold an item to reorder sections. Toggle switches adjust dashboard visibility.</div>
@@ -77,7 +81,7 @@
           <div class="drag-handle">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" /></svg>
           </div>
-          <span class="settings-toggle-label">Spine-Safe Resistance Protocol</span>
+          <span class="settings-toggle-label">Training Split</span>
           <label class="switch-control">
             <input type="checkbox" checked data-toggle-target="workout">
             <span class="switch-slider"></span>
@@ -106,7 +110,7 @@
       </div>
 
       <div class="settings-input-group">
-        <h4>Custom Protocol Metrics</h4>
+        <h4>Custom Metrics</h4>
         <div class="settings-field-row">
           <div class="settings-field">
             <label for="cfgTargetWeight">Target Weight (kg)</label>
@@ -172,12 +176,26 @@
           <p>A high-protein, calorie-controlled feeding schedule designed for body recomposition. Every meal is timed for optimal muscle protein synthesis, with structured supplement stacking and hydration discipline.</p>
         </div>
 
+        <div class="plan-toggle reveal" id="planToggle">
+          <div class="slider"></div>
+          <button class="pt-btn active" data-plan="a" type="button">Plan A · Chrono</button>
+          <button class="pt-btn" data-plan="b" type="button">Plan B · AM Cook</button>
+        </div>
+
         <div class="diet-toggle reveal" id="dietToggle">
           <div class="slider"></div>
           <button class="dt-btn active" data-day="weekday" type="button">Training Day</button>
           <button class="dt-btn" data-day="weekend" type="button">Rest Day</button>
         </div>
 
+        <div class="diet-toggle plan-b-days reveal hidden-toggle" id="planBDayToggle">
+          <div class="slider"></div>
+          <button class="pb-btn active" data-day="monfri" type="button">Mon–Fri</button>
+          <button class="pb-btn" data-day="sat" type="button">Saturday</button>
+          <button class="pb-btn" data-day="sun" type="button">Sunday</button>
+        </div>
+
+        <div class="plan-group active" id="planAGroup">
         <!-- TRAINING DAY -->
         <div class="day-panel active" id="panel-weekday">
           <div class="macro-strip reveal">
@@ -435,6 +453,376 @@
           </div>
           <div class="weekend-note">*Rest days follow the same base diet. The only difference is the absence of the pre-workout protein shake, keeping calories slightly lower to match reduced energy expenditure.</div>
         </div>
+        </div><!-- /planAGroup -->
+
+        <div class="plan-group" id="planBGroup">
+        <!-- PLAN B MON–FRI -->
+        <div class="day-panel" id="panel-b-monfri">
+          <div class="macro-strip reveal">
+            <div class="macro-cell">
+              <div class="num" data-count="1680">0<small>kcal</small></div>
+              <div class="lbl">Daily Target</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="135">0<small>g</small></div>
+              <div class="lbl">Lean Protein</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="145">0<small>g</small></div>
+              <div class="lbl">Carbohydrates</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="55">0<small>g</small></div>
+              <div class="lbl">Essential Fats</div>
+            </div>
+            <div class="macro-cell hydration">
+              <div class="num">3.5–4<small>L</small></div>
+              <div class="lbl">Hydration Target</div>
+            </div>
+          </div>
+
+          <div class="timeline reveal">
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:00 · Wake <span class="kcal">0 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Hydration Reset</div>
+                <div class="tl-menu">500ml plain warm water on waking — cellular hydration before movement or food.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:10–06:20 · Stretch</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Mobility Primer</div>
+                <div class="tl-menu">10 minutes of light stretching — hip openers, calf stretches, thoracic rotations — before the outdoor run.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:30–07:00 · Outdoor Run</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">AM Cardio Block</div>
+                <div class="tl-menu">Outdoor run departing 06:30, return by 07:00. Keep easy-to-moderate pace; save intensity for the evening gym session.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">07:00–07:30 · Freshen-Up</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Hygiene Reset</div>
+                <div class="tl-menu">Bath / shower and get ready. No calorie intake yet — cook block starts at 07:30.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">07:30 · Batch Cook + Breakfast <span class="kcal">~480 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Cook Once — Eat Twice</div>
+                <div class="tl-menu">
+                  <ul>
+                    <li>Cook breakfast and dinner protein/veg together now</li>
+                    <li><b>Breakfast:</b> 2–3 whole eggs + 30–40g soy chunks (sautéed) <em>or</em> mixed dal (masoor, toor, chana, moong, rajma, chole) with tomato, onion, chili, cucumber, lady finger, potato/sweet potato, pumpkin, spinach, lettuce</li>
+                    <li>Reserve dinner portion (egg whites + soy/dal + veg) for 20:00</li>
+                  </ul>
+                </div>
+                <div class="tl-macros"><span><b>42g</b> protein</span><span><b>28g</b> carbs</span><span><b>22g</b> fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">09:00–17:30 · Office</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Work Block</div>
+                <div class="tl-menu">Standard office hours 09:00 to 17:00–17:30. Stay hydrated between scheduled feeds.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">11:00 · Coffee Break <span class="kcal">~5 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Short Stimulant Window</div>
+                <div class="tl-menu">Short black coffee break. No sugar, no milk — keep the morning lean.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">12:30 · Lunch <span class="kcal">~380 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Sustained-Release Protein Feed</div>
+                <div class="tl-menu">
+                  <ul>
+                    <li>1 whole wheat roti (no added ghee or butter)</li>
+                    <li>Large serving of seasonal vegetables</li>
+                    <li>2–3 cups regular curd</li>
+                  </ul>
+                </div>
+                <div class="tl-macros"><span><b>24g</b> protein</span><span><b>42g</b> carbs</span><span><b>12g</b> fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">16:00 · Prep · Drink 16:30–16:45 <span class="kcal">~300 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Pre-Gym Protein Shot</div>
+                <div class="tl-menu">At 16:00 mix 1 shot espresso + 300ml milk + 1 scoop protein powder. Consume between 16:30–16:45 before leaving for the gym.</div>
+                <div class="tl-macros"><span><b>32g</b> protein</span><span><b>18g</b> carbs</span><span><b>10g</b> fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">17:30–19:30 · Gym (+ optional swim)</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Evening Training</div>
+                <div class="tl-menu">Hit the gym around 17:30–18:00. Return by ~19:30. Optional short swim after lifting if energy allows.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">20:00 · Dinner <span class="kcal">~420 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Task-Time Feed</div>
+                <div class="tl-menu">
+                  <ul>
+                    <li>2–3 egg whites + reserved soy chunks or dal with veg</li>
+                    <li>1 whole wheat paratha</li>
+                    <li>Curd optional</li>
+                    <li>Eat while working through work or personal tasks</li>
+                  </ul>
+                </div>
+                <div class="tl-macros"><span><b>38g</b> protein</span><span><b>48g</b> carbs</span><span><b>12g</b> fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">21:00 · Green Tea <span class="kcal">0 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Evening Wind Signal</div>
+                <div class="tl-menu">One cup green tea — no caffeine after this for sleep protection.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">21:30 · Wind Down</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Shutdown Ritual</div>
+                <div class="tl-menu">Screens dim, tasks closed. Prepare for a hard 22:00 lights-out.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">22:00 · Bed Sharp <span class="kcal">0 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">8-Hour Rest Lock</div>
+                <div class="tl-menu">In bed by 10 PM sharp. Total blackout for cortisol balance and recovery.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PLAN B SATURDAY -->
+        <div class="day-panel" id="panel-b-sat">
+          <div class="macro-strip reveal">
+            <div class="macro-cell">
+              <div class="num" data-count="1720">0<small>kcal</small></div>
+              <div class="lbl">Saturday Target</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="135">0<small>g</small></div>
+              <div class="lbl">Lean Protein</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="150">0<small>g</small></div>
+              <div class="lbl">Carbohydrates</div>
+            </div>
+            <div class="macro-cell hydration">
+              <div class="num">3.5–4<small>L</small></div>
+              <div class="lbl">Hydration Target</div>
+            </div>
+          </div>
+
+          <div class="timeline reveal">
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:00 · Wake + Hydration</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Hydration Reset</div>
+                <div class="tl-menu">500ml warm water on waking.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">06:10–07:30 · Swim + Sport</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Saturday Active Block</div>
+                <div class="tl-menu">Morning swim first, then outdoor run or badminton practice. Keep the session playful but purposeful — sport replaces the weekday gym block.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">07:30 · Batch Cook + Breakfast <span class="kcal">~480 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Cook Once — Eat Twice</div>
+                <div class="tl-menu">Same Plan B breakfast: 2–3 whole eggs + 30–40g soy chunks or mixed dal with seasonal veg. Batch dinner protein at the same time.</div>
+                <div class="tl-macros"><span><b>42g</b> protein</span><span><b>28g</b> carbs</span><span><b>22g</b> fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">11:00 · Coffee · 12:30 Lunch</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Midday Feeds</div>
+                <div class="tl-menu">Short coffee at 11:00. Lunch at 12:30 — whole wheat roti, seasonal veg, 2–3 cups curd (same as weekday).</div>
+                <div class="tl-macros"><span><b>24g</b> protein</span><span><b>42g</b> carbs</span><span><b>12g</b> fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">16:30–16:45 · Protein Espresso <span class="kcal">~300 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Afternoon Recovery Shake</div>
+                <div class="tl-menu">Espresso shot + 300ml milk + 1 scoop protein. Optional light movement after — no mandatory gym.</div>
+                <div class="tl-macros"><span><b>32g</b> protein</span><span><b>18g</b> carbs</span><span><b>10g</b> fat</span></div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">20:00 · Dinner <span class="kcal">~420 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Evening Feed</div>
+                <div class="tl-menu">2–3 egg whites + soy/dal + whole wheat paratha, curd optional. Green tea at 21:00, wind down 21:30, bed 22:00 sharp.</div>
+                <div class="tl-macros"><span><b>38g</b> protein</span><span><b>48g</b> carbs</span><span><b>12g</b> fat</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PLAN B SUNDAY -->
+        <div class="day-panel" id="panel-b-sun">
+          <div class="macro-strip reveal">
+            <div class="macro-cell">
+              <div class="num" data-count="1900">0<small>kcal</small></div>
+              <div class="lbl">Rest + Cheat Flex</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num" data-count="120">0<small>g</small></div>
+              <div class="lbl">Protein Floor</div>
+            </div>
+            <div class="macro-cell">
+              <div class="num">Full<small>Rest</small></div>
+              <div class="lbl">No Training</div>
+            </div>
+            <div class="macro-cell hydration">
+              <div class="num">3.5–4<small>L</small></div>
+              <div class="lbl">Hydration Baseline</div>
+            </div>
+          </div>
+
+          <div class="timeline reveal">
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">07:30–08:30 · Wake</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Rest Morning</div>
+                <div class="tl-menu">No run, swim, badminton, or gym. Hydrate on waking. Sleep in within reason — still protect the night curfew.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">09:00 · Breakfast <span class="kcal">~450 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Base Protein Breakfast</div>
+                <div class="tl-menu">Eggs + soy chunks or dal with veg — same food language as Plan B weekdays, relaxed timing.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">12:30–14:00 · Cheat Meal Window</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Sunday Cheat Allowance</div>
+                <div class="tl-menu">One flexible cheat meal — restaurant, home feast, or dessert-forward plate. Keep the rest of the day closer to Plan B foods. Hydrate around it.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">17:00 · Light Protein <span class="kcal">~280 kcal</span></div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Optional Whey or Curd</div>
+                <div class="tl-menu">Whey + milk or a simple curd bowl if appetite allows after the cheat window.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">20:00 · Light Dinner</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Easy Evening Plate</div>
+                <div class="tl-menu">Keep dinner lighter — egg whites / dal / veg or leftover Plan B dinner. Green tea 21:00, wind down 21:30.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-node"></div>
+              <div class="tl-header">
+                <div class="tl-time">22:00 · Bed Sharp</div>
+              </div>
+              <div class="tl-card">
+                <div class="tl-phase">Protect the Week</div>
+                <div class="tl-menu">Same 10 PM lights-out. Sunday rest only works if Monday wake stays intact.</div>
+              </div>
+            </div>
+          </div>
+          <div class="weekend-note">*Sunday is sole rest + one cheat meal. No outdoor run, badminton, swim, or gym. Return to Mon–Fri Plan B on Monday.</div>
+        </div>
+        </div><!-- /planBGroup -->
 
         <div class="callout reveal">
           <h3>Recomposition Parameters (64 → 58 kg)</h3>
@@ -534,12 +922,12 @@
 
           <div class="subhead">Dynamic Joint Warm-Up</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="wu_catcow" data-ex-name="Cat-Cow Lumbar Flow" data-ex-equip="bw" data-ex-muscles="Spinal Erector, Multifidus, Abdominals" data-ex-cues="Arch and round your spine rhythmically with breathing." data-ex-mistakes="Forcing painful motion ranges." data-ex-5k="Mobilizes lumbar spine before running." data-ex-abs="Improves pelvic tilt control.">
+            <div class="wu-item" data-ex-id="wu_catcow" data-ex-youtube="https://www.youtube.com/results?search_query=cat%20cow%20stretch%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=cat%20cow%20stretch%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Cat-Cow Lumbar Flow" data-ex-equip="bw" data-ex-muscles="Spinal Erector, Multifidus, Abdominals" data-ex-cues="Arch and round your spine rhythmically with breathing." data-ex-mistakes="Forcing painful motion ranges." data-ex-5k="Mobilizes lumbar spine before running." data-ex-abs="Improves pelvic tilt control.">
               <span class="wu-n">01</span><span class="wu-t">Cat-Cow Lumbar Flow</span><span class="wu-r">12 reps</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Mobilizes the spine gently without adding vertical compression.</div>
             </div>
-            <div class="wu-item" data-ex-id="wu_pullaparts" data-ex-name="Band / Towel Pull-Aparts" data-ex-equip="bw" data-ex-muscles="Rear Deltoids, Rhomboids, Scapular Retractors" data-ex-cues="Keep arms straight, squeeze shoulder blades together." data-ex-mistakes="Shrugging shoulders up to ears." data-ex-5k="Builds upper back posture to keep torso upright during late 5K miles." data-ex-abs="Opens chest flexibility.">
+            <div class="wu-item" data-ex-id="wu_pullaparts" data-ex-youtube="https://www.youtube.com/results?search_query=band%20pull%20apart%20form%20demic%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=band%20pull%20apart%20form%20demic" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Band / Towel Pull-Aparts" data-ex-equip="bw" data-ex-muscles="Rear Deltoids, Rhomboids, Scapular Retractors" data-ex-cues="Keep arms straight, squeeze shoulder blades together." data-ex-mistakes="Shrugging shoulders up to ears." data-ex-5k="Builds upper back posture to keep torso upright during late 5K miles." data-ex-abs="Opens chest flexibility.">
               <span class="wu-n">02</span><span class="wu-t">Band / Towel Pull-Aparts</span><span class="wu-r">15 reps</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Activates the rear delts and scapular stabilizers for pulling movements.</div>
@@ -558,56 +946,56 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="ex-row" data-ex-id="ex_db_row" data-ex-name="Chest-Supported Dumbbell Row" data-ex-equip="db" data-ex-muscles="Latissimus Dorsi, Rhomboids, Biceps" data-ex-cues="Lie face-down on a 45-degree bench, pull dumbbells toward hips, squeeze shoulder blades." data-ex-mistakes="Yanking weight with lower back momentum." data-ex-5k="Eliminates spinal fatigue so back stays strong during 5K runs." data-ex-abs="Forces anti-extension core firing against bench.">
+              <tr class="ex-row" data-ex-id="ex_db_row" data-ex-youtube="https://www.youtube.com/results?search_query=chest%20supported%20dumbbell%20row%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=chest%20supported%20dumbbell%20row%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Chest-Supported Dumbbell Row" data-ex-equip="db" data-ex-muscles="Latissimus Dorsi, Rhomboids, Biceps" data-ex-cues="Lie face-down on a 45-degree bench, pull dumbbells toward hips, squeeze shoulder blades." data-ex-mistakes="Yanking weight with lower back momentum." data-ex-5k="Eliminates spinal fatigue so back stays strong during 5K runs." data-ex-abs="Forces anti-extension core firing against bench.">
                 <td class="ex-seq">01</td>
                 <td class="ex-name">Chest-Supported DB Row</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Lie face-down on 45° incline bench. Pull weights to hips. Zero lumbar strain.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_pullover" data-ex-name="DB Incline Pullover" data-ex-equip="db" data-ex-muscles="Lats, Serratus Anterior, Intercostals" data-ex-cues="Upper back across bench, lower dumbbell behind head in smooth arc with slight elbow bend." data-ex-mistakes="Bending elbows too much into a triceps extension." data-ex-5k="Expands ribcage &amp; oxygen intake capacity for running." data-ex-abs="Sculpts serratus anterior and upper abdominal wall.">
+              <tr class="ex-row" data-ex-id="ex_db_pullover" data-ex-youtube="https://www.youtube.com/results?search_query=dumbbell%20pullover%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=dumbbell%20pullover%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Incline Pullover" data-ex-equip="db" data-ex-muscles="Lats, Serratus Anterior, Intercostals" data-ex-cues="Upper back across bench, lower dumbbell behind head in smooth arc with slight elbow bend." data-ex-mistakes="Bending elbows too much into a triceps extension." data-ex-5k="Expands ribcage &amp; oxygen intake capacity for running." data-ex-abs="Sculpts serratus anterior and upper abdominal wall.">
                 <td class="ex-seq">02</td>
                 <td class="ex-name">DB Incline Pullover <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Lower dumbbell behind head in arc. Expands ribcage and sculpts serratus.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_door_pull" data-ex-name="Bodyweight Door Frame / Towel Row" data-ex-equip="bw" data-ex-muscles="Lats, Upper Back, Core" data-ex-cues="Grip door frame or sheet, lean back, pull chest to frame with rigid plank body." data-ex-mistakes="Sagging hips or bending knees." data-ex-5k="Improves upper body alignment." data-ex-abs="Requires isometric plank core bracing.">
+              <tr class="ex-row" data-ex-id="ex_door_pull" data-ex-youtube="https://www.youtube.com/results?search_query=doorway%20row%20bodyweight%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=doorway%20row%20bodyweight%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Bodyweight Door Frame / Towel Row" data-ex-equip="bw" data-ex-muscles="Lats, Upper Back, Core" data-ex-cues="Grip door frame or sheet, lean back, pull chest to frame with rigid plank body." data-ex-mistakes="Sagging hips or bending knees." data-ex-5k="Improves upper body alignment." data-ex-abs="Requires isometric plank core bracing.">
                 <td class="ex-seq">03</td>
                 <td class="ex-name">Bodyweight Incline Row</td>
                 <td class="ex-sets">3 × 12–15</td>
                 <td class="ex-weight">Bodyweight</td>
                 <td class="ex-instr">Lean back holding sturdy support. Pull chest up with rigid plank torso.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_rearfly" data-ex-name="DB Chest-Supported Rear Delt Fly" data-ex-equip="db" data-ex-muscles="Rear Deltoids, Infraspinatus" data-ex-cues="Lie face down on bench, raise dumbbells wide with elbows slightly bent." data-ex-mistakes="Using heavy weights and swinging upper body." data-ex-5k="Counteracts forward shoulder slumping during running." data-ex-abs="Stabilizes core under shoulder load.">
+              <tr class="ex-row" data-ex-id="ex_db_rearfly" data-ex-youtube="https://www.youtube.com/results?search_query=rear%20delt%20fly%20dumbbell%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=rear%20delt%20fly%20dumbbell%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Chest-Supported Rear Delt Fly" data-ex-equip="db" data-ex-muscles="Rear Deltoids, Infraspinatus" data-ex-cues="Lie face down on bench, raise dumbbells wide with elbows slightly bent." data-ex-mistakes="Using heavy weights and swinging upper body." data-ex-5k="Counteracts forward shoulder slumping during running." data-ex-abs="Stabilizes core under shoulder load.">
                 <td class="ex-seq">04</td>
                 <td class="ex-name">DB Rear Delt Fly</td>
                 <td class="ex-sets">3 × 12–15</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Chest supported. Raise weights out wide to target posterior delts.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_curl" data-ex-name="Incline DB Bicep Curl" data-ex-equip="db" data-ex-muscles="Biceps Brachii" data-ex-cues="Sit back against 60° incline, arms hang straight, curl weights without moving elbows." data-ex-mistakes="Rocking shoulders forward to assist." data-ex-5k="Builds arm drive stamina for 5K hills." data-ex-abs="Eliminates body momentum.">
+              <tr class="ex-row" data-ex-id="ex_db_curl" data-ex-youtube="https://www.youtube.com/results?search_query=incline%20dumbbell%20curl%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=incline%20dumbbell%20curl%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Incline DB Bicep Curl" data-ex-equip="db" data-ex-muscles="Biceps Brachii" data-ex-cues="Sit back against 60° incline, arms hang straight, curl weights without moving elbows." data-ex-mistakes="Rocking shoulders forward to assist." data-ex-5k="Builds arm drive stamina for 5K hills." data-ex-abs="Eliminates body momentum.">
                 <td class="ex-seq">05</td>
                 <td class="ex-name">Incline DB Bicep Curl</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Sit back on incline bench. Lock elbows in place for strict bicep isolation.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_hammer" data-ex-name="DB Hammer Curl" data-ex-equip="db" data-ex-muscles="Brachioradialis, Forearms" data-ex-cues="Neutral grip with palms facing each other, curl smoothly." data-ex-mistakes="Swinging hips." data-ex-5k="Strengthens arm rhythm for running." data-ex-abs="Stabilizes core in standing stance.">
+              <tr class="ex-row" data-ex-id="ex_db_hammer" data-ex-youtube="https://www.youtube.com/results?search_query=hammer%20curl%20form%20demic%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=hammer%20curl%20form%20demic" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Hammer Curl" data-ex-equip="db" data-ex-muscles="Brachioradialis, Forearms" data-ex-cues="Neutral grip with palms facing each other, curl smoothly." data-ex-mistakes="Swinging hips." data-ex-5k="Strengthens arm rhythm for running." data-ex-abs="Stabilizes core in standing stance.">
                 <td class="ex-seq">06</td>
                 <td class="ex-name">DB Hammer Curl</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Neutral grip. Builds forearm stamina and wrist stability.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_birddog" data-ex-name="Bird Dog Strict Iso-Holds" data-ex-equip="bw" data-ex-muscles="Multifidus, Erector Spinae, Glutes, Deep Core" data-ex-cues="Quadruped position, extend opposite arm and leg straight. Hold 10 seconds." data-ex-mistakes="Arching lower back or tilting hips." data-ex-5k="Stabilizes lumbar spine and pelvis during 5K foot strikes." data-ex-abs="Deep transverse abdominis activation for flat stomach.<span class='badge-5k'>5K Core</span>">
+              <tr class="ex-row" data-ex-id="ex_birddog" data-ex-youtube="https://www.youtube.com/results?search_query=bird%20dog%20exercise%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=bird%20dog%20exercise%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Bird Dog Strict Iso-Holds" data-ex-equip="bw" data-ex-muscles="Multifidus, Erector Spinae, Glutes, Deep Core" data-ex-cues="Quadruped position, extend opposite arm and leg straight. Hold 10 seconds." data-ex-mistakes="Arching lower back or tilting hips." data-ex-5k="Stabilizes lumbar spine and pelvis during 5K foot strikes." data-ex-abs="Deep transverse abdominis activation for flat stomach.<span class='badge-5k'>5K Core</span>">
                 <td class="ex-seq">07</td>
                 <td class="ex-name">Bird Dog Iso-Hold <span class="badge-5k">5K Core</span></td>
                 <td class="ex-sets">3 × 6 reps (10s)</td>
                 <td class="ex-weight">Bodyweight</td>
                 <td class="ex-instr">Quadruped pose — extend opposite arm and leg. Builds spinal stiffness.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_mcgill_curlup" data-ex-name="McGill Curl-Up" data-ex-equip="bw" data-ex-muscles="Rectus Abdominis, Transverse Abdominis" data-ex-cues="Hands under lumbar spine, one knee bent. Lift head &amp; shoulders 2 inches without flexing lower back." data-ex-mistakes="Pulling neck forward with chin." data-ex-5k="Protects lumbar discs under 5K ground reaction forces." data-ex-abs="Sculpts 6-pack rectus abdominis with zero lower back strain.<span class='badge-abs'>Toned Abs</span>">
+              <tr class="ex-row" data-ex-id="ex_mcgill_curlup" data-ex-youtube="https://www.youtube.com/results?search_query=McGill%20curl%20up%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=McGill%20curl%20up%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="McGill Curl-Up" data-ex-equip="bw" data-ex-muscles="Rectus Abdominis, Transverse Abdominis" data-ex-cues="Hands under lumbar spine, one knee bent. Lift head &amp; shoulders 2 inches without flexing lower back." data-ex-mistakes="Pulling neck forward with chin." data-ex-5k="Protects lumbar discs under 5K ground reaction forces." data-ex-abs="Sculpts 6-pack rectus abdominis with zero lower back strain.<span class='badge-abs'>Toned Abs</span>">
                 <td class="ex-seq">08</td>
                 <td class="ex-name">McGill Curl-Up <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 6 reps (10s)</td>
@@ -619,12 +1007,12 @@
 
           <div class="subhead">Abs Conditioning &amp; Finish</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="ex_reverse_crunch" data-ex-name="Lying Reverse Crunches" data-ex-equip="bw" data-ex-muscles="Lower Rectus Abdominis, Obliques" data-ex-cues="Lie flat, curl knees to chest by tilting pelvis upward." data-ex-mistakes="Swinging legs with momentum." data-ex-5k="Enhances hip flexor &amp; lower core coordination for running stride." data-ex-abs="Shapes lower abdominal wall and V-cut lines.">
+            <div class="wu-item" data-ex-id="ex_reverse_crunch" data-ex-youtube="https://www.youtube.com/results?search_query=reverse%20crunch%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=reverse%20crunch%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Lying Reverse Crunches" data-ex-equip="bw" data-ex-muscles="Lower Rectus Abdominis, Obliques" data-ex-cues="Lie flat, curl knees to chest by tilting pelvis upward." data-ex-mistakes="Swinging legs with momentum." data-ex-5k="Enhances hip flexor &amp; lower core coordination for running stride." data-ex-abs="Shapes lower abdominal wall and V-cut lines.">
               <span class="wu-n">01</span><span class="wu-t">Lying Reverse Crunches</span><span class="wu-r">3 × 15 reps</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Tilt pelvis upward to curl hips off floor. Targets lower abdominal wall.</div>
             </div>
-            <div class="wu-item" data-ex-id="wu_hip_flow" data-ex-name="90/90 Hip Mobility Flow" data-ex-equip="bw" data-ex-muscles="Hip Rotators, Gluteus Medius, Piriformis" data-ex-cues="Seated 90/90 legs, rotate hips side to side smoothly." data-ex-mistakes="Slouching lower back." data-ex-5k="Opens tight hips from desk sitting and running." data-ex-abs="Improves pelvic mobility.">
+            <div class="wu-item" data-ex-id="wu_hip_flow" data-ex-youtube="https://www.youtube.com/results?search_query=90%2090%20hip%20stretch%20mobility%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=90%2090%20hip%20stretch%20mobility" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="90/90 Hip Mobility Flow" data-ex-equip="bw" data-ex-muscles="Hip Rotators, Gluteus Medius, Piriformis" data-ex-cues="Seated 90/90 legs, rotate hips side to side smoothly." data-ex-mistakes="Slouching lower back." data-ex-5k="Opens tight hips from desk sitting and running." data-ex-abs="Improves pelvic mobility.">
               <span class="wu-n">02</span><span class="wu-t">90/90 Hip Mobility Flow</span><span class="wu-r">5 minutes</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">90/90 hip switches and pigeon stretches to maintain full hip range of motion.</div>
@@ -642,7 +1030,7 @@
 
           <div class="subhead">Dynamic Joint Warm-Up</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="wu_scap_pushup" data-ex-name="Scapular Push-ups" data-ex-equip="bw" data-ex-muscles="Serratus Anterior, Scapular Stabilizers" data-ex-cues="High plank position, move shoulder blades together and spread apart without bending arms." data-ex-mistakes="Bending elbows." data-ex-5k="Builds shoulder blade stability." data-ex-abs="Fires serratus anterior.">
+            <div class="wu-item" data-ex-id="wu_scap_pushup" data-ex-youtube="https://www.youtube.com/results?search_query=scapular%20push%20up%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=scapular%20push%20up%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Scapular Push-ups" data-ex-equip="bw" data-ex-muscles="Serratus Anterior, Scapular Stabilizers" data-ex-cues="High plank position, move shoulder blades together and spread apart without bending arms." data-ex-mistakes="Bending elbows." data-ex-5k="Builds shoulder blade stability." data-ex-abs="Fires serratus anterior.">
               <span class="wu-n">01</span><span class="wu-t">Scapular Push-ups</span><span class="wu-r">12 reps</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Activates serratus anterior and shoulder blade stability for pressing movements.</div>
@@ -655,56 +1043,56 @@
               <tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Load &amp; Mode</th><th>Directive &amp; Form Guide</th></tr>
             </thead>
             <tbody>
-              <tr class="ex-row" data-ex-id="ex_pushup_matrix" data-ex-name="Calisthenics Push-Up Matrix" data-ex-equip="bw" data-ex-muscles="Pectoralis Major, Triceps, Anterior Deltoid, Core" data-ex-cues="Rigid plank torso, lower chest to 1 inch above floor, press up smoothly." data-ex-mistakes="Sagging hips or flaring elbows 90 degrees." data-ex-5k="Builds chest-shoulder stamina for running posture." data-ex-abs="Acts as a dynamic full-body core plank.<span class='badge-abs'>Toned Abs</span>">
+              <tr class="ex-row" data-ex-id="ex_pushup_matrix" data-ex-youtube="https://www.youtube.com/results?search_query=push%20up%20form%20demic%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=push%20up%20form%20demic" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Calisthenics Push-Up Matrix" data-ex-equip="bw" data-ex-muscles="Pectoralis Major, Triceps, Anterior Deltoid, Core" data-ex-cues="Rigid plank torso, lower chest to 1 inch above floor, press up smoothly." data-ex-mistakes="Sagging hips or flaring elbows 90 degrees." data-ex-5k="Builds chest-shoulder stamina for running posture." data-ex-abs="Acts as a dynamic full-body core plank.<span class='badge-abs'>Toned Abs</span>">
                 <td class="ex-seq">01</td>
                 <td class="ex-name">Push-Up Matrix (Incline/Flat) <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 12–15</td>
                 <td class="ex-weight">Bodyweight</td>
                 <td class="ex-instr">Rigid plank body. Lower chest to 1 inch above floor, press up smoothly.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_incline_press" data-ex-name="Incline Dumbbell Press" data-ex-equip="db" data-ex-muscles="Upper Pectoralis, Anterior Deltoid" data-ex-cues="30-degree incline, keep feet flat, press dumbbells straight up without arching lower back." data-ex-mistakes="Arching lower back off pad." data-ex-5k="Improves upper torso posture during marathon strides." data-ex-abs="Locks ribcage down.">
+              <tr class="ex-row" data-ex-id="ex_db_incline_press" data-ex-youtube="https://www.youtube.com/results?search_query=incline%20dumbbell%20press%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=incline%20dumbbell%20press%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Incline Dumbbell Press" data-ex-equip="db" data-ex-muscles="Upper Pectoralis, Anterior Deltoid" data-ex-cues="30-degree incline, keep feet flat, press dumbbells straight up without arching lower back." data-ex-mistakes="Arching lower back off pad." data-ex-5k="Improves upper torso posture during marathon strides." data-ex-abs="Locks ribcage down.">
                 <td class="ex-seq">02</td>
                 <td class="ex-name">Incline Dumbbell Press</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">30° incline bench. Press dumbbells in smooth arc without arching lower back.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_floor_press" data-ex-name="DB Floor Press" data-ex-equip="db" data-ex-muscles="Pectoralis, Triceps Brachii" data-ex-cues="Lie flat on floor, lower dumbbells until triceps lightly touch floor, press up." data-ex-mistakes="Bouncing elbows off floor." data-ex-5k="Zero spinal stress pressing variation." data-ex-abs="Keeps lower back flat against floor.">
+              <tr class="ex-row" data-ex-id="ex_db_floor_press" data-ex-youtube="https://www.youtube.com/results?search_query=dumbbell%20floor%20press%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=dumbbell%20floor%20press%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Floor Press" data-ex-equip="db" data-ex-muscles="Pectoralis, Triceps Brachii" data-ex-cues="Lie flat on floor, lower dumbbells until triceps lightly touch floor, press up." data-ex-mistakes="Bouncing elbows off floor." data-ex-5k="Zero spinal stress pressing variation." data-ex-abs="Keeps lower back flat against floor.">
                 <td class="ex-seq">03</td>
                 <td class="ex-name">DB Floor Press</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Lie flat on floor. Lower weights until elbows touch ground, press up.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_standing_press" data-ex-name="DB Standing Overhead Press" data-ex-equip="db" data-ex-muscles="Anterior &amp; Lateral Deltoids, Core" data-ex-cues="Stand tall, brace abs tight, press dumbbells overhead in smooth path." data-ex-mistakes="Leaning back excessively to push heavy weights." data-ex-5k="Builds shoulder stamina for 5K running." data-ex-abs="Demands intense anti-extension abs tension.<span class='badge-5k'>5K Core</span>">
+              <tr class="ex-row" data-ex-id="ex_db_standing_press" data-ex-youtube="https://www.youtube.com/results?search_query=standing%20overhead%20press%20form%20demic%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=standing%20overhead%20press%20form%20demic" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Standing Overhead Press" data-ex-equip="db" data-ex-muscles="Anterior &amp; Lateral Deltoids, Core" data-ex-cues="Stand tall, brace abs tight, press dumbbells overhead in smooth path." data-ex-mistakes="Leaning back excessively to push heavy weights." data-ex-5k="Builds shoulder stamina for 5K running." data-ex-abs="Demands intense anti-extension abs tension.<span class='badge-5k'>5K Core</span>">
                 <td class="ex-seq">04</td>
                 <td class="ex-name">DB Standing Press <span class="badge-5k">5K Core</span></td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Stand tall with braced abs. Press weights overhead without leaning back.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_lat_raise" data-ex-name="DB Lateral Raise" data-ex-equip="db" data-ex-muscles="Lateral Deltoid" data-ex-cues="Slight bend in elbows, raise dumbbells to shoulder height, lower slowly." data-ex-mistakes="Shrugging traps or swinging hips." data-ex-5k="Defines shoulder caps and upper body posture." data-ex-abs="Locks core for strict side raises.">
+              <tr class="ex-row" data-ex-id="ex_db_lat_raise" data-ex-youtube="https://www.youtube.com/results?search_query=lateral%20raise%20form%20demic%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=lateral%20raise%20form%20demic" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Lateral Raise" data-ex-equip="db" data-ex-muscles="Lateral Deltoid" data-ex-cues="Slight bend in elbows, raise dumbbells to shoulder height, lower slowly." data-ex-mistakes="Shrugging traps or swinging hips." data-ex-5k="Defines shoulder caps and upper body posture." data-ex-abs="Locks core for strict side raises.">
                 <td class="ex-seq">05</td>
                 <td class="ex-name">DB Lateral Raise</td>
                 <td class="ex-sets">3 × 12–15</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Slight elbow bend. Raise weights to shoulder height with strict control.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_bench_dips" data-ex-name="Triceps Bench Dips" data-ex-equip="bw" data-ex-muscles="Triceps Brachii, Anterior Shoulder" data-ex-cues="Hands on bench edge, lower hips vertically close to bench, extend triceps." data-ex-mistakes="Letting shoulders roll forward." data-ex-5k="Prevents arm fatigue on long runs." data-ex-abs="Sustains chest &amp; core height.">
+              <tr class="ex-row" data-ex-id="ex_bench_dips" data-ex-youtube="https://www.youtube.com/results?search_query=bench%20dips%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=bench%20dips%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Triceps Bench Dips" data-ex-equip="bw" data-ex-muscles="Triceps Brachii, Anterior Shoulder" data-ex-cues="Hands on bench edge, lower hips vertically close to bench, extend triceps." data-ex-mistakes="Letting shoulders roll forward." data-ex-5k="Prevents arm fatigue on long runs." data-ex-abs="Sustains chest &amp; core height.">
                 <td class="ex-seq">06</td>
                 <td class="ex-name">Triceps Bench Dips</td>
                 <td class="ex-sets">3 × 12–15</td>
                 <td class="ex-weight">Bodyweight</td>
                 <td class="ex-instr">Hands on bench edge. Lower hips vertically, press up with triceps.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_plank_pushup" data-ex-name="Plank-to-Pushup" data-ex-equip="bw" data-ex-muscles="Transverse Abdominis, Obliques, Shoulders" data-ex-cues="Forearm plank pose, press up one palm at a time into high plank, lower down." data-ex-mistakes="Rocking hips side to side." data-ex-5k="Develops dynamic core stability under fatigue." data-ex-abs="High intensity total abs &amp; core shredder.<span class='badge-abs'>Toned Abs</span>">
+              <tr class="ex-row" data-ex-id="ex_plank_pushup" data-ex-youtube="https://www.youtube.com/results?search_query=plank%20to%20push%20up%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=plank%20to%20push%20up%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Plank-to-Pushup" data-ex-equip="bw" data-ex-muscles="Transverse Abdominis, Obliques, Shoulders" data-ex-cues="Forearm plank pose, press up one palm at a time into high plank, lower down." data-ex-mistakes="Rocking hips side to side." data-ex-5k="Develops dynamic core stability under fatigue." data-ex-abs="High intensity total abs &amp; core shredder.<span class='badge-abs'>Toned Abs</span>">
                 <td class="ex-seq">07</td>
                 <td class="ex-name">Plank-to-Pushup <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 10 reps</td>
                 <td class="ex-weight">Bodyweight</td>
                 <td class="ex-instr">Alternate between forearm plank and high pushup. Keep hips level.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_side_plank_dips" data-ex-name="Side Plank Hip Dips" data-ex-equip="bw" data-ex-muscles="Internal &amp; External Obliques, Quadratus Lumborum" data-ex-cues="Forearm side plank, lower hips toward floor and drive up high." data-ex-mistakes="Rolling chest forward toward floor." data-ex-5k="Controls lateral pelvic tilt during single-leg 5K stance." data-ex-abs="Sculpts side waistline and obliques.<span class='badge-abs'>Toned Abs</span>">
+              <tr class="ex-row" data-ex-id="ex_side_plank_dips" data-ex-youtube="https://www.youtube.com/results?search_query=side%20plank%20hip%20dips%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=side%20plank%20hip%20dips%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Side Plank Hip Dips" data-ex-equip="bw" data-ex-muscles="Internal &amp; External Obliques, Quadratus Lumborum" data-ex-cues="Forearm side plank, lower hips toward floor and drive up high." data-ex-mistakes="Rolling chest forward toward floor." data-ex-5k="Controls lateral pelvic tilt during single-leg 5K stance." data-ex-abs="Sculpts side waistline and obliques.<span class='badge-abs'>Toned Abs</span>">
                 <td class="ex-seq">08</td>
                 <td class="ex-name">Side Plank Hip Dips <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 10/side</td>
@@ -716,7 +1104,7 @@
 
           <div class="subhead">Core Stability Finish</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="ex_deadbug" data-ex-name="Dead Bug Strict Iso-Holds" data-ex-equip="bw" data-ex-muscles="Transverse Abdominis, Rectus Abdominis" data-ex-cues="Lie flat, knees 90°, extend opposite arm and leg while keeping lower back flat." data-ex-mistakes="Arching lower back off floor." data-ex-5k="Teaches pelvic control under leg movement." data-ex-abs="Flattens lower belly.">
+            <div class="wu-item" data-ex-id="ex_deadbug" data-ex-youtube="https://www.youtube.com/results?search_query=dead%20bug%20exercise%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=dead%20bug%20exercise%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Dead Bug Strict Iso-Holds" data-ex-equip="bw" data-ex-muscles="Transverse Abdominis, Rectus Abdominis" data-ex-cues="Lie flat, knees 90°, extend opposite arm and leg while keeping lower back flat." data-ex-mistakes="Arching lower back off floor." data-ex-5k="Teaches pelvic control under leg movement." data-ex-abs="Flattens lower belly.">
               <span class="wu-n">01</span><span class="wu-t">Dead Bug Strict Iso-Holds</span><span class="wu-r">3 × 8 per side</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Extend opposite arm and leg while pressing lower back flat against floor.</div>
@@ -754,14 +1142,14 @@
               <tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Load &amp; Mode</th><th>Directive &amp; Form Guide</th></tr>
             </thead>
             <tbody>
-              <tr class="ex-row" data-ex-id="ex_db_pallof" data-ex-name="DB Standing Pallof Press" data-ex-equip="db" data-ex-muscles="Transverse Abdominis, Obliques, Deep Core" data-ex-cues="Hold single dumbbell at chest with both hands, press straight out, resist torso rotation." data-ex-mistakes="Twisting shoulders toward weight." data-ex-5k="Eliminates torso twisting while running to conserve energy.<span class='badge-5k'>5K Core</span>" data-ex-abs="Deep abdominal wall strengthening.">
+              <tr class="ex-row" data-ex-id="ex_db_pallof" data-ex-youtube="https://www.youtube.com/results?search_query=pallof%20press%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=pallof%20press%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Standing Pallof Press" data-ex-equip="db" data-ex-muscles="Transverse Abdominis, Obliques, Deep Core" data-ex-cues="Hold single dumbbell at chest with both hands, press straight out, resist torso rotation." data-ex-mistakes="Twisting shoulders toward weight." data-ex-5k="Eliminates torso twisting while running to conserve energy.<span class='badge-5k'>5K Core</span>" data-ex-abs="Deep abdominal wall strengthening.">
                 <td class="ex-seq">01</td>
                 <td class="ex-name">DB Standing Pallof Press <span class="badge-5k">5K Core</span></td>
                 <td class="ex-sets">3 × 12 reps</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Press dumbbell straight out from chest. Resist rotation to build core control.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_climber_sprints" data-ex-name="Mountain Climber Sprints" data-ex-equip="bw" data-ex-muscles="Abs, Hip Flexors, Calves, Core" data-ex-cues="High pushup plank, drive knees rapidly toward chest with flat hips." data-ex-mistakes="Pumping hips high into air." data-ex-5k="Scales VO2 max and leg stride frequency." data-ex-abs="High-calorie burn abs cardio.<span class='badge-abs'>Toned Abs</span>">
+              <tr class="ex-row" data-ex-id="ex_climber_sprints" data-ex-youtube="https://www.youtube.com/results?search_query=mountain%20climbers%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=mountain%20climbers%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Mountain Climber Sprints" data-ex-equip="bw" data-ex-muscles="Abs, Hip Flexors, Calves, Core" data-ex-cues="High pushup plank, drive knees rapidly toward chest with flat hips." data-ex-mistakes="Pumping hips high into air." data-ex-5k="Scales VO2 max and leg stride frequency." data-ex-abs="High-calorie burn abs cardio.<span class='badge-abs'>Toned Abs</span>">
                 <td class="ex-seq">02</td>
                 <td class="ex-name">Mountain Climber Sprints <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 30 sec</td>
@@ -773,12 +1161,12 @@
 
           <div class="subhead">Post-Run Mobility &amp; Joint Recovery</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="wu_calf_stretch" data-ex-name="Standing Calf Wall Stretch" data-ex-equip="bw" data-ex-muscles="Gastrocnemius, Soleus, Achilles" data-ex-cues="Lean against wall, push heel firmly into floor." data-ex-mistakes="Bouncing stretch." data-ex-5k="Relieves tension in calves and achilles tendons from running." data-ex-abs="Mobility focus.">
+            <div class="wu-item" data-ex-id="wu_calf_stretch" data-ex-youtube="https://www.youtube.com/results?search_query=standing%20calf%20stretch%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=standing%20calf%20stretch%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Standing Calf Wall Stretch" data-ex-equip="bw" data-ex-muscles="Gastrocnemius, Soleus, Achilles" data-ex-cues="Lean against wall, push heel firmly into floor." data-ex-mistakes="Bouncing stretch." data-ex-5k="Relieves tension in calves and achilles tendons from running." data-ex-abs="Mobility focus.">
               <span class="wu-n">01</span><span class="wu-t">Standing Calf Wall Stretch</span><span class="wu-r">45 sec/leg</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Relieves calf and achilles tension to prevent strain from running.</div>
             </div>
-            <div class="wu-item" data-ex-id="wu_hip_flexor" data-ex-name="Kneeling Hip Flexor Stretch" data-ex-equip="bw" data-ex-muscles="Psoas, Iliacus, Rectus Femoris" data-ex-cues="Kneel on one knee, tuck pelvis forward, lean slightly into front leg." data-ex-mistakes="Arching lower back." data-ex-5k="Releases tight hip flexors." data-ex-abs="Restores pelvic alignment.">
+            <div class="wu-item" data-ex-id="wu_hip_flexor" data-ex-youtube="https://www.youtube.com/results?search_query=kneeling%20hip%20flexor%20stretch%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=kneeling%20hip%20flexor%20stretch" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Kneeling Hip Flexor Stretch" data-ex-equip="bw" data-ex-muscles="Psoas, Iliacus, Rectus Femoris" data-ex-cues="Kneel on one knee, tuck pelvis forward, lean slightly into front leg." data-ex-mistakes="Arching lower back." data-ex-5k="Releases tight hip flexors." data-ex-abs="Restores pelvic alignment.">
               <span class="wu-n">02</span><span class="wu-t">Kneeling Hip Flexor Stretch</span><span class="wu-r">45 sec/side</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Tuck pelvis forward to release hip flexors that tighten from desk sitting.</div>
@@ -796,7 +1184,7 @@
 
           <div class="subhead">Dynamic Joint Warm-Up</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="wu_ytw" data-ex-name="Y-T-W Scapular Raises" data-ex-equip="bw" data-ex-muscles="Lower Trapezius, Rear Delts" data-ex-cues="Form Y, T, W shapes with arms, squeeze shoulder blades." data-ex-mistakes="Using heavy weights." data-ex-5k="Promotes upright posture." data-ex-abs="Upper back alignment.">
+            <div class="wu-item" data-ex-id="wu_ytw" data-ex-youtube="https://www.youtube.com/results?search_query=Y%20T%20W%20raises%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Y%20T%20W%20raises%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Y-T-W Scapular Raises" data-ex-equip="bw" data-ex-muscles="Lower Trapezius, Rear Delts" data-ex-cues="Form Y, T, W shapes with arms, squeeze shoulder blades." data-ex-mistakes="Using heavy weights." data-ex-5k="Promotes upright posture." data-ex-abs="Upper back alignment.">
               <span class="wu-n">01</span><span class="wu-t">Y-T-W Scapular Raises</span><span class="wu-r">10 per pose</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Activates lower traps and rear delts for healthy shoulder movement patterns.</div>
@@ -809,49 +1197,49 @@
               <tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Load &amp; Mode</th><th>Directive &amp; Form Guide</th></tr>
             </thead>
             <tbody>
-              <tr class="ex-row" data-ex-id="ex_db_arnold" data-ex-name="DB Arnold Press" data-ex-equip="db" data-ex-muscles="Anterior, Lateral &amp; Rear Deltoids" data-ex-cues="Palms face you at chest, rotate outward as you press overhead smoothly." data-ex-mistakes="Arching back at top." data-ex-5k="Complete 3D shoulder development." data-ex-abs="Braces core throughout rotation.">
+              <tr class="ex-row" data-ex-id="ex_db_arnold" data-ex-youtube="https://www.youtube.com/results?search_query=arnold%20press%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=arnold%20press%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Arnold Press" data-ex-equip="db" data-ex-muscles="Anterior, Lateral &amp; Rear Deltoids" data-ex-cues="Palms face you at chest, rotate outward as you press overhead smoothly." data-ex-mistakes="Arching back at top." data-ex-5k="Complete 3D shoulder development." data-ex-abs="Braces core throughout rotation.">
                 <td class="ex-seq">01</td>
                 <td class="ex-name">DB Arnold Press</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Rotate palms outward while pressing overhead for 3D deltoid growth.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_front_raise" data-ex-name="DB Alternating Front Raise" data-ex-equip="db" data-ex-muscles="Anterior Deltoid, Upper Chest" data-ex-cues="Raise dumbbell to eye level with straight arm, lower under control." data-ex-mistakes="Swinging body back and forth." data-ex-5k="Improves forward arm swing power." data-ex-abs="Locks abs wall.">
+              <tr class="ex-row" data-ex-id="ex_db_front_raise" data-ex-youtube="https://www.youtube.com/results?search_query=front%20raise%20form%20demic%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=front%20raise%20form%20demic" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Alternating Front Raise" data-ex-equip="db" data-ex-muscles="Anterior Deltoid, Upper Chest" data-ex-cues="Raise dumbbell to eye level with straight arm, lower under control." data-ex-mistakes="Swinging body back and forth." data-ex-5k="Improves forward arm swing power." data-ex-abs="Locks abs wall.">
                 <td class="ex-seq">02</td>
                 <td class="ex-name">DB Alternating Front Raise</td>
                 <td class="ex-sets">3 × 12 reps</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Raise weight to eye level without swinging torso. Strict front delt control.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_conc_curl" data-ex-name="DB Concentration Curl" data-ex-equip="db" data-ex-muscles="Biceps Peak" data-ex-cues="Seated, press elbow against inner thigh, curl dumbbell slowly to chest." data-ex-mistakes="Moving elbow off leg." data-ex-5k="Strict bicep peak isolation." data-ex-abs="Seated core posture.">
+              <tr class="ex-row" data-ex-id="ex_db_conc_curl" data-ex-youtube="https://www.youtube.com/results?search_query=concentration%20curl%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=concentration%20curl%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Concentration Curl" data-ex-equip="db" data-ex-muscles="Biceps Peak" data-ex-cues="Seated, press elbow against inner thigh, curl dumbbell slowly to chest." data-ex-mistakes="Moving elbow off leg." data-ex-5k="Strict bicep peak isolation." data-ex-abs="Seated core posture.">
                 <td class="ex-seq">03</td>
                 <td class="ex-name">DB Concentration Curl</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Elbow pinned against inner thigh. Curl weight with zero body swing.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_overhead_ext" data-ex-name="DB Overhead Triceps Extension" data-ex-equip="db" data-ex-muscles="Triceps Long Head" data-ex-cues="Hold single dumbbell overhead with both hands, lower behind head, press up." data-ex-mistakes="Flaring elbows wide." data-ex-5k="Stretches triceps long head." data-ex-abs="Prevents back arching.">
+              <tr class="ex-row" data-ex-id="ex_db_overhead_ext" data-ex-youtube="https://www.youtube.com/results?search_query=overhead%20tricep%20extension%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=overhead%20tricep%20extension%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Overhead Triceps Extension" data-ex-equip="db" data-ex-muscles="Triceps Long Head" data-ex-cues="Hold single dumbbell overhead with both hands, lower behind head, press up." data-ex-mistakes="Flaring elbows wide." data-ex-5k="Stretches triceps long head." data-ex-abs="Prevents back arching.">
                 <td class="ex-seq">04</td>
                 <td class="ex-name">DB Overhead Triceps Ext</td>
                 <td class="ex-sets">3 × 12 reps</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Seated or standing. Lower dumbbell behind head, extend overhead.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_farmer_carry" data-ex-name="DB Farmer's Carry" data-ex-equip="db" data-ex-muscles="Total Core, Forearms, Traps" data-ex-cues="Walk tall holding dumbbells at sides, grip hard, brace abs tight." data-ex-mistakes="Slouching or letting dumbbells swing." data-ex-5k="Builds full-body endurance and postural strength for 5K runs.<span class='badge-5k'>5K Core</span>" data-ex-abs="Intense anti-lateral flexion core activation.">
+              <tr class="ex-row" data-ex-id="ex_db_farmer_carry" data-ex-youtube="https://www.youtube.com/results?search_query=farmers%20carry%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=farmers%20carry%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Farmer's Carry" data-ex-equip="db" data-ex-muscles="Total Core, Forearms, Traps" data-ex-cues="Walk tall holding dumbbells at sides, grip hard, brace abs tight." data-ex-mistakes="Slouching or letting dumbbells swing." data-ex-5k="Builds full-body endurance and postural strength for 5K runs.<span class='badge-5k'>5K Core</span>" data-ex-abs="Intense anti-lateral flexion core activation.">
                 <td class="ex-seq">05</td>
                 <td class="ex-name">DB Farmer's Carry <span class="badge-5k">5K Core</span></td>
                 <td class="ex-sets">3 × 40 sec</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Walk tall with dumbbells at sides. Grip hard, stay upright, brace core.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_russian_twist" data-ex-name="Russian Twists with DB" data-ex-equip="db" data-ex-muscles="Internal &amp; External Obliques, Rectus Abdominis" data-ex-cues="Sit in V-position, hold dumbbell at chest, rotate torso side to side." data-ex-mistakes="Moving arms only without twisting torso." data-ex-5k="Builds rotational core endurance for running stride." data-ex-abs="Sculpts obliques and V-line abs.<span class='badge-abs'>Toned Abs</span>">
+              <tr class="ex-row" data-ex-id="ex_db_russian_twist" data-ex-youtube="https://www.youtube.com/results?search_query=russian%20twist%20dumbbell%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=russian%20twist%20dumbbell%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Russian Twists with DB" data-ex-equip="db" data-ex-muscles="Internal &amp; External Obliques, Rectus Abdominis" data-ex-cues="Sit in V-position, hold dumbbell at chest, rotate torso side to side." data-ex-mistakes="Moving arms only without twisting torso." data-ex-5k="Builds rotational core endurance for running stride." data-ex-abs="Sculpts obliques and V-line abs.<span class='badge-abs'>Toned Abs</span>">
                 <td class="ex-seq">06</td>
                 <td class="ex-name">DB Russian Twists <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 16 twists</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">V-sit pose holding dumbbell. Rotate shoulders side to side with control.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_hollow_body" data-ex-name="Hollow Body Hold" data-ex-equip="bw" data-ex-muscles="Rectus Abdominis, Transverse Abdominis" data-ex-cues="Lie flat, press lower back into floor, raise shoulders and legs 6 inches up." data-ex-mistakes="Lower back arching off floor." data-ex-5k="Teaches pelvic tilt mastery for running stride." data-ex-abs="Gold-standard gymnastic core hold.<span class='badge-abs'>Toned Abs</span>">
+              <tr class="ex-row" data-ex-id="ex_hollow_body" data-ex-youtube="https://www.youtube.com/results?search_query=hollow%20body%20hold%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=hollow%20body%20hold%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Hollow Body Hold" data-ex-equip="bw" data-ex-muscles="Rectus Abdominis, Transverse Abdominis" data-ex-cues="Lie flat, press lower back into floor, raise shoulders and legs 6 inches up." data-ex-mistakes="Lower back arching off floor." data-ex-5k="Teaches pelvic tilt mastery for running stride." data-ex-abs="Gold-standard gymnastic core hold.<span class='badge-abs'>Toned Abs</span>">
                 <td class="ex-seq">07</td>
                 <td class="ex-name">Hollow Body Hold <span class="badge-abs">Toned Abs</span></td>
                 <td class="ex-sets">3 × 30 sec</td>
@@ -872,7 +1260,7 @@
 
           <div class="subhead">Dynamic Joint Warm-Up</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="wu_glute_bridge" data-ex-name="Glute Activation Bridges" data-ex-equip="bw" data-ex-muscles="Gluteus Maximus, Hamstrings" data-ex-cues="Drive through heels, squeeze glutes at top." data-ex-mistakes="Overarching lower back." data-ex-5k="Fires glutes for running drive." data-ex-abs="Protects spine.">
+            <div class="wu-item" data-ex-id="wu_glute_bridge" data-ex-youtube="https://www.youtube.com/results?search_query=Glute%20Activation%20Bridges%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Glute%20Activation%20Bridges%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Glute Activation Bridges" data-ex-equip="bw" data-ex-muscles="Gluteus Maximus, Hamstrings" data-ex-cues="Drive through heels, squeeze glutes at top." data-ex-mistakes="Overarching lower back." data-ex-5k="Fires glutes for running drive." data-ex-abs="Protects spine.">
               <span class="wu-n">01</span><span class="wu-t">Glute Activation Bridges</span><span class="wu-r">15 reps</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Fires up the glutes so legs do the work and lower back stays protected.</div>
@@ -885,56 +1273,56 @@
               <tr><th></th><th>Exercise</th><th>Sets × Reps</th><th>Load &amp; Mode</th><th>Directive &amp; Form Guide</th></tr>
             </thead>
             <tbody>
-              <tr class="ex-row" data-ex-id="ex_db_goblet_squat" data-ex-name="DB Goblet Squat" data-ex-equip="db" data-ex-muscles="Quadriceps, Glutes, Core" data-ex-cues="Hold dumbbell vertically at chest, squat down to 90° with vertical torso." data-ex-mistakes="Caving knees inward or leaning forward." data-ex-5k="Builds leg power while eliminating spinal shear forces." data-ex-abs="Reflexive core activation from front loading.">
+              <tr class="ex-row" data-ex-id="ex_db_goblet_squat" data-ex-youtube="https://www.youtube.com/results?search_query=DB%20Goblet%20Squat%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=DB%20Goblet%20Squat%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Goblet Squat" data-ex-equip="db" data-ex-muscles="Quadriceps, Glutes, Core" data-ex-cues="Hold dumbbell vertically at chest, squat down to 90° with vertical torso." data-ex-mistakes="Caving knees inward or leaning forward." data-ex-5k="Builds leg power while eliminating spinal shear forces." data-ex-abs="Reflexive core activation from front loading.">
                 <td class="ex-seq">01</td>
                 <td class="ex-name">DB Goblet Squat</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Hold weight at chest. Front-loading keeps torso upright and eliminates spinal shear.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_bulgarian" data-ex-name="DB Bulgarian Split Squat" data-ex-equip="db" data-ex-muscles="Quads, Gluteus Medius, Hamstrings" data-ex-cues="Rear foot on bench, lower front knee smoothly to 90°, drive up through front heel." data-ex-mistakes="Pushing off rear toes." data-ex-5k="Corrects single-leg strength imbalances for 5K running.<span class='badge-5k'>5K Power</span>" data-ex-abs="Requires intense hip and core stabilization.">
+              <tr class="ex-row" data-ex-id="ex_db_bulgarian" data-ex-youtube="https://www.youtube.com/results?search_query=DB%20Bulgarian%20Split%20Squat%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=DB%20Bulgarian%20Split%20Squat%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Bulgarian Split Squat" data-ex-equip="db" data-ex-muscles="Quads, Gluteus Medius, Hamstrings" data-ex-cues="Rear foot on bench, lower front knee smoothly to 90°, drive up through front heel." data-ex-mistakes="Pushing off rear toes." data-ex-5k="Corrects single-leg strength imbalances for 5K running.<span class='badge-5k'>5K Power</span>" data-ex-abs="Requires intense hip and core stabilization.">
                 <td class="ex-seq">02</td>
                 <td class="ex-name">DB Bulgarian Split Squat <span class="badge-5k">5K Power</span></td>
                 <td class="ex-sets">3 × 10/leg</td>
                 <td class="ex-weight">DB / Bodyweight</td>
                 <td class="ex-instr">Rear foot elevated. Lower smoothly. Unilateral exercise neutralizes spinal load.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_stepups" data-ex-name="Single-Leg DB Step-ups" data-ex-equip="db" data-ex-muscles="Quads, Glutes" data-ex-cues="Drive through heel of working leg on bench, press straight up without bouncing." data-ex-mistakes="Pushing off back foot." data-ex-5k="Mimics uphill running mechanics." data-ex-abs="Single-leg stance balance.">
+              <tr class="ex-row" data-ex-id="ex_stepups" data-ex-youtube="https://www.youtube.com/results?search_query=Single-Leg%20DB%20Step-ups%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Single-Leg%20DB%20Step-ups%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Single-Leg DB Step-ups" data-ex-equip="db" data-ex-muscles="Quads, Glutes" data-ex-cues="Drive through heel of working leg on bench, press straight up without bouncing." data-ex-mistakes="Pushing off back foot." data-ex-5k="Mimics uphill running mechanics." data-ex-abs="Single-leg stance balance.">
                 <td class="ex-seq">03</td>
                 <td class="ex-name">Single-Leg DB Step-up</td>
                 <td class="ex-sets">3 × 10/leg</td>
                 <td class="ex-weight">DB / Bodyweight</td>
                 <td class="ex-instr">Drive through working heel on bench. Keep torso tall without bouncing.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_reverse_lunge" data-ex-name="DB Reverse Lunge" data-ex-equip="db" data-ex-muscles="Glutes, Hamstrings, Quads" data-ex-cues="Step back into 90/90 lunge, lower knee lightly, drive forward." data-ex-mistakes="Banging knee on floor." data-ex-5k="Knee-friendly leg exercise for runners." data-ex-abs="Deceleration core control.">
+              <tr class="ex-row" data-ex-id="ex_reverse_lunge" data-ex-youtube="https://www.youtube.com/results?search_query=DB%20Reverse%20Lunge%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=DB%20Reverse%20Lunge%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Reverse Lunge" data-ex-equip="db" data-ex-muscles="Glutes, Hamstrings, Quads" data-ex-cues="Step back into 90/90 lunge, lower knee lightly, drive forward." data-ex-mistakes="Banging knee on floor." data-ex-5k="Knee-friendly leg exercise for runners." data-ex-abs="Deceleration core control.">
                 <td class="ex-seq">04</td>
                 <td class="ex-name">DB Reverse Lunge</td>
                 <td class="ex-sets">3 × 10/leg</td>
                 <td class="ex-weight">DB / Bodyweight</td>
                 <td class="ex-instr">Step back into 90/90 lunge. Safer for knees and back than forward lunges.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_rdl" data-ex-name="DB Romanian Deadlift" data-ex-equip="db" data-ex-muscles="Hamstrings, Glutes, Erector Spinae" data-ex-cues="Soft knees, hinge hips back with flat spine, lower dumbbells to shins." data-ex-mistakes="Rounding lower back." data-ex-5k="Strengthens posterior chain to propel running stride." data-ex-abs="Spinal alignment &amp; core tension.">
+              <tr class="ex-row" data-ex-id="ex_db_rdl" data-ex-youtube="https://www.youtube.com/results?search_query=DB%20Romanian%20Deadlift%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=DB%20Romanian%20Deadlift%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Romanian Deadlift" data-ex-equip="db" data-ex-muscles="Hamstrings, Glutes, Erector Spinae" data-ex-cues="Soft knees, hinge hips back with flat spine, lower dumbbells to shins." data-ex-mistakes="Rounding lower back." data-ex-5k="Strengthens posterior chain to propel running stride." data-ex-abs="Spinal alignment &amp; core tension.">
                 <td class="ex-seq">05</td>
                 <td class="ex-name">DB Romanian Deadlift</td>
                 <td class="ex-sets">3 × 10–12</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Soft bend in knees, hinge hips back with flat spine. Squeeze glutes at top.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_db_hip_thrust" data-ex-name="DB Glute Bridge / Hip Thrust" data-ex-equip="db" data-ex-muscles="Gluteus Maximus, Hamstrings" data-ex-cues="Lie flat or upper back on bench, weight on hips, drive up with 3s glute squeeze." data-ex-mistakes="Hyperextending lower back." data-ex-5k="Maintains glute drive for running stride power." data-ex-abs="Zero lumbar loading.">
+              <tr class="ex-row" data-ex-id="ex_db_hip_thrust" data-ex-youtube="https://www.youtube.com/results?search_query=DB%20Glute%20Bridge%20/%20Hip%20Thrust%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=DB%20Glute%20Bridge%20/%20Hip%20Thrust%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="DB Glute Bridge / Hip Thrust" data-ex-equip="db" data-ex-muscles="Gluteus Maximus, Hamstrings" data-ex-cues="Lie flat or upper back on bench, weight on hips, drive up with 3s glute squeeze." data-ex-mistakes="Hyperextending lower back." data-ex-5k="Maintains glute drive for running stride power." data-ex-abs="Zero lumbar loading.">
                 <td class="ex-seq">06</td>
                 <td class="ex-name">DB Glute Bridge / Thrust</td>
                 <td class="ex-sets">3 × 12–15</td>
                 <td class="ex-weight">Dumbbell</td>
                 <td class="ex-instr">Weight across hips, drive through heels with 3s glute squeeze at peak.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_tibialis_raise" data-ex-name="Tibialis Wall Raise" data-ex-equip="bw" data-ex-muscles="Tibialis Anterior" data-ex-cues="Lean back against wall, heels on floor, raise toes up toward shins." data-ex-mistakes="Bending knees." data-ex-5k="Prevents shin splints and absorbs 5K foot-strike impact.<span class='badge-5k'>5K Shield</span>" data-ex-abs="Shin resilience.">
+              <tr class="ex-row" data-ex-id="ex_tibialis_raise" data-ex-youtube="https://www.youtube.com/results?search_query=Tibialis%20Wall%20Raise%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Tibialis%20Wall%20Raise%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Tibialis Wall Raise" data-ex-equip="bw" data-ex-muscles="Tibialis Anterior" data-ex-cues="Lean back against wall, heels on floor, raise toes up toward shins." data-ex-mistakes="Bending knees." data-ex-5k="Prevents shin splints and absorbs 5K foot-strike impact.<span class='badge-5k'>5K Shield</span>" data-ex-abs="Shin resilience.">
                 <td class="ex-seq">07</td>
                 <td class="ex-name">Tibialis Wall Raise <span class="badge-5k">5K Shield</span></td>
                 <td class="ex-sets">3 × 15 reps</td>
                 <td class="ex-weight">Bodyweight</td>
                 <td class="ex-instr">Lean back against wall, heels on floor. Pull toes up to prevent shin splints.<button class="btn-ex-demo" type="button" style="margin-left: 8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Demo</button></td>
               </tr>
-              <tr class="ex-row" data-ex-id="ex_calf_raise" data-ex-name="Standing Single-Leg Calf Raise" data-ex-equip="bw" data-ex-muscles="Gastrocnemius, Soleus" data-ex-cues="Full stretch at bottom, rise onto toes with peak squeeze on one leg." data-ex-mistakes="Rushing reps without full range." data-ex-5k="Essential calf &amp; achilles spring energy for 5K." data-ex-abs="Balance control.">
+              <tr class="ex-row" data-ex-id="ex_calf_raise" data-ex-youtube="https://www.youtube.com/results?search_query=Standing%20Single-Leg%20Calf%20Raise%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Standing%20Single-Leg%20Calf%20Raise%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Standing Single-Leg Calf Raise" data-ex-equip="bw" data-ex-muscles="Gastrocnemius, Soleus" data-ex-cues="Full stretch at bottom, rise onto toes with peak squeeze on one leg." data-ex-mistakes="Rushing reps without full range." data-ex-5k="Essential calf &amp; achilles spring energy for 5K." data-ex-abs="Balance control.">
                 <td class="ex-seq">08</td>
                 <td class="ex-name">Single-Leg Calf Raise</td>
                 <td class="ex-sets">3 × 15/leg</td>
@@ -955,17 +1343,17 @@
 
           <div class="subhead">Recovery &amp; Mobility Session</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="wu_walk_sat" data-ex-name="Zone 2 Active Walk" data-ex-equip="bw" data-ex-muscles="Aerobic System, Legs" data-ex-cues="Conversational pace easy walking." data-ex-mistakes="Pushing heart rate too high." data-ex-5k="Promotes active recovery." data-ex-abs="Lowers cortisol.">
+            <div class="wu-item" data-ex-id="wu_walk_sat" data-ex-youtube="https://www.youtube.com/results?search_query=Zone%202%20Active%20Walk%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Zone%202%20Active%20Walk%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Zone 2 Active Walk" data-ex-equip="bw" data-ex-muscles="Aerobic System, Legs" data-ex-cues="Conversational pace easy walking." data-ex-mistakes="Pushing heart rate too high." data-ex-5k="Promotes active recovery." data-ex-abs="Lowers cortisol.">
               <span class="wu-n">01</span><span class="wu-t">Easy Walking</span><span class="wu-r">45–60 minutes</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Flat terrain, conversational pace. Maintains daily step count and promotes active recovery.</div>
             </div>
-            <div class="wu-item" data-ex-id="wu_hip_stretch" data-ex-name="Hip &amp; Pigeon Mobility Flow" data-ex-equip="bw" data-ex-muscles="Gluteus Medius, Piriformis, Psoas" data-ex-cues="Deep static holds, breathing into tight hips." data-ex-mistakes="Forcing painful knee angles." data-ex-5k="Opens tight hips from running." data-ex-abs="Restores mobility.">
+            <div class="wu-item" data-ex-id="wu_hip_stretch" data-ex-youtube="https://www.youtube.com/results?search_query=Hip%20%20%20Pigeon%20Mobility%20Flow%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Hip%20%20%20Pigeon%20Mobility%20Flow%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Hip &amp; Pigeon Mobility Flow" data-ex-equip="bw" data-ex-muscles="Gluteus Medius, Piriformis, Psoas" data-ex-cues="Deep static holds, breathing into tight hips." data-ex-mistakes="Forcing painful knee angles." data-ex-5k="Opens tight hips from running." data-ex-abs="Restores mobility.">
               <span class="wu-n">02</span><span class="wu-t">Hip &amp; Pigeon Mobility Flow</span><span class="wu-r">10 minutes</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">90/90 hip switches, pigeon stretch, hip flexor lunge. Opens up tight hips.</div>
             </div>
-            <div class="wu-item" data-ex-id="wu_thoracic" data-ex-name="Thoracic Spine Mobility" data-ex-equip="bw" data-ex-muscles="Thoracic Spine, Pectorals" data-ex-cues="Side-lying open book rotations." data-ex-mistakes="Moving lower back." data-ex-5k="Improves running ribcage rotation." data-ex-abs="Upper back posture.">
+            <div class="wu-item" data-ex-id="wu_thoracic" data-ex-youtube="https://www.youtube.com/results?search_query=Thoracic%20Spine%20Mobility%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Thoracic%20Spine%20Mobility%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Thoracic Spine Mobility" data-ex-equip="bw" data-ex-muscles="Thoracic Spine, Pectorals" data-ex-cues="Side-lying open book rotations." data-ex-mistakes="Moving lower back." data-ex-5k="Improves running ribcage rotation." data-ex-abs="Upper back posture.">
               <span class="wu-n">03</span><span class="wu-t">Thoracic Spine Mobility</span><span class="wu-r">10 minutes</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Thoracic rotations and open-book stretches to counterbalance desk posture.</div>
@@ -983,7 +1371,7 @@
 
           <div class="subhead">Recovery Protocol</div>
           <div class="warmup-list">
-            <div class="wu-item" data-ex-id="wu_sun_rest" data-ex-name="Full Body Passive Stretch" data-ex-equip="bw" data-ex-muscles="Total Body" data-ex-cues="Gentle passive stretching, deep diaphragmatic breathing." data-ex-mistakes="Intense workouts on rest day." data-ex-5k="Complete muscle repair." data-ex-abs="Lowers stress.">
+            <div class="wu-item" data-ex-id="wu_sun_rest" data-ex-youtube="https://www.youtube.com/results?search_query=Full%20Body%20Passive%20Stretch%20form%20shorts" data-ex-pinterest="https://www.pinterest.com/search/pins/?q=Full%20Body%20Passive%20Stretch%20form" data-ex-intervals="Work the prescribed sets · rest 60–90s (or 30–45s in Marathon Burn)" data-ex-name="Full Body Passive Stretch" data-ex-equip="bw" data-ex-muscles="Total Body" data-ex-cues="Gentle passive stretching, deep diaphragmatic breathing." data-ex-mistakes="Intense workouts on rest day." data-ex-5k="Complete muscle repair." data-ex-abs="Lowers stress.">
               <span class="wu-n">01</span><span class="wu-t">Gentle Stretching &amp; Rest</span><span class="wu-r">15–20 minutes</span>
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Light, passive stretching only. Focus on areas that feel tight from the week.</div>
@@ -1262,6 +1650,15 @@
           </div>
         </div>
 
+        <!-- Form Guide -->
+        <div class="modal-form-guide" id="modalFormGuideWrap">
+          <h4>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Form Guide
+          </h4>
+          <div id="modalFormGuide"></div>
+        </div>
+
         <!-- Progression Tips -->
         <div class="modal-progression-card">
           <h4>
@@ -1277,11 +1674,11 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             Mark Set Complete
           </button>
-          <a class="btn-modal-ref" href="https://www.youtube.com/@officialdemic/shorts" target="_blank" rel="noopener noreferrer">
+          <a class="btn-modal-ref" id="btnModalYoutube" href="https://www.youtube.com/@officialdemic/shorts" target="_blank" rel="noopener noreferrer">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
-            @officialdemic
+            YouTube Form
           </a>
-          <a class="btn-modal-ref" style="border-color: rgba(77,124,255,0.4); color: var(--blue); background: rgba(77,124,255,0.1);" href="https://in.pinterest.com/demicofficial/youcan/" target="_blank" rel="noopener noreferrer">
+          <a class="btn-modal-ref btn-modal-ref-pin" id="btnModalPinterest" href="https://in.pinterest.com/demicofficial/youcan/" target="_blank" rel="noopener noreferrer">
             Pinterest Demo
           </a>
         </div>
