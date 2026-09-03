@@ -110,6 +110,11 @@
       </div>
 
       <div class="settings-input-group">
+        <h4>Profile</h4>
+        <button type="button" id="editProfileBtn" class="btn-edit-profile" onclick="document.getElementById('onboarding-modal').showModal()">Edit Profile</button>
+      </div>
+
+      <div class="settings-input-group">
         <h4>Custom Metrics</h4>
         <div class="settings-field-row">
           <div class="settings-field">
@@ -857,6 +862,10 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg>
               Bodyweight Only (Calisthenics)
             </button>
+            <button class="btn-filter btn-filter-equip" data-equip="cf" type="button">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 5v14M18 5v14M3 9h3M18 9h3M3 15h3M18 15h3"/></svg>
+              CrossFit
+            </button>
           </div>
 
           <div class="filter-group">
@@ -1020,6 +1029,45 @@
           </div>
         </div>
 
+        <!-- CrossFit MetCon — Day 1 (visible when cf filter active) -->
+        <div class="ex-group" data-equipment="cf">
+          <h4 class="ex-group-title">CrossFit MetCon</h4>
+          <div class="ex-row" data-ex-id="cf-d1-amrap"
+               data-ex-name="AMRAP 20 — Wall Ball / Box Jump / Pull-Up"
+               data-ex-equipment="cf"
+               data-ex-muscles="Full body, posterior chain"
+               data-ex-cue-posture="Athletic stance, brace core"
+               data-ex-cue-execution="Wall Ball: squat throw to 10-ft mark. Box Jump: full hip extension. Pull-Up: dead hang start."
+               data-ex-cue-breathing="Exhale on exertion, pace your breathing"
+               data-ex-tempo="Sustained effort, 70-80% HRmax"
+               data-ex-sets="As Many Rounds As Possible in 20 min"
+               data-ex-reps="10 Wall Balls / 10 Box Jumps / 5 Pull-Ups"
+               data-ex-rest="Minimal rest — scale to keep moving">
+            <div class="ex-info">
+              <span class="ex-name">AMRAP 20 — Wall Ball / Box Jump / Pull-Up</span>
+              <span class="ex-detail">10 / 10 / 5 reps · CrossFit MetCon</span>
+            </div>
+            <button class="ex-complete-btn" aria-label="Mark complete">✓</button>
+          </div>
+          <div class="ex-row" data-ex-id="cf-d1-kb-swing"
+               data-ex-name="Kettlebell Swing EMOM"
+               data-ex-equipment="cf"
+               data-ex-muscles="Glutes, hamstrings, core, shoulders"
+               data-ex-cue-posture="Hip hinge pattern, neutral spine"
+               data-ex-cue-execution="Drive hips forward explosively. Bell floats to shoulder height. Hike back between legs."
+               data-ex-cue-breathing="Exhale at top, inhale on backswing"
+               data-ex-tempo="Explosive hip drive, controlled return"
+               data-ex-sets="10 rounds EMOM"
+               data-ex-reps="15 swings per minute"
+               data-ex-rest="Remainder of each minute">
+            <div class="ex-info">
+              <span class="ex-name">Kettlebell Swing EMOM</span>
+              <span class="ex-detail">15 reps × 10 min · CrossFit conditioning</span>
+            </div>
+            <button class="ex-complete-btn" aria-label="Mark complete">✓</button>
+          </div>
+        </div>
+
         <!-- DAY 2: TUESDAY -->
         <div class="workout-panel" id="d2">
           <div class="wtag-row">
@@ -1171,6 +1219,45 @@
               <button class="btn-ex-demo" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Form</button>
               <div class="wu-d">Tuck pelvis forward to release hip flexors that tighten from desk sitting.</div>
             </div>
+          </div>
+        </div>
+
+        <!-- CrossFit Conditioning — Day 3 -->
+        <div class="ex-group" data-equipment="cf">
+          <h4 class="ex-group-title">CrossFit Conditioning (Alt. to Run)</h4>
+          <div class="ex-row" data-ex-id="cf-d3-row-interval"
+               data-ex-name="Rowing Intervals 8×500m"
+               data-ex-equipment="cf"
+               data-ex-muscles="Full body aerobic, posterior chain"
+               data-ex-cue-posture="Sit tall, drive with legs first"
+               data-ex-cue-execution="Legs → back → arms on drive. Arms → back → legs on recovery. Target 500m split 2:00–2:15."
+               data-ex-cue-breathing="Rhythmic breathing, exhale on drive"
+               data-ex-tempo="500m hard / 2min rest"
+               data-ex-sets="8 intervals"
+               data-ex-reps="500m per interval"
+               data-ex-rest="2 minutes between intervals">
+            <div class="ex-info">
+              <span class="ex-name">Rowing Intervals 8×500m</span>
+              <span class="ex-detail">8 × 500m · 2 min rest · CrossFit conditioning</span>
+            </div>
+            <button class="ex-complete-btn" aria-label="Mark complete">✓</button>
+          </div>
+          <div class="ex-row" data-ex-id="cf-d3-hang-power-clean"
+               data-ex-name="Hang Power Clean Skill Work"
+               data-ex-equipment="cf"
+               data-ex-muscles="Traps, glutes, hamstrings, shoulders"
+               data-ex-cue-posture="Bar above knees, slight hip hinge, proud chest"
+               data-ex-cue-execution="Violent hip extension → high pull → drop under bar → catch in quarter squat. Focus on technique over weight."
+               data-ex-cue-breathing="Brace before pull, breathe between reps"
+               data-ex-tempo="Controlled descent, explosive pull"
+               data-ex-sets="6 sets"
+               data-ex-reps="3 reps — technique focus"
+               data-ex-rest="90 seconds">
+            <div class="ex-info">
+              <span class="ex-name">Hang Power Clean Skill Work</span>
+              <span class="ex-detail">6 × 3 reps · Olympic lifting skill · CrossFit</span>
+            </div>
+            <button class="ex-complete-btn" aria-label="Mark complete">✓</button>
           </div>
         </div>
 
@@ -1331,6 +1418,45 @@
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- CrossFit Strength — Day 5 -->
+        <div class="ex-group" data-equipment="cf">
+          <h4 class="ex-group-title">CrossFit Strength</h4>
+          <div class="ex-row" data-ex-id="cf-d5-deadlift"
+               data-ex-name="Deadlift 5×5"
+               data-ex-equipment="cf"
+               data-ex-muscles="Hamstrings, glutes, erectors, traps"
+               data-ex-cue-posture="Bar over mid-foot, shoulder-width stance, neutral spine"
+               data-ex-cue-execution="Push floor away, hips and chest rise together, lock out at top. Lower under control."
+               data-ex-cue-breathing="Big breath before pull, exhale after lockout"
+               data-ex-tempo="1-0-X-1 (controlled lower, fast pull)"
+               data-ex-sets="5 sets"
+               data-ex-reps="5 reps @ 75-80% 1RM"
+               data-ex-rest="3 minutes">
+            <div class="ex-info">
+              <span class="ex-name">Deadlift 5×5</span>
+              <span class="ex-detail">5 × 5 reps · 75–80% 1RM · 3 min rest</span>
+            </div>
+            <button class="ex-complete-btn" aria-label="Mark complete">✓</button>
+          </div>
+          <div class="ex-row" data-ex-id="cf-d5-snatch-skill"
+               data-ex-name="Power Snatch Skill Work"
+               data-ex-equipment="cf"
+               data-ex-muscles="Full body — explosive hip + shoulder complex"
+               data-ex-cue-posture="Wide grip (hook grip), bar close to body, shoulders packed"
+               data-ex-cue-execution="Pull from floor → shrug + high pull → punch under bar → receive in partial squat. Light technical work."
+               data-ex-cue-breathing="Brace before pull"
+               data-ex-tempo="Explosive pull, quick turnover"
+               data-ex-sets="5 sets"
+               data-ex-reps="3 reps — light, perfect form"
+               data-ex-rest="2 minutes">
+            <div class="ex-info">
+              <span class="ex-name">Power Snatch Skill Work</span>
+              <span class="ex-detail">5 × 3 reps · technique focus · CrossFit</span>
+            </div>
+            <button class="ex-complete-btn" aria-label="Mark complete">✓</button>
+          </div>
         </div>
 
         <!-- DAY 6: SATURDAY -->
@@ -1693,6 +1819,109 @@
   </footer>
 
   <button class="totop" id="totop" aria-label="Scroll to top" type="button">↑</button>
+
+  <dialog id="onboarding-modal" class="onboarding-modal" aria-modal="true" aria-labelledby="ob-title">
+    <form id="onboarding-form" method="dialog" novalidate>
+      <div class="ob-header">
+        <h2 id="ob-title">Welcome to REBYLD</h2>
+        <p class="ob-subtitle">Set up your personal plan in under 2 minutes.</p>
+      </div>
+
+      <div class="ob-section">
+        <h3>About You</h3>
+        <div class="ob-row">
+          <label>Name <input type="text" name="ob-name" placeholder="Your name" required /></label>
+          <label>Age <input type="number" name="ob-age" min="16" max="80" placeholder="27" required /></label>
+        </div>
+        <div class="ob-row">
+          <label>Sex
+            <select name="ob-sex">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>Height (cm) <input type="number" name="ob-height" min="140" max="220" placeholder="163" required /></label>
+        </div>
+        <div class="ob-row">
+          <label>Current Weight (kg) <input type="number" name="ob-weight" min="40" max="200" step="0.1" placeholder="65" required /></label>
+          <label>Target Weight (kg) <input type="number" name="ob-target-weight" min="40" max="200" step="0.1" placeholder="58" required /></label>
+        </div>
+      </div>
+
+      <div class="ob-section">
+        <h3>Your Goals</h3>
+        <label>Primary Fitness Goal
+          <select name="ob-goal">
+            <option value="weight-loss">Weight Loss</option>
+            <option value="muscle-gain">Muscle Gain</option>
+            <option value="endurance">Endurance</option>
+            <option value="hybrid">Hybrid (Strength + Cardio)</option>
+          </select>
+        </label>
+        <label>Primary Objective
+          <select name="ob-objective">
+            <option value="5k-run">Complete a 5K Run</option>
+            <option value="strength">Build Strength</option>
+            <option value="general-fitness">General Fitness</option>
+            <option value="crossfit">CrossFit Performance</option>
+          </select>
+        </label>
+        <label>Experience Level
+          <select name="ob-experience">
+            <option value="beginner">Beginner (0–1 year)</option>
+            <option value="intermediate">Intermediate (1–3 years)</option>
+            <option value="advanced">Advanced (3+ years)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="ob-section">
+        <h3>Training Setup</h3>
+        <fieldset>
+          <legend>Available Equipment <span class="ob-hint">(select all that apply)</span></legend>
+          <label class="ob-check"><input type="checkbox" name="ob-equipment" value="bw" checked /> Bodyweight</label>
+          <label class="ob-check"><input type="checkbox" name="ob-equipment" value="dumbbells" /> Dumbbells</label>
+          <label class="ob-check"><input type="checkbox" name="ob-equipment" value="full-gym" /> Full Gym</label>
+          <label class="ob-check"><input type="checkbox" name="ob-equipment" value="crossfit-box" /> CrossFit Box</label>
+        </fieldset>
+        <label>Days Per Week Available
+          <select name="ob-days">
+            <option value="3">3 days</option>
+            <option value="4">4 days</option>
+            <option value="5" selected>5 days</option>
+            <option value="6">6 days</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="ob-section">
+        <h3>Nutrition</h3>
+        <label>Dietary Preference
+          <select name="ob-diet">
+            <option value="omnivore">Omnivore</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+            <option value="keto">Keto / Low Carb</option>
+            <option value="custom">Custom</option>
+          </select>
+        </label>
+        <fieldset>
+          <legend>Allergies / Intolerances <span class="ob-hint">(select all that apply)</span></legend>
+          <label class="ob-check"><input type="checkbox" name="ob-intolerance" value="gluten" /> Gluten</label>
+          <label class="ob-check"><input type="checkbox" name="ob-intolerance" value="dairy" /> Dairy</label>
+          <label class="ob-check"><input type="checkbox" name="ob-intolerance" value="nuts" /> Nuts</label>
+          <label class="ob-check"><input type="checkbox" name="ob-intolerance" value="soy" /> Soy</label>
+          <label class="ob-check"><input type="checkbox" name="ob-intolerance" value="eggs" /> Eggs</label>
+        </fieldset>
+      </div>
+
+      <div class="ob-actions">
+        <button type="submit" class="btn-primary">Build My Plan</button>
+        <button type="button" id="ob-skip-btn" class="btn-ghost">Skip for now</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="app.js"></script>
 </body>

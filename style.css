@@ -2490,3 +2490,151 @@ dialog.ex-modal::backdrop {
   text-transform: uppercase;
   letter-spacing: .08em;
 }
+
+/* ── Onboarding Modal ─────────────────────────── */
+.onboarding-modal {
+  background: var(--c-surface, #1a1a2e);
+  color: var(--c-text-hi, #f0f0f0);
+  border: 1px solid var(--c-outline, #333);
+  border-radius: 16px;
+  padding: 0;
+  max-width: 560px;
+  width: 94vw;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.onboarding-modal::backdrop {
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+}
+.ob-header {
+  padding: 28px 28px 0;
+  border-bottom: 1px solid var(--c-outline, #333);
+  margin-bottom: 4px;
+}
+.ob-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+  letter-spacing: 0.04em;
+}
+.ob-subtitle {
+  color: var(--c-text-mid, #aaa);
+  font-size: 0.9rem;
+  margin: 0 0 16px;
+}
+.ob-section {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--c-outline, #333);
+}
+.ob-section h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-text-mid, #aaa);
+  margin: 0 0 14px;
+}
+.ob-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.onboarding-modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c-text-mid, #aaa);
+  margin-bottom: 12px;
+}
+.onboarding-modal input,
+.onboarding-modal select {
+  background: var(--c-surface-2, #252540);
+  border: 1px solid var(--c-outline, #444);
+  border-radius: 8px;
+  color: var(--c-text-hi, #f0f0f0);
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.onboarding-modal fieldset {
+  border: 1px solid var(--c-outline, #444);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 0 0 12px;
+}
+.onboarding-modal legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0 6px;
+  color: var(--c-text-mid, #aaa);
+}
+.ob-hint {
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+.ob-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.ob-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.ob-actions {
+  padding: 20px 28px 28px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.btn-primary {
+  background: var(--c-accent, #7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--c-text-mid, #aaa);
+  border: 1px solid var(--c-outline, #444);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.btn-edit-profile {
+  display: inline-block;
+  background: transparent;
+  color: var(--lime, #d4ff26);
+  border: 1px solid var(--lime, #d4ff26);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+.ex-group {
+  margin: 12px 0;
+}
+.ex-group-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--lime, #d4ff26);
+  margin: 0 0 8px;
+  padding: 0 4px;
+}
