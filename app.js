@@ -39,8 +39,6 @@ function ssSet(newKey, value) {
   sessionStorage.setItem(newKey, value);
 }
 
-const PROFILE_KEY = 'rebyld_user_profile';
-
 const STORE = {
   layout: 'rebyld_layout_sequence_v2',
   layoutLegacy: 'das_layout_sequence_v2',
@@ -87,60 +85,58 @@ function applyProfileToUI(profile) {
   }
 }
 
+function handleOnboardingSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const profile = {
+    name: form.querySelector('[name="ob-name"]')?.value.trim() || '',
+    age: parseInt(form.querySelector('[name="ob-age"]')?.value) || 0,
+    sex: form.querySelector('[name="ob-sex"]')?.value || 'other',
+    heightCm: parseInt(form.querySelector('[name="ob-height"]')?.value) || 0,
+    weightKg: parseFloat(form.querySelector('[name="ob-weight"]')?.value) || 0,
+    targetWeightKg: parseFloat(form.querySelector('[name="ob-target-weight"]')?.value) || 0,
+    fitnessGoal: form.querySelector('[name="ob-goal"]')?.value || 'general-fitness',
+    primaryObjective: form.querySelector('[name="ob-objective"]')?.value || 'general-fitness',
+    experienceLevel: form.querySelector('[name="ob-experience"]')?.value || 'beginner',
+    equipment: Array.from(form.querySelectorAll('[name="ob-equipment"]:checked')).map(c => c.value),
+    daysPerWeek: parseInt(form.querySelector('[name="ob-days"]')?.value) || 5,
+    dietPreference: form.querySelector('[name="ob-diet"]')?.value || 'omnivore',
+    intolerances: Array.from(form.querySelectorAll('[name="ob-intolerance"]:checked')).map(c => c.value),
+  };
+  saveProfile(profile);
+  applyProfileToUI(profile);
+  document.getElementById('onboarding-modal')?.close();
+}
+
 function initOnboarding() {
   const modal = document.getElementById('onboarding-modal');
   if (!modal) return;
-  const profile = loadProfile();
-  if (!profile) {
-    modal.showModal();
-  } else {
-    applyProfileToUI(profile);
-  }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  const obForm = document.getElementById('onboarding-form');
-  if (obForm) {
-    obForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const profile = {
-        name: form.querySelector('[name="ob-name"]')?.value.trim() || '',
-        age: parseInt(form.querySelector('[name="ob-age"]')?.value) || 0,
-        sex: form.querySelector('[name="ob-sex"]')?.value || 'other',
-        heightCm: parseInt(form.querySelector('[name="ob-height"]')?.value) || 0,
-        weightKg: parseFloat(form.querySelector('[name="ob-weight"]')?.value) || 0,
-        targetWeightKg: parseFloat(form.querySelector('[name="ob-target-weight"]')?.value) || 0,
-        fitnessGoal: form.querySelector('[name="ob-goal"]')?.value || 'general-fitness',
-        primaryObjective: form.querySelector('[name="ob-objective"]')?.value || 'general-fitness',
-        experienceLevel: form.querySelector('[name="ob-experience"]')?.value || 'beginner',
-        equipment: Array.from(form.querySelectorAll('[name="ob-equipment"]:checked')).map(c => c.value),
-        daysPerWeek: parseInt(form.querySelector('[name="ob-days"]')?.value) || 5,
-        dietPreference: form.querySelector('[name="ob-diet"]')?.value || 'omnivore',
-        intolerances: Array.from(form.querySelectorAll('[name="ob-intolerance"]:checked')).map(c => c.value),
-      };
-      saveProfile(profile);
-      applyProfileToUI(profile);
-      document.getElementById('onboarding-modal')?.close();
-    });
-  }
+  const form = document.getElementById('onboarding-form');
+  if (form) form.addEventListener('submit', handleOnboardingSubmit);
 
   const skipBtn = document.getElementById('ob-skip-btn');
   if (skipBtn) {
     skipBtn.addEventListener('click', () => {
-      document.getElementById('onboarding-modal')?.close();
+      saveProfile({ skipped: true });
+      modal.close();
     });
   }
 
-  const editProfileBtn = document.getElementById('edit-profile-btn');
+  const editProfileBtn = document.getElementById('edit-profile-btn') || document.getElementById('editProfileBtn');
   if (editProfileBtn) {
-    editProfileBtn.addEventListener('click', () => {
-      document.getElementById('onboarding-modal')?.showModal();
-    });
+    editProfileBtn.addEventListener('click', () => modal.showModal());
   }
 
-  initOnboarding();
-});
+  const profile = loadProfile();
+  if (!profile) {
+    modal.showModal();
+  } else if (!profile.skipped) {
+    applyProfileToUI(profile);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initOnboarding);
 
 const YT_DEFAULT = 'https://www.youtube.com/@officialdemic/shorts';
 const PIN_DEFAULT = 'https://in.pinterest.com/demicofficial/youcan/';
@@ -1114,76 +1110,6 @@ const metricInputMap = [
 metricInputMap.forEach(([inp, label]) => {
   if (inp) inp.addEventListener('change', () => requestAdaptation(label));
 });
-
-// ================================================================
-// USER PROFILE (localStorage — persists)
-// ================================================================
-function loadProfile() {
-  try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || null; }
-  catch { return null; }
-}
-
-function saveProfile(data) {
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
-}
-
-function applyProfileToUI(profile) {
-  if (!profile) return;
-  const nameEl = document.querySelector('.hero-name');
-  if (nameEl && profile.name) nameEl.textContent = profile.name.toUpperCase();
-  if (profile.targetWeightKg) {
-    const targetWeightInput = document.getElementById('cfgTargetWeight');
-    if (targetWeightInput) {
-      targetWeightInput.value = profile.targetWeightKg;
-      targetWeightInput.dispatchEvent(new Event('change'));
-    }
-  }
-}
-
-function handleOnboardingSubmit(e) {
-  e.preventDefault();
-  const form = e.target;
-  const profile = {
-    name: form.querySelector('[name="ob-name"]').value.trim(),
-    age: parseInt(form.querySelector('[name="ob-age"]').value),
-    sex: form.querySelector('[name="ob-sex"]').value,
-    heightCm: parseInt(form.querySelector('[name="ob-height"]').value),
-    weightKg: parseFloat(form.querySelector('[name="ob-weight"]').value),
-    targetWeightKg: parseFloat(form.querySelector('[name="ob-target-weight"]').value),
-    fitnessGoal: form.querySelector('[name="ob-goal"]').value,
-    primaryObjective: form.querySelector('[name="ob-objective"]').value,
-    experienceLevel: form.querySelector('[name="ob-experience"]').value,
-    equipment: Array.from(form.querySelectorAll('[name="ob-equipment"]:checked')).map(c => c.value),
-    daysPerWeek: parseInt(form.querySelector('[name="ob-days"]').value),
-    dietPreference: form.querySelector('[name="ob-diet"]').value,
-    intolerances: Array.from(form.querySelectorAll('[name="ob-intolerance"]:checked')).map(c => c.value),
-  };
-  saveProfile(profile);
-  applyProfileToUI(profile);
-  document.getElementById('onboarding-modal').close();
-}
-
-function initOnboarding() {
-  const modal = document.getElementById('onboarding-modal');
-  if (!modal) return;
-
-  const form = document.getElementById('onboarding-form');
-  if (form) form.addEventListener('submit', handleOnboardingSubmit);
-
-  const skipBtn = document.getElementById('ob-skip-btn');
-  if (skipBtn) skipBtn.addEventListener('click', () => {
-    saveProfile({ skipped: true });
-    modal.close();
-  });
-
-  if (!loadProfile()) {
-    modal.showModal();
-  } else {
-    applyProfileToUI(loadProfile());
-  }
-}
-
-document.addEventListener('DOMContentLoaded', initOnboarding);
 
 // ================================================================
 // SERVICE WORKER REGISTRATION (offline-first shell)

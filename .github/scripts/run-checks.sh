@@ -1,33 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "==> Running HTML/JS/Manifest validation..."
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$ROOT"
 
-# Validate HTML files if any exist
-if command -v tidy &>/dev/null; then
-  find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./server/node_modules/*" | while read -r f; do
-    echo "Checking $f"
-    tidy -errors -quiet -utf8 "$f" || true
-  done
+echo "==> HTMLHint"
+npx --yes htmlhint@latest --config .htmlhintrc index.html
+
+echo "==> JavaScript syntax"
+node --check app.js
+node --check sw.js
+if [ -f server/server.js ]; then
+  node --check server/server.js
+  node --check server/llm.js
+  node --check server/routes/adapt.js
 fi
 
-# Check for manifest.json if it exists
-if [ -f manifest.json ]; then
-  echo "==> Validating manifest.json..."
-  node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid');"
+echo "==> Manifest"
+node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest.webmanifest valid')"
+
+if [ -f server/package.json ]; then
+  echo "==> Server dry-run"
+  (cd server && npm ci --omit=dev >/dev/null 2>&1 || npm install --omit=dev >/dev/null)
+  node server/server.js --dry-run
 fi
 
-# Run Lighthouse if available
-if command -v npx &>/dev/null; then
-  if [ -f index.html ]; then
-    echo "==> Running Lighthouse audit..."
-    npx --yes lighthouse@latest \
-      --chrome-flags="--headless --no-sandbox --disable-gpu" \
-      --output html \
-      --output-path lighthouse-report.html \
-      --quiet \
-      "file://$(pwd)/index.html" || echo "Lighthouse audit completed with warnings"
-  fi
-fi
+echo "==> Lighthouse (PWA / Best Practices / Accessibility)"
+npx --yes serve@14 -l 8080 --no-port-switching >/tmp/rebyld-serve.log 2>&1 &
+SERVE_PID=$!
+trap 'kill $SERVE_PID 2>/dev/null || true' EXIT
+sleep 2
 
-echo "==> All checks passed."
+npx --yes lighthouse@11.7.1 \
+  http://127.0.0.1:8080 \
+  --chrome-flags="--headless --no-sandbox --disable-gpu" \
+  --only-categories=pwa,best-practices,accessibility \
+  --output html --output json \
+  --output-path lighthouse-report \
+  --quiet || echo "Lighthouse completed with warnings"
+
+echo "==> Checks complete"
