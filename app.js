@@ -1039,16 +1039,14 @@ function applyAdaptation(adaptation) {
   if (dietAdjustment) {
     if (dietAdjustment.targetKcal && cfgTargetKcal) {
       cfgTargetKcal.value = dietAdjustment.targetKcal;
-      cfgTargetKcal.dispatchEvent(new Event('change'));
     }
     if (dietAdjustment.targetProteinG && cfgTargetProtein) {
       cfgTargetProtein.value = dietAdjustment.targetProteinG;
-      cfgTargetProtein.dispatchEvent(new Event('change'));
     }
     if (dietAdjustment.targetWaterL && cfgTargetWater) {
       cfgTargetWater.value = dietAdjustment.targetWaterL;
-      cfgTargetWater.dispatchEvent(new Event('change'));
     }
+    saveUserTargets();
   }
 
   showAdaptationToast({ workoutAdjustment, scheduleNote, rationale, urgency, dietAdjustment });
