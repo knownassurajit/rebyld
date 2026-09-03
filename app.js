@@ -57,8 +57,86 @@ const STORE = {
   targets: 'rebyld_user_targets',
   targetsLegacy: 'das_user_targets',
   nutritionPlan: 'rebyld_nutrition_plan',
-  planBDay: 'rebyld_plan_b_day'
+  planBDay: 'rebyld_plan_b_day',
+  profile: 'rebyld_user_profile',
 };
+
+// ================================================================
+// USER PROFILE (onboarding data — localStorage)
+// ================================================================
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(STORE.profile)) || null; }
+  catch { return null; }
+}
+
+function saveProfile(data) {
+  localStorage.setItem(STORE.profile, JSON.stringify(data));
+}
+
+function applyProfileToUI(profile) {
+  if (!profile) return;
+  const nameEl = document.querySelector('.hero-name');
+  if (nameEl && profile.name) nameEl.textContent = profile.name.toUpperCase();
+  if (profile.targetWeightKg) {
+    const targetWeightInput = document.getElementById('cfgTargetWeight');
+    if (targetWeightInput && !targetWeightInput.value) {
+      targetWeightInput.value = profile.targetWeightKg;
+    }
+  }
+}
+
+function handleOnboardingSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const profile = {
+    name: form.querySelector('[name="ob-name"]')?.value.trim() || '',
+    age: parseInt(form.querySelector('[name="ob-age"]')?.value) || 0,
+    sex: form.querySelector('[name="ob-sex"]')?.value || 'other',
+    heightCm: parseInt(form.querySelector('[name="ob-height"]')?.value) || 0,
+    weightKg: parseFloat(form.querySelector('[name="ob-weight"]')?.value) || 0,
+    targetWeightKg: parseFloat(form.querySelector('[name="ob-target-weight"]')?.value) || 0,
+    fitnessGoal: form.querySelector('[name="ob-goal"]')?.value || 'general-fitness',
+    primaryObjective: form.querySelector('[name="ob-objective"]')?.value || 'general-fitness',
+    experienceLevel: form.querySelector('[name="ob-experience"]')?.value || 'beginner',
+    equipment: Array.from(form.querySelectorAll('[name="ob-equipment"]:checked')).map(c => c.value),
+    daysPerWeek: parseInt(form.querySelector('[name="ob-days"]')?.value) || 5,
+    dietPreference: form.querySelector('[name="ob-diet"]')?.value || 'omnivore',
+    intolerances: Array.from(form.querySelectorAll('[name="ob-intolerance"]:checked')).map(c => c.value),
+  };
+  saveProfile(profile);
+  applyProfileToUI(profile);
+  document.getElementById('onboarding-modal')?.close();
+}
+
+function initOnboarding() {
+  const modal = document.getElementById('onboarding-modal');
+  if (!modal) return;
+
+  const form = document.getElementById('onboarding-form');
+  if (form) form.addEventListener('submit', handleOnboardingSubmit);
+
+  const skipBtn = document.getElementById('ob-skip-btn');
+  if (skipBtn) {
+    skipBtn.addEventListener('click', () => {
+      saveProfile({ skipped: true });
+      modal.close();
+    });
+  }
+
+  const editProfileBtn = document.getElementById('edit-profile-btn') || document.getElementById('editProfileBtn');
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener('click', () => modal.showModal());
+  }
+
+  const profile = loadProfile();
+  if (!profile) {
+    modal.showModal();
+  } else if (!profile.skipped) {
+    applyProfileToUI(profile);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initOnboarding);
 
 const YT_DEFAULT = 'https://www.youtube.com/@officialdemic/shorts';
 const PIN_DEFAULT = 'https://in.pinterest.com/demicofficial/youcan/';
@@ -506,10 +584,26 @@ function setEquipmentMode(mode) {
   equipButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.equip === mode));
 
   document.querySelectorAll('.ex-row').forEach(row => {
-    if (mode === 'bw' && row.dataset.exEquip === 'db') {
-      row.classList.add('bodyweight-hidden');
+    const equip = row.dataset.exEquip || row.dataset.exEquipment || '';
+    if (mode === 'bw') {
+      row.classList.toggle('bodyweight-hidden', equip === 'db' || equip === 'cf');
+    } else if (mode === 'cf') {
+      row.classList.toggle('bodyweight-hidden', equip !== 'cf' && equip !== '' && equip !== 'bw');
     } else {
       row.classList.remove('bodyweight-hidden');
+    }
+  });
+
+  document.querySelectorAll('.ex-group[data-equipment]').forEach(group => {
+    const eq = group.dataset.equipment;
+    if (mode === 'all') {
+      group.style.display = '';
+    } else if (mode === 'cf') {
+      group.style.display = eq === 'cf' ? '' : 'none';
+    } else if (mode === 'bw') {
+      group.style.display = eq === 'cf' ? 'none' : '';
+    } else {
+      group.style.display = '';
     }
   });
 }
@@ -879,6 +973,141 @@ function applyUserTargetsToUI(t) {
   if (inp) inp.addEventListener('change', saveUserTargets);
 });
 loadUserTargets();
+
+// ================================================================
+// LLM ADAPTIVE PLAN ENGINE
+// ================================================================
+const BACKEND_URL = (typeof window !== 'undefined' && window.__REBYLD_BACKEND_URL__)
+  ? window.__REBYLD_BACKEND_URL__
+  : 'http://localhost:3001';
+
+let _llmDebounceTimer = null;
+
+/**
+ * Request an adaptive plan update from the backend LLM.
+ * Debounced to avoid firing on every keystroke.
+ */
+function requestAdaptation(changedField) {
+  clearTimeout(_llmDebounceTimer);
+  _llmDebounceTimer = setTimeout(async () => {
+    const profile = loadProfile();
+    const metrics = {
+      weight: parseFloat(cfgTargetWeight?.value) || null,
+      targetKcal: parseInt(cfgTargetKcal?.value) || null,
+      targetProtein: parseInt(cfgTargetProtein?.value) || null,
+      targetWater: parseFloat(cfgTargetWater?.value) || null,
+    };
+
+    showAdaptationStatus('loading');
+
+    try {
+      const resp = await fetch(`${BACKEND_URL}/api/adapt`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profile, metrics, changedField }),
+        signal: AbortSignal.timeout(35_000),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        if (err.fallback) {
+          showAdaptationStatus('offline');
+          return;
+        }
+        throw new Error(`Server error ${resp.status}`);
+      }
+
+      const { adaptation } = await resp.json();
+      applyAdaptation(adaptation);
+      showAdaptationStatus('success');
+    } catch (err) {
+      if (err.name === 'TimeoutError' || err.message.includes('fetch')) {
+        showAdaptationStatus('offline');
+      } else {
+        console.warn('[rebyld] LLM adaptation error:', err.message);
+        showAdaptationStatus('error');
+      }
+    }
+  }, 1200);
+}
+
+function applyAdaptation(adaptation) {
+  if (!adaptation) return;
+
+  const { dietAdjustment, workoutAdjustment, scheduleNote, rationale, urgency } = adaptation;
+
+  if (dietAdjustment) {
+    if (dietAdjustment.targetKcal && cfgTargetKcal) {
+      cfgTargetKcal.value = dietAdjustment.targetKcal;
+    }
+    if (dietAdjustment.targetProteinG && cfgTargetProtein) {
+      cfgTargetProtein.value = dietAdjustment.targetProteinG;
+    }
+    if (dietAdjustment.targetWaterL && cfgTargetWater) {
+      cfgTargetWater.value = dietAdjustment.targetWaterL;
+    }
+    saveUserTargets();
+  }
+
+  showAdaptationToast({ workoutAdjustment, scheduleNote, rationale, urgency, dietAdjustment });
+}
+
+function showAdaptationStatus(status) {
+  let indicator = document.getElementById('llm-status-indicator');
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.id = 'llm-status-indicator';
+    indicator.className = 'llm-status';
+    const settingsSection = document.querySelector('#settings, .settings-section, [data-section="settings"]');
+    if (settingsSection) settingsSection.prepend(indicator);
+    else document.body.appendChild(indicator);
+  }
+  const msgs = {
+    loading: '⟳ Getting AI recommendations…',
+    success: '✓ Plan adapted',
+    offline: '↪ AI offline — manual targets applied',
+    error:   '✗ Adaptation failed',
+  };
+  indicator.textContent = msgs[status] || '';
+  indicator.dataset.status = status;
+  if (status !== 'loading') setTimeout(() => { indicator.textContent = ''; }, 4000);
+}
+
+function showAdaptationToast({ workoutAdjustment, scheduleNote, rationale, urgency, dietAdjustment }) {
+  let toast = document.getElementById('llm-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'llm-toast';
+    toast.className = 'llm-toast';
+    document.body.appendChild(toast);
+  }
+  const parts = [];
+  if (rationale) parts.push(`<strong>Why:</strong> ${rationale}`);
+  if (workoutAdjustment?.recommendation) parts.push(`<strong>Workout:</strong> ${workoutAdjustment.recommendation}`);
+  if (dietAdjustment?.mealTimingNote) parts.push(`<strong>Nutrition:</strong> ${dietAdjustment.mealTimingNote}`);
+  if (scheduleNote) parts.push(`<strong>Schedule:</strong> ${scheduleNote}`);
+
+  toast.innerHTML = `<div class="llm-toast-header">
+    <span class="llm-toast-badge urgency-${urgency || 'low'}">AI Plan Update</span>
+    <button class="llm-toast-close" aria-label="Dismiss">×</button>
+  </div>
+  <div class="llm-toast-body">${parts.join('<br>')}</div>`;
+  toast.classList.add('visible');
+
+  toast.querySelector('.llm-toast-close')?.addEventListener('click', () => toast.classList.remove('visible'), { once: true });
+  setTimeout(() => toast.classList.remove('visible'), 12000);
+}
+
+// Wire metric inputs to trigger LLM adaptation
+const metricInputMap = [
+  [cfgTargetWeight,  'target weight'],
+  [cfgTargetKcal,    'daily calories'],
+  [cfgTargetProtein, 'daily protein'],
+  [cfgTargetWater,   'daily water goal'],
+];
+metricInputMap.forEach(([inp, label]) => {
+  if (inp) inp.addEventListener('change', () => requestAdaptation(label));
+});
 
 // ================================================================
 // SERVICE WORKER REGISTRATION (offline-first shell)
