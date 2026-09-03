@@ -43,7 +43,7 @@ jobs:
 
       - name: Upload Lighthouse report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6f75b7ca4f3a20b5e1e8e7e1adf6b
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: lighthouse-report
           path: lighthouse-report.html
@@ -59,7 +59,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: actions/dependency-review-action@da3b6d89b7ff0e7b01db34e8fa88de4ec57b3fef
+      - uses: actions/dependency-review-action@da24556b548a50705dd671f47852072ea4c105d9
         with:
           fail-on-severity: high
 
