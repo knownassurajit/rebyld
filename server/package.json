@@ -1,0 +1,22 @@
+{
+  "name": "rebyld-server",
+  "version": "1.0.0",
+  "description": "Adaptive plan backend for rebyld — proxies LightweightLLM API calls",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "dry-run": "node server.js --dry-run"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}

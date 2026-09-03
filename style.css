@@ -2638,3 +2638,200 @@ dialog.ex-modal::backdrop {
   margin: 0 0 8px;
   padding: 0 4px;
 }
+
+/* ================================================================
+   LLM ADAPTIVE PLAN — Status Indicator & Toast
+   ================================================================ */
+.llm-status {
+  font-size: 0.78rem;
+  color: var(--lime, #b8ff57);
+  padding: 6px 0;
+  min-height: 20px;
+  transition: opacity 0.3s;
+}
+.llm-status[data-status="error"]   { color: var(--red, #ff6b6b); }
+.llm-status[data-status="offline"] { color: var(--text-mid, #888); }
+
+.llm-toast {
+  position: fixed;
+  bottom: -200px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 360px;
+  background: var(--surface-2, #1e1e2e);
+  border: 1px solid var(--lime, #b8ff57);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+.llm-toast.visible { bottom: 24px; }
+.llm-toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.llm-toast-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--lime, #b8ff57);
+  color: var(--ink, #0a0a14);
+}
+.llm-toast-badge.urgency-high   { background: #ff6b6b; color: #fff; }
+.llm-toast-badge.urgency-medium { background: #ffd166; color: #0a0a14; }
+.llm-toast-close {
+  background: none;
+  border: none;
+  color: var(--text-mid, #888);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.llm-toast-body { color: var(--text-hi, #f0f0f0); }
+.llm-toast-body strong { color: var(--lime, #b8ff57); }
+
+/* ================================================================
+   ONBOARDING MODAL
+   ================================================================ */
+.onboarding-modal {
+  background: var(--surface, #141428);
+  color: var(--text-hi, #f0f0f0);
+  border: 1px solid var(--outline, #2a2a4a);
+  border-radius: 16px;
+  padding: 0;
+  max-width: 560px;
+  width: 94vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.onboarding-modal::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+.ob-header {
+  padding: 28px 28px 16px;
+  border-bottom: 1px solid var(--outline, #2a2a4a);
+}
+.ob-header h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  letter-spacing: 0.06em;
+  color: var(--lime, #b8ff57);
+}
+.ob-subtitle {
+  color: var(--text-mid, #aaa);
+  font-size: 0.88rem;
+  margin: 0;
+}
+.ob-section {
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--outline, #2a2a4a);
+}
+.ob-section h3 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-mid, #aaa);
+  margin: 0 0 14px;
+  font-weight: 700;
+}
+.ob-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 480px) { .ob-row { grid-template-columns: 1fr; } }
+.onboarding-modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-mid, #aaa);
+  margin-bottom: 12px;
+}
+.onboarding-modal input,
+.onboarding-modal select {
+  background: var(--surface-2, #1e1e2e);
+  border: 1px solid var(--outline, #2a2a4a);
+  border-radius: 8px;
+  color: var(--text-hi, #f0f0f0);
+  padding: 9px 12px;
+  font-size: 0.92rem;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.onboarding-modal input:focus,
+.onboarding-modal select:focus {
+  outline: none;
+  border-color: var(--lime, #b8ff57);
+}
+.onboarding-modal fieldset {
+  border: 1px solid var(--outline, #2a2a4a);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 0 0 12px;
+}
+.onboarding-modal legend {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0 6px;
+  color: var(--text-mid, #aaa);
+}
+.ob-hint { font-weight: 400; font-size: 0.74rem; }
+.ob-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-hi, #f0f0f0);
+}
+.ob-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--lime, #b8ff57);
+}
+.ob-actions {
+  padding: 20px 28px 28px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.btn-ob-primary {
+  background: var(--lime, #b8ff57);
+  color: var(--ink, #0a0a14);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  font-family: inherit;
+}
+.btn-ob-ghost {
+  background: transparent;
+  color: var(--text-mid, #aaa);
+  border: 1px solid var(--outline, #2a2a4a);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: inherit;
+}
