@@ -1,0 +1,147 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Validate & Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '20'
+
+      - name: Install server dependencies
+        run: |
+          if [ -f server/package.json ]; then
+            cd server && npm ci
+          fi
+
+      - name: Run checks
+        run: |
+          chmod +x .github/scripts/run-checks.sh
+          .github/scripts/run-checks.sh
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6f75b7ca4f3a20b5e1e8e7e1adf6b
+        with:
+          name: lighthouse-report
+          path: lighthouse-report.html
+          if-no-files-found: ignore
+          retention-days: 14
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/dependency-review-action@da3b6d89b7ff0e7b01db34e8fa88de4ec57b3fef
+        with:
+          fail-on-severity: high
+
+  pr-summary:
+    name: PR Summary
+    needs: test
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '20'
+
+      - name: Run checks
+        id: checks
+        continue-on-error: true
+        run: |
+          chmod +x .github/scripts/run-checks.sh
+          .github/scripts/run-checks.sh
+
+      - name: Write PR comment
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            const outcome = '${{ steps.checks.outcome }}';
+            const status = outcome === 'success' ? '✅ passed' : '❌ failed';
+            const body = `## CI Summary\n\n| Check | Result |\n|---|---|\n| HTML/JS/Manifest validation + Lighthouse | ${status} |`;
+            const marker = '<!-- rebyld-ci-pr-summary -->';
+            const fullBody = `${marker}\n${body}`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                comment_id: existing.id, body: fullBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number, body: fullBody,
+              });
+            }
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: .
+          exclude: |
+            .git
+            .github
+            server
+            node_modules
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
