@@ -27,3 +27,8 @@ server/.env
 lighthouse-report.html
 lighthouse-report.json
 ci-summary.md
+
+# ECC / Cursor local logs
+.cursor/*.log
+.cursor/ecc-install-state.json
+.ecc/

@@ -1073,6 +1073,15 @@ function showAdaptationStatus(status) {
   if (status !== 'loading') setTimeout(() => { indicator.textContent = ''; }, 4000);
 }
 
+function appendToastLine(parent, label, value) {
+  const text = value == null ? '' : String(value);
+  if (!text) return;
+  if (parent.childNodes.length) parent.appendChild(document.createElement('br'));
+  const strong = document.createElement('strong');
+  strong.textContent = label;
+  parent.append(strong, document.createTextNode(' ' + text));
+}
+
 function showAdaptationToast({ workoutAdjustment, scheduleNote, rationale, urgency, dietAdjustment }) {
   let toast = document.getElementById('llm-toast');
   if (!toast) {
@@ -1081,20 +1090,35 @@ function showAdaptationToast({ workoutAdjustment, scheduleNote, rationale, urgen
     toast.className = 'llm-toast';
     document.body.appendChild(toast);
   }
-  const parts = [];
-  if (rationale) parts.push(`<strong>Why:</strong> ${rationale}`);
-  if (workoutAdjustment?.recommendation) parts.push(`<strong>Workout:</strong> ${workoutAdjustment.recommendation}`);
-  if (dietAdjustment?.mealTimingNote) parts.push(`<strong>Nutrition:</strong> ${dietAdjustment.mealTimingNote}`);
-  if (scheduleNote) parts.push(`<strong>Schedule:</strong> ${scheduleNote}`);
 
-  toast.innerHTML = `<div class="llm-toast-header">
-    <span class="llm-toast-badge urgency-${urgency || 'low'}">AI Plan Update</span>
-    <button class="llm-toast-close" aria-label="Dismiss">×</button>
-  </div>
-  <div class="llm-toast-body">${parts.join('<br>')}</div>`;
+  toast.replaceChildren();
+
+  const header = document.createElement('div');
+  header.className = 'llm-toast-header';
+
+  const badge = document.createElement('span');
+  const urgencyClass = urgency === 'medium' || urgency === 'high' ? urgency : 'low';
+  badge.className = 'llm-toast-badge urgency-' + urgencyClass;
+  badge.textContent = 'AI Plan Update';
+
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'llm-toast-close';
+  close.setAttribute('aria-label', 'Dismiss');
+  close.textContent = '×';
+  close.addEventListener('click', () => toast.classList.remove('visible'), { once: true });
+
+  header.append(badge, close);
+
+  const body = document.createElement('div');
+  body.className = 'llm-toast-body';
+  appendToastLine(body, 'Why:', rationale);
+  appendToastLine(body, 'Workout:', workoutAdjustment?.recommendation);
+  appendToastLine(body, 'Nutrition:', dietAdjustment?.mealTimingNote);
+  appendToastLine(body, 'Schedule:', scheduleNote);
+
+  toast.append(header, body);
   toast.classList.add('visible');
-
-  toast.querySelector('.llm-toast-close')?.addEventListener('click', () => toast.classList.remove('visible'), { once: true });
   setTimeout(() => toast.classList.remove('visible'), 12000);
 }
 
